@@ -28,7 +28,8 @@
 \DeclareUrlCommand\url{\def\UrlLeft{<}\def\UrlRight{>} \urlstyle{tt}}
 
 %zde muzeme vlozit vlastni balicky
-
+\usepackage{amsmath}
+\usepackage{xr}
 
 % =======================================================================
 % balíèek "hyperref" vytváøí klikací odkazy v pdf, pokud tedy pou¾ijeme pdflatex
@@ -92,9 +93,9 @@
 %\keywords[en]{Sem budou zapsána jednotlivá klíèová slova v anglickém jazyce, oddìlená èárkami.}
 
 %Prohlaseni
-%\declaration{Prohla¹uji, ¾e jsem tuto bakaláøskou práci vypracoval samostatnì pod vedením pana X...
-%Dal¹í informace mi poskytli...
-%Uvedl jsem v¹echny literární prameny a publikace, ze kterých jsem èerpal.}
+\declaration{Prohla¹uji, ¾e jsem tuto bakaláøskou práci vypracoval samostatnì pod vedením pana X...
+Dal¹í informace mi poskytli...
+Uvedl jsem v¹echny literární prameny a publikace, ze kterých jsem èerpal.}
 
 %Podekovani (nepovinne)
 %\acknowledgment{V této sekci je mo¾no uvést podìkování vedoucímu práce a tìm, kteøí poskytli odbornou pomoc
@@ -109,13 +110,12 @@
   \tableofcontents
   
   % Seznam obrazku a tabulek (pokud prace obsahuje velke mnozstvi obrazku, tak se to hodi)
-  % \listoffigures
-  % \listoftables 
+   \listoffigures
+   \listoftables 
 
   % Text prace
   % ----------------------------------------------
   \input{obsah} % viz. obsah.tex
-
   % Pouzita literatura
   % ----------------------------------------------
 \ifczech

@@ -2,23 +2,58 @@
 % (c) Michal Bidlo, Bohuslav Køena, 2008
 
 \chapter{Úvod}
+\input{introduction}
 
-\chapter{Popis problemu}
+\chapter{Ha¹ování}
+\label{sec:hashing}
 
-\chapter{Navrh reseni}
-\section{Formalni zaklady}
-Vysvetlit zaklady optimalizace.
-Sdelit, ze se jedna o optimalizacni problem kde urcitym zpusobem konvergujeme k optimalnimu / suboptimalnimu reseni
-\section{Evolucni algoritmy}
-Uvest evolucni algoritmy
-\section{Geneticke programovani}
-Sdelit ctenari, ze se budeme blize zabyvat genetickym programovanim.
-Popsat pouzite varianty GP, gramatiky etc...
+\chapter{Evoluèní návrh}
+\label{sec:evolution_design}
 
-\chapter{Implementace}
-Implementace jednotlivych variant do souhrneho frameworku
-\chapter{Prezentace vysledku}
+% Chapter INTRO
+Evoluèní návrh je speciální oblastí evoluèních algoritmù, kde se evoluèní
+algoritmy pou¾ívají pro návrh. Evoluèní algoritmy spadají do oblasti umìlé 
+inteligence. Specifickou vlastností mnoha úloh spadajících do obasti umìlé 
+inteligence je, ¾e èasto vhodným zpùsobem prohledávají prostor $U$,
+reprezentující v¹echna mo¾ná øe¹ení (kandidátní) dané úlohy 
+\cite{evolution_hardware}. Evoluèní algoritmy jsou tedy speciální metodou 
+prohledávání prostoru kandidátních øe¹ení.
+
+% Section Natural computing
+\section{Poèítání podle pøírody}
+\label{sec:natural_computing}
+Poèítání podle pøírody (Natural computing) je sohrný termín pro tvorbu 
+inteligentních strojù napodobováním biologických procesù, chování ¾ivých 
+tvorù nebo jejich mechanismù. Øadíme sem také výpoèetní paradigmata, která 
+svoji inspiraci nalezla v pøírodních procesech nebo pou¾ití organismù a 
+jiných netradièních materiálù jako výpoèetních platforem. Míra do jaké je 
+pøírodní fenomén napodoben se rùzní. Od Témìø úplného napodobení a¾ po 
+inspiraci. 
+
+Jedním z motivù pro vznik alternativních výpoèetních pøístupù a poèítání 
+podle pøírody je lep¹í splynutí s reálným svìtem a jeho probémy.
+V tomto kontextu je vhodné smínit \textit{soft-computing}. \textit{Soft-
+computing} je podmno¾inou poèítání podle pøírody, bývají sem zaøazovány 
+neuronové sítì, \textit{Support Vector Machines}, Fuzzy systémy, Evoluèní 
+algoritmy a teorie chaosu. Postupy spadající do \textit{Soft-computing} 
+tolerují nepøesnosti a nejistotu èím¾ dosahují vysoké robustnosti a 
+lep¹ího vztahu s realitou.     
+
+Evoluèní algoritmy jsou zalo¾ené na \textit{fylogenezi}. .........
+
+%$U$
+
+%Prostor $U = D_{1} \times D_{2} \times D_{3} \times \ldots \times D_{n}$ 
+%je formálnì definován jako kartézský souèin uzavøených intervalù v rùzných 
+%doménách nejèastìji v¹ak v celoèíselnách, reálných nebo binárních.
+
+
+
+
+\chapter{Návrh øe¹ení}
+\label{sec:solution_design}
 
 \chapter{Závìr}
+\input{conclusion}
 
 %=========================================================================
