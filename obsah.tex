@@ -32,23 +32,140 @@ inspiraci.
 
 Jedním z motivù pro vznik alternativních výpoèetních pøístupù a poèítání 
 podle pøírody je lep¹í splynutí s reálným svìtem a jeho probémy.
-V tomto kontextu je vhodné smínit \textit{soft-computing}. \textit{Soft-
-computing} je podmno¾inou poèítání podle pøírody, bývají sem zaøazovány 
+V tomto kontextu je vhodné zmínit \textit{soft-computing}. \textit{Soft-computing}
+ je podmno¾inou poèítání podle pøírody, bývají sem zaøazovány 
 neuronové sítì, \textit{Support Vector Machines}, Fuzzy systémy, Evoluèní 
 algoritmy a teorie chaosu. Postupy spadající do \textit{Soft-computing} 
 tolerují nepøesnosti a nejistotu èím¾ dosahují vysoké robustnosti a 
-lep¹ího vztahu s realitou.     
+lep¹ího vztahu s realitou. Poètání podle pøírody ve svùj prospìch pou¾ívá 
+procesy zejména fylogeneze, ontogeneze a epigeneze. Fylogeneze oznaèuje proces
+evoluce druhù, ontogeneze proces vývoje mnohobunìèného organismu a epigeneze
+proces, který nastává v ji¾ slo¾itìj¹ím organismu (napø. neuronové sítì).
+Dále se se poèítání podle pøíody inspirovalo procesy vznikajícími ve spoleènosti, v usuzování jedincù apod. My se zde budeme zabývat hloubìji pouze fylogenezí, nebo» 
+právì na ní je zalo¾ena my¹lenka evoluèních algoritmù.
 
-Evoluèní algoritmy jsou zalo¾ené na \textit{fylogenezi}. .........
+\section{Evoluèní algoritmy}
 
-%$U$
+Fylogeneze je proces evoluce druhù. Evoluce je umo¾nìna schopností reprodukce jednotlivých
+jedincù, kdy potomkové se od svých roduèù li¹í jen velmi málo. Pøi reprodukci v¹ak dochází také
+k náhodným obèasným mutacím, které zabezpeèují dostateènou diferzitu a vzniká tak nový
+genetický materiál. Na fylogenezi jsou zalo¾ené evoluèní algoritmy. 
 
-%Prostor $U = D_{1} \times D_{2} \times D_{3} \times \ldots \times D_{n}$ 
-%je formálnì definován jako kartézský souèin uzavøených intervalù v rùzných 
-%doménách nejèastìji v¹ak v celoèíselnách, reálných nebo binárních.
+Evoluèní algoritmy lze chápat jako speciální optimalizaèní metodu nad prostorem $U$.
+Prostorem $U = D_{1} \times D_{2} \times D_{3} \times \ldots \times D_{n}$ v¹ech 
+kandidátních øe¹ení rozumíme kartézský souèin domén, jednotlivé domény univerza mohou nabývat
+hodnot z pøedem známých, èasto nìjak omezených intervalù.  
 
+V matematické optimalizaci, bychom se sna¾ili hledat hodnoty $x \in U$ takové,
+pro které je hodnota úèelové funkce
+$$ f : U \to \mathcal{R} $$
+minimální (hledání maxima lze úpravou úèelové funkce pøevést na hledání minima).
+Minima mohou být globální nebo lokální, ostrá nebo neostrá. Øe¹íme tedy úlohu,
+kdy hledáme nìjaký argument, jeho¾ hodnota úèelové funkce spadá do mno¾iny optimálních
+hodnot úèelové funkce \cite{nlprog}.
+$$ argmin_{x}\{f(x)|x \in U\} $$		
+V kontextu evoluèních algoritmù nazýváme $f$ funkcí \textit{fitness} a nehledáme 
+argument $x$, pro nìj¾ je funkce $f$ minimální, ale postaèuje nám najít argument $x$ 
+takový, ¾e $f(x)$ splní nìjaké pøedem dáné ukonèovací podmínky.
 
+\subsection{Princip}
+Evoluèní algoritmy jsou inspirované procesem reprodukce jedincù napøíè generacemi.
+Na zaèátku výpoètu algoritmu vytvoøíme poèáteèní populaci $\mathcal{P}_{0}$, tj.
+populaci generace nula o pøedem známé velikosti $n$.
+Volba jedincù do poèáteèní populace jsou rùzné, mù¾eme napøíklad sáhnout po náhodném 
+výbìru nebo volit jedince za pou¾ití vhodné heuristiky.
 
+%$$ \mathcal{P}_{0} = \{x|x \in U \land vyber\_do\_poèáteèní\_populace(x) \} $$
+
+V ka¾dém dal¹ím kroku evoluèního algoritmu, který nazýváme generace, je nejprve vybráno
+$m$ vhodných jedincù z generace pøedchozí $t - 1$, kteøí nám tvoøí mno¾inu rodièù. Aplikací
+genetických operátorù nad mno¾inou rodièù vznikne mno¾ina potomkù, Následnì se z obou
+mno¾in vybere nová generace $t$ o velikosti $n$ a celý process (znázornìn na diagramu \ref{fig:eaflow})
+se opakuje. Zpùsoby výbìru rodièu jsou rùzné stejnì
+tak jako mo¾né genetické operátory. Obìma se budeme zabývat pozdìji.
+
+%%%%%%%%%%%%% EVOLUTION ALGORITHM FLOWCHART %%%%%%%%%%%%%%%
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[scale=0.4]{fig/evolution_algorithm_flowchart}	
+	\caption{Obecný postup výpoètu evoluèního algoritmu}
+	\label{fig:eaflow}
+\end{figure}
+%%%%%%%%%%%%% EVOLUTION ALGORITHM FLOWCHART %%%%%%%%%%%%%%%
+
+\subsection{Fitness funkce}
+Fitness funkce je obdoba úèelové funkce z oboru matematické optimalizace. Název fitness
+pochází z oboru evoluèní biologie, kde hodnota fitness popisuje biologickou zdatnost jedince
+\cite{evolution_hardware}. Vstupem fitness funkce je (v jednodu¹¹ím pøípadì) jedinec
+reprezentovaný chromozomem a výstupem je hodnota reprezentující zdatnost jedince.
+
+Ve slo¾itìj¹ích pøípadech je nutné rozli¹ovat mezi prostorem genotypù a fenotypù. Genotypem
+nazýváme v kontextu evoluèních algoritmù prostor v¹ech mo¾ných øe¹ení, tedy 
+v¹ech mo¾ných chromozomù. Fenotyp je soubor charakteristik, projevù a chování,
+jimi¾ se daný jedinec reprezentovaný urèitým chromozomem projevuje.
+Zobrazení z prostoru genotypù do prostoru fenotypù lze potom vyjádøít následovnì:
+$$ f_{phenotype} : U \to \mathcal{F}, $$
+Potom je v¹ak nutné modifikovat na¹i fitness funkci následovnì :
+$$ f : \mathcal{F} \to \mathcal{R} $$
+a celý proces evaluace jedince bude poté kompizice tìchto dvou funkcí :
+$$ f \circ f_{phenotype}$$
+
+Volba pota¾mo návrh vhodné fitness funkce je znaènì obtí¾ná. Neexistuje ¾ádný obecný
+pøedpis pro jejich návrh. Musíme se spoléhat na obecná pravidla, zku¹enosti nebo 
+intuici. Velké mno¾ství dobøe zakomponovaných informací o problém ve fitness funkci je
+dobrým základem pro úspì¹ný evoluèní algoritmus. Obecnì tedy platí, ¾e 
+vhodnì zvolená fitness funkce má znaèný dopad na kvalitu výsledného øe¹ení.
+
+\subsection{Zpùsoby selekce}
+Zpùsoby selekce jsou dùle¾itým faktorem pøi návrhu evoluèního algoritmu. Selekce
+je proces, pøi nìm¾ se vybýrají rodièe z aktuální populace urèení k reprodukci. 
+Dobrý selekèní algoritmus musí být schopen upøednostòovat jedince s vysokou hodnotou
+fitness funkce, na druhou stranu musí zajistit dostateèné mno¾ství genetického 
+materiálù pro dal¹i generace. Èasto vyu¾ívané selekèní mechanismy, zejména v kontextu
+genetických algoritmù jsou napøíklad \cite{selection_schemes_comparison} :
+\begin{itemize}
+	\item \textit{deterministická selekce}, kde se do mno¾iny rodièù vybere $k$
+		jedincù z aktuální populace s nejvy¹¹í hodnotou fitness,
+		
+	\item \textit{proporcionlní selekce}, kde pravdìpodobnost výbìru jedince $i$ je 
+		rovna vztahu $p_{i} = \frac{f(i)}{\sum_{j=1}{N} f(j)}$,
+		
+	\item \textit{turnajová selekce}, kdy je v nìkolika kolech turnaje postupnì 
+		porovnáno nìkolik náhodnì vybraných jedincù a vítìz turnaje je zaøazen
+		do mno¾iny rodièù. Turnaj provedeme $n$-krát, kde $n$ je po¾adovaná mohutnost
+		mno¾iny rodièù. 
+\end{itemize}
+Existují v¹ak i jiné selekèní mechanismy, více specifické vzhledem k jiným variantám
+evoluèních algoritmù, jako jsou napøíklad genetické programování :
+\begin{itemize}
+	\item 
+\end{itemize}
+
+\subsection{Genetické operátory}
+
+\subsection{Návrh evoluèního algoritmu}
+
+Kvalita námi navr¾eného evoluèního algoritmu, je zejména závislá na následujících faktorech:
+\begin{enumerate}
+	\item reprezentace problémù a jeho kódování,
+	\item pou¾itá fitness funkce,
+	\item zobrazení z prostoru genotypù do prostoru fenotypù,
+	\item volbou genetických operátorù a zpùsoby selekce,
+	\item nastavením parametrù genetického algoritmu.
+\end{enumerate}
+
+Prostor ka¾dého problému øe¹itelného evoluènímy algoritmy je jiný. Neexistuje tedy obecný
+evoluèní algoritmus, který by kvalitnì øe¹il v¹echny problémy. Toto tvrzení podporuje takzvaný
+\textit{No Free Lunch} teorém. Pokud uvá¾íme dostateènì velký poèet optimalizaèních problémù,
+neexistuje ¾ádný optimalizaèní algoritmus, který projde ka¾dý bod prostoru $U$ právì jednou
+a v prùmìru bude efektivnìj¹í ne¾ ostatní optimalizaèní algoritmy \cite{nflteorem, evolution_hardware}. 
+Z tohoto tvrzení plyne, ¾e chceme-li øe¹it optimalizaèní problém skuteènì efektnivnì, musíme 
+do na¹eho evoluèního algoritmu vlo¾it co nejvíce informací o øe¹ením problému prostøednictvím 
+zejména polo¾ek zmínìných vý¹e.
+
+\subsection{Varianty evoluèních algoritmù}
+
+\section{Genetické programování}
 
 \chapter{Návrh øe¹ení}
 \label{sec:solution_design}
