@@ -33,7 +33,7 @@ inspiraci.
 Jedním z motivù pro vznik alternativních výpoèetních pøístupù a poèítání 
 podle pøírody je lep¹í splynutí s reálným svìtem a jeho probémy.
 V tomto kontextu je vhodné zmínit \textit{soft-computing}. \textit{Soft-computing}
- je podmno¾inou poèítání podle pøírody, bývají sem zaøazovány 
+je podmno¾inou poèítání podle pøírody, bývají sem zaøazovány 
 neuronové sítì, \textit{Support Vector Machines}, Fuzzy systémy, Evoluèní 
 algoritmy a teorie chaosu. Postupy spadající do \textit{Soft-computing} 
 tolerují nepøesnosti a nejistotu èím¾ dosahují vysoké robustnosti a 
@@ -109,7 +109,7 @@ $$ f_{phenotype} : U \to \mathcal{F}, $$
 Potom je v¹ak nutné modifikovat na¹i fitness funkci následovnì :
 $$ f : \mathcal{F} \to \mathcal{R} $$
 a celý proces evaluace jedince bude poté kompizice tìchto dvou funkcí :
-$$ f \circ f_{phenotype}$$
+$$ f_{eval} = f \circ f_{phenotype}$$
 
 Volba pota¾mo návrh vhodné fitness funkce je znaènì obtí¾ná. Neexistuje ¾ádný obecný
 pøedpis pro jejich návrh. Musíme se spoléhat na obecná pravidla, zku¹enosti nebo 
@@ -124,6 +124,7 @@ Dobrý selekèní algoritmus musí být schopen upøednostòovat jedince s vysokou hodn
 fitness funkce, na druhou stranu musí zajistit dostateèné mno¾ství genetického 
 materiálù pro dal¹i generace. Èasto vyu¾ívané selekèní mechanismy, zejména v kontextu
 genetických algoritmù jsou napøíklad \cite{selection_schemes_comparison} :
+
 \begin{itemize}
 	\item \textit{deterministická selekce}, kde se do mno¾iny rodièù vybere $k$
 		jedincù z aktuální populace s nejvy¹¹í hodnotou fitness,
@@ -136,13 +137,38 @@ genetických algoritmù jsou napøíklad \cite{selection_schemes_comparison} :
 		do mno¾iny rodièù. Turnaj provedeme $n$-krát, kde $n$ je po¾adovaná mohutnost
 		mno¾iny rodièù. 
 \end{itemize}
-Existují v¹ak i jiné selekèní mechanismy, více specifické vzhledem k jiným variantám
-evoluèních algoritmù, jako je napøíklad genetické programování :
-\begin{itemize}
-	\item 
-\end{itemize}
 
 \subsection{Genetické operátory}
+Evoluèní algoritmy vyu¾ívají køí¾ení i mutaci, oba mechanismy jsou pøevzaty z
+oboru bunìèné biologie, kde se uplatòují v procesu redukèního dìlení bunìk.
+
+Operátor mutace se aplikuje na potomka
+a vytvoøí z nìj potomka mutovaného. Stejnì jako v biologii, mutace se vyskytuje
+pouze v malém poètu pøípadù. Na¹im cílem je prozkoumat prostor $U$ postupnì a
+konvergovat k dobrým øe¹ením. V pøípadì vysoké pravdìpodobnosti mutace se ji¾
+nejedná o algorigmus evoluèní, nýbr¾ revoluèní a algoritmus pøipomíná 
+spí¹e náhodné prohledávání.
+
+Operátor mutace je velmi dùle¾itý, nebo» zanesení
+náhodne mutace zaji¹»uje nový genetický materiál, èím¾ je algoritmus jednou za
+èas nucen prozkoumat vzdálenìj¹í bod prostoru. Neuvázne tak v lokálních extrémech.
+
+Pøi køí¾ení dochází k pøenosu èástí chromozomù rodièù na potomka. Zpùsobù køí¾ení
+existuje celá øada. Obecnì v¹ak platí, ¾e zpùsob køí¾ení je závislý na zvolené 
+reprezentaci. Pokud máme jedince reprezentovaného grafem, operátor køí¾ení 
+se bude znaènì odli¹ovat od pøípadu, kdy máme jedince reprezentovaného binárním
+vektorem. 
+
+Uveïmì si zde alespoò nejznámìj¹í druhy køí¾ení nad binární reprezentaci, jimi¾ jsou:
+\begin{itemize}
+	\item \textit{jednobodové køí¾ení}, kdy se urèí místo køí¾ení urèující,
+		která èást chromozomu doputuje do potomka.
+		
+	\item \textit{dvoubodové køí¾ení} je obdobou vý¹e zmínìného, av¹ak pro dva body
+		køí¾ení a
+	\item \textit{uniformní køí¾ení}, které je do znaèné míry zobecnìním vý¹e zmínìných.
+		 Urèí $n$ genù v chromozomu, jejich¾ hodnoty jsou vystøídány.
+\end{itemize}
 
 \subsection{Návrh evoluèního algoritmu}
 
@@ -164,9 +190,206 @@ Z tohoto tvrzení plyne, ¾e chceme-li øe¹it optimalizaèní problém skuteènì efektn
 do na¹eho evoluèního algoritmu vlo¾it co nejvíce informací o øe¹ením problému prostøednictvím 
 zejména polo¾ek zmínìných vý¹e.
 
-\subsection{Varianty evoluèních algoritmù}
+\subsection{Genetické algoritmy}
+
+Evoluèní algoritmy popisují mno¾inu algoritmù, jejich¾ èinnost je urèena procesem Darwinovské
+evoluce. Na druhé stranì je v¹ak neomezuje natolik, aby se od sebe nemohly (nìkdy i velmi
+významnì) li¹it.
+
+Asi nejvýznamìj¹ím ¾ástupcem evoluèních algoritmù jsou genetické algoritmy. Jediny jedné populace
+jsou reprezentovány øetìzcem (chromozomem) binárních, celoèíselných nebo i reálných hodnot.
+Iniciální populace vzniká buï náhodnì nebo za pou¾ití vhodné heuristiky. Jako selekèní mechanismy
+se zde uplatòují v¹echny bì¾né, stejnì tak zde najdeme pou¾ity v¹echny druhy metod køí¾ení.
+Mutace se takté¾ pou¾ívá.
+
+\subsection{Evoluèní strategie}
+
+Dal¹ím zajímavým algoritmem jsou evoluèní strategie. Jejich nejvìt¹í zajímavostí je, ¾e
+se spoléhají pouze na operátor mutace. Køí¾ení se zde nevyskytuje. Nové generace se zde
+vytváøejí zejména tak, ¾e rodièovská je mutována pøiètením hodnoty normálního rozlo¾ení s nulovou
+$x' = x + \mathcal{N}(0, \sigma)$
+støední hodnotou. Rozptyl $\sigma$ se mìní na základì toho, jak dobøe algoritmus aktuálnì
+konverguje. Jako selekèní mechanismy se u¾ívá totální elitismus ve variantách $(\mu + \lambda)$
+a $(\mu. \lambda)$ \cite{ES}. Uva¾ujeme-li $\mu$ mno¾inu rodièù a $\lambda$ mno¾inu jejich
+potomkù, pak :
+
+\begin{itemize}
+	\item $(\mu + \lambda)$ vybere do dal¹í generace nejlep¹í jedince z mno¾iny
+		rodièù a potomku
+	\item $(\mu, \lambda)$ vybere do dal¹í generace jen ty nejlep¹í potomky. Rodièovská
+		generace tedy vymírá.
+\end{itemize} 
 
 \section{Genetické programování}
+
+Pro na¹í práce je zejména zajímavé genetické programování, nebo» právì to jsme zvolili 
+jako evoluèní algoritmus pro øe¹ení na¹eho problémù. Seznámíme se s ním podrobnìji a 
+proto mu vìnujme celou sekci.
+
+Genetické programování je speciálním druhem evoluèního algoritmu, kde jednotlivce a 
+celé populace tvoøí poèítaèové programy. Výpoèet iterativnì transformuje poèítaèové
+programy na jiné poèítaèové programy aplikací genetických operátorù, které jsou 
+pro genetické programování specializované specifické. Výstupem genetického algoritmu
+je v pøípadì, ¾e uspìje, nìjaký program. 
+
+\subsection{Reprezentace}
+Evolvované programy musíme vhodnì reprezentovat. Musíme pøí tom klást dùraz na to,
+¾e programy je mezi sebou tøeba køí¾it, mutovat a obecnì na nich provádìt nutné
+genetické operace. Na druhé stranì v¹ak chceme volit takovou reprezentaci, která
+nám umo¾ní programy evaluovat, tudí¾ vykonávat je nad zadaným vstupem. 
+
+Jedinci v populaci jsou reprezentování radìji jako \textit{abstraktní syntaktické stromy}
+\cite{GPTutorial} ne¾ øádky programu. Ukázka jedince v geneticém programování je na
+diagramu \ref{fig:exampletree1} a zobrazuje jedince reprezentovaného programem
+\texttt{max(min(x,y), 5 + z)}. Stromy se skládají z uzlù a listù. Listy jsou
+reprezentovány terminálním symbolem z mno¾iny terminálù $T$ a uzly jsou reprezentovány
+funkcí z mno¾iny $F$. Na diagramu \ref{fig:exampletree1} mno¾inu funkcí tvoøí 
+$F = \{max, min, +\}$ a mno¾inu terminálu $T = \{5, x, y, z\}$. Mno¾iny povolených
+funkcí a terminálù dohromady tvoøí primitivní mno¾inu systému. Prostor mo¾ných 
+øe¹ení mù¾eme tedy definovat jako mno¾inu v¹ech mo¾ných stromù, které mohou vzniknout
+kombinací funkcí a terminálù :
+
+$$ U = \{t | t=(FT)^{n}, 0 \leq n \leq max\_depth \}$$
+
+Programová reprezentace stromù se li¹í od programovacího jazyku. Platí v¹ak, ¾e 
+v prosøedích nároèných na výpoèetní výkon je pamì»ová nároènost grafové reprezentace
+neefektnivní. Stromové reprezentace lze u¾ít i nepøímo za pou¾ití prefixové notace.
+Pøí pou¾ití prefixové notace se závorky stanou nadbyteènými a program lze v pamìti
+ulo¾it jako \textit{lineární sekvenci symbolù}. Jako pøíklad poslou¾í diagram 
+\ref{fig:exampletree1}, tedy \texttt{max min x y + 5 z}. Volba reprezentace tedy
+v koneèném dùsledkù zále¾í na u¾ivateli a jeho preferencích, po¾adavcích a prostøedí. 
+
+%%%%%%%%%%%%% TREE REPRESENTATION EXAMPLE 1 %%%%%%%%%%%%%%%
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[scale=0.6]{fig/example_tree1}	
+	\caption{Ukázka reprezentace programu max(min(x,y), 5 + z)}
+	\label{fig:exampletree1}
+\end{figure}
+%%%%%%%%%%%%% TREE REPRESENTATION EXAMPLE 1 %%%%%%%%%%%%%%%
+
+\subsection{Inicializace nulté populace}
+
+Pro inicializaci nulté populace platí obecná pravidla. Mù¾eme ji buï volit náhodnì
+nebo pou¾ít nìjakou vhodnou heuristiku. Je zde v¹ak specifická vlastnost, kterou 
+musíme vzít do úvahy. Na¹e programy nemají pevnì omezenou velikost (délka
+chromozomu je promìnná). Jak velké náhodné programy tedy generovat ? Existují tøi
+základní pøístupy:
+
+\begin{enumerate}
+	\item \textit{Full} metoda, kdy náhodnì vygenerujeme strom do maximální povolené
+		hloubky,
+	\item \textit{Grow} metoda, generujeme stromy promìnlivé délky a tvaru (maximální
+		hloubka je omezena) a
+	\item \textit{Ramped half-and-half}, kdy polovina populace je generována metodou
+		\textit{Grow} a druhá metodou \textit{Full}, za promìnlivé maximální hloubky.
+\end{enumerate}
+
+Metoda Full v¾dy a za v¹ech okolností generuje plné stromy. V uzlech jsou funkce
+vybírány náhodnì z mno¾íny $F$ a jakmile algoritmus dosáhne maximální hloubky,
+nageneruje terminály z mno¾iny $T$ a skonèí.
+
+Grow metoda naproti tomu generuje v uzlech s urèitou pravdìpodobností i terminály, èím¾
+je schopna vytváøet stromy rùzných délek i tvarù. Je v¹ak velmi závisla na velikostech
+mno¾in $F$ a $T$. Pokud v¹ak $|T| << |F|$ algoritmus degraduje na metodu Full. Pokud
+na druhé stranì $|T| >> |F|$, algoritmus bude generovat jen velmi malé stromy.
+
+Aby se omezil dopad rozdílných velikostí mno¾in $T$ a $F$, John Koza navrhl alternativu
+v podobì algoritmu ramped half-and-half. Ten pou¾ívá obì metody souèasnì na polovinu 
+jedincù populace a maximální hloubku stromu volí náhodnì, èím¾ zaji¹»uje promìnlivou
+velikost i tvar stromù.
+
+\subsection{Genetické operátory a selekce}
+
+V pøípadì selekce do mno¾iny rodièù, se vyu¾ívají v¹echny bì¾né selekèní mechanismy
+známe z evoluèních algoritmù, av¹ak nejèastìji se vyu¾ívá turnajová selekce následovaná
+proprcionální selekcí.
+
+Zajímavìj¹í je to v pøípadì genetických operátorù køí¾ení a mutace. Nejèastìj¹í formou
+køí¾ení je \textit{podstromové køí¾ení}. U rodièù vybraných k reprodukci se se náhodnì 
+vybere bod køí¾ení, který v genetickém programování zastupují vìtve stromu. Potomek
+vznikne umístìním podstromu prvního rodièe na prázdnou vìtev druhého rodièe (rodièe
+implicitnì zachováváme). Celý proces blí¾e ilustruje diagram \ref{fig:tree_crossover}
+
+%%%%%%%%%%%%% TREE CROSSOVER EXAMPLE 1 %%%%%%%%%%%%%%%
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[scale=0.6]{fig/tree_crossover}	
+	\caption{Ukázka operátoru podstromového køí¾ení}
+	\label{fig:tree_crossover}
+\end{figure}
+%%%%%%%%%%%%% TREE CROSSOVER EXAMPLE 1 %%%%%%%%%%%%%%%
+
+Je vidìt, ¾e køí¾ení vytvoøí pouze jednoho potomka. Pro více potomkù celý proces 
+opakujeme. Dale existuje specializace podstromového køí¾ení, obdoba jednobodového
+kø¾ení, kdy se urèí v obou rodièích stejný bod køí¾ení a pøehození korespondujících
+podstromù. Je v¹ak potøeba oba strommy projít a najít spoleèný region, tedy èást stromu,
+kde je mo¾né køí¾it. Existují dal¹í varianty jako je køí¾ení se zachováním kontextu, 
+velikost zachovávající køí¾ení a uniformní køí¾ení. Tìmito se zde zatím blí¾e zabývat
+nebudeme.
+
+Nejbì¾nìj¹í druh mutace je podstromová mutace. Algoritmus podstromové mutace ve stromu
+náhodnì zvolí vìtev z ní¾ náhodnì vygeneruje nový podstrom, jak ilustruje diagram
+\ref{fig:subtree_mutation}. V pøípadì tohoto algoritmu jde v podstatì o alternativu k
+podstromovému køí¾ení s jedním rodièem a jedním náhodnì generovaným stromem.
+
+Dal¹í variantou mutace v genickém programování je uzlová nutace, kdy na ka¾dý
+uzel stromu je s urèitou nizkou pravdìpodobností mutace aplikována. Staré uzly
+se nahrazují novými se stejnou aritou.
+
+%%%%%%%%%%%%% SUBTREE MUTATION EXAMPLE 1 %%%%%%%%%%%%%%%
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[scale=0.6]{fig/subtree_mutation}	
+	\caption{Ukázka operátoru podstromové mutace}
+	\label{fig:subtree_mutation}
+\end{figure}
+%%%%%%%%%%%%% SUBTREE MUTATION EXAMPLE 1 %%%%%%%%%%%%%%%
+
+\subsection{Fitness funkce}
+Populace v genetickém programování jsou programy. Evaluace kvality programu se provádí
+zpravidla spu¹tìním daného programu nad daným vstupem a ohodnocením výstupu. Spu¹tìní 
+programu nad zadaným vstupem mù¾eme chápat jako zobrazení z mno¾íny genotypù do mno¾iny
+fenotypù za vstupu dal¹ího parametru. Celý proces evaluace mù¾e být tedy chápán jako :
+$$ f_{eval} = f \circ f_{run}(input)$$
+kde $f$ je standarní fitness funkce a $f_{run} : (I \times U) \to \mathcal{F}$ je
+modifikované zobrazení genotyp-fenotyp pro nìjaký vstup $I$.
+
+Fitness funkce v pøípadì genetického programování se li¹í od té tradièní v jednom
+dùle¾itém smìru. Proto¾e pracujeme nad programy, musíme poskytnout zpùsob, jak daný
+program spustit. Mo¾ností by bylo program zkompilovat. To s sebou nese znaènou re¾ii
+a tak toto øe¹ení není v mnoha pøípadech vhodné. Pokud v¹ak bychom daný program chtìli
+evaluovat nìkolikrát (mnohokrát), Mù¾e se i toto øe¹ení jevit jako vhodné.
+
+Èastìj¹í je ale programy interpretovat, to znamená projít strom od listù ke koøenu a 
+spoèítání hodnoty uzlu za vstupu hodnot jeho následníkù. Kostru algoritmu bude jistì
+tvoøit prùchod postorder. Evaluace jednotlivých hodnot v¹ak nemusí být za v¹ech 
+okolností triviální, mù¾e napøíklad nastat pøípad, kdy bude program dìlit nulou nebo
+se sna¾it seèíst hodnoty rùzných typù (napø. \texttt{Bool} a \texttt{Int}). Proto
+se po prvcích mno¾iny $F$ vy¾adují dvì uzávìrové vlastnosti. 
+
+\begin{enumerate}
+	\item \textit{typová konzistence} a
+	\item \textit{bezpeènost pøí evaluaci}.
+\end{enumerate}
+
+Typová bezpeènost je nutná zejména kvùli operátoru køí¾ení, proto¾e ten nebere typy 
+v potaz. Musíme tedy poèítat s tím, ¾e jakýkoli podstrom mù¾e být zavì¹en jako argument
+libovolné funkce z mno¾ny $F$ a výsledný program pøesto musí být interpretovatelný.
+Jinými slovy navratový typ libovolné funkce z mno¾iny $F$ musí být stejný jako
+typ libovolného vstupního argumentu jakékoli dostupné funkce. Toho mù¾eme dosáhnout
+napøíklad jednodu¹e tím, ¾e v¹echny funkce z mno¾iny $F$ budou definovány na jedním
+oborem hodnot toto¾ného typu. Èasto to v¹ak není mo¾né, proto se musíme nìkdy uchílit
+napøíklad k implicitním typovým konverzím, nebo k otypování funkcí a typovì bezpeèné
+operaci køí¾ení.
+
+Dal¹í vlastností, kterou je nutné splnit je, abychom se vypoøádali s mo¾nými
+nedefinovanými hodnotami, které jsou typické pro vstupy nìkterých parciálních funkcí
+jako je dìlení, kde hodnota je nedefinovaná pokud je dìlitel roven nule.
+S parciálními funkcemi se mù¾eme vypoøádat tím, ¾e je explicitnì roz¹íøíme na funkce
+totální nebo v pøípadì, je-li nedefinovaná hodnota detekována, znaènì sní¾íme jedincùv 
+fitness.
+
 
 \chapter{Návrh øe¹ení}
 \label{sec:solution_design}

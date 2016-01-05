@@ -1,0 +1,317 @@
+
+------------------------------ /apps/modules/base ------------------------------
+EasyBuild/2.1.1          EasyBuild/2.3.0
+EasyBuild/2.2.0          Python/3.4.3-intel-2015b
+
+------------------------------ /apps/modules/bio -------------------------------
+almost/2.1.0-foss-2015b
+almost/2.1.0-foss-2015g
+almost/2.1.0-intel-2015b
+FastQC/0.11.3
+GATK/2.6-5-Java-1.7.0_79
+GROMACS/4.6.7-foss-2015g-hybrid-single-PLUMED
+GROMACS/5.0.4-foss-2015e-hybrid-single-PLUMED
+GROMACS/5.0.4-foss-2015g-hybrid-single
+GROMACS/5.0.4-foss-2015g-hybrid-single-PLUMED
+GROMACS/5.0.4-ictce-7.3.5-hybrid-single
+PLUMED/2.1.3-foss-2015g
+RELION/1.3-intel-2015b
+SnpEff/4.1_G
+
+------------------------------ /apps/modules/cae -------------------------------
+Adams/2013.2               Digimat/5.0.1-EDU
+ANSYS/16.1                 HyperWorks/13.0
+COMSOL/51-COM              Marc/2013.1.0
+COMSOL/51-EDU              OpenFOAM/2.2.2-intel-2015b
+Digimat/5.0.1-COM          OpenFOAM/2.3.0-intel-2015b
+
+------------------------------ /apps/modules/chem ------------------------------
+ABINIT/7.10.1-foss-2015b
+ABINIT/7.10.1-intel-2015b
+CP2K/2.6.0-intel-2015b
+LAMMPS/28Jun14-intel-2015b
+libctl/3.2.2-intel-2015b
+Libint/1.1.4-foss-2015b
+Libint/1.1.4-gompi-2015b
+Libint/1.1.4-intel-2015b
+libxc/2.2.0-foss-2015b
+libxc/2.2.0-gompi-2015b
+libxc/2.2.1-intel-2015b
+Molpro/2010.1-patch-57-intel2015b
+NAMD/2.9-mpi
+NWChem/6.3.revision2-2013-10-17-Python-2.7.8
+NWChem/6.5.revision26243-intel-2015b-2014-09-10-Python-2.7.8
+
+---------------------------- /apps/modules/compiler ----------------------------
+BerkeleyUPC/2.16.2-gompi-2015b  icc/2013.5.192-GCC-4.8.3
+Clang/3.7.0-GNU-5.1.0-2.25      icc/2015.3.187
+GCC/4.4.7-system                icc/2015.3.187-GNU-5.1.0-2.25
+GCC/4.7.4                       icc/2016.0.109-GCC-5.2.0
+GCC/4.8.3                       ifort/2013.5.192
+GCC/4.9.2-binutils-2.25         ifort/2013.5.192-GCC-4.8.3
+GCC/4.9.3-binutils-2.25         ifort/2015.3.187
+GCC/5.1.0-binutils-2.25         ifort/2015.3.187-GNU-5.1.0-2.25
+GCC/5.2.0                       ifort/2016.0.109-GCC-5.2.0
+icc/2013.5.192                  PGI/15.7
+
+------------------------------ /apps/modules/data ------------------------------
+HDF5/1.8.13-intel-2015b        netCDF/4.3.2-intel-2015b
+HDF5/1.8.13-intel-2015b-no-mpi
+
+---------------------------- /apps/modules/debugger ----------------------------
+DDT/4.2                         Valgrind/3.11.0-foss-2015b
+DDT/5.0.1                       Valgrind/3.11.0-intel-2015b
+TotalView/8.15.4-6-linux-x86-64
+
+----------------------------- /apps/modules/devel ------------------------------
+ant/1.9.3-Java-1.7.0_79
+Autoconf/2.69-GNU-4.9.3-2.25
+Autoconf/2.69-GNU-5.1.0-2.25
+Automake/1.15-GNU-4.9.3-2.25
+Automake/1.15-GNU-5.1.0-2.25
+Autotools/20150215-GNU-4.9.3-2.25
+Autotools/20150215-GNU-5.1.0-2.25
+Boost/1.58.0-foss-2015g-Python-2.7.9
+Boost/1.58.0-gompi-2015e-Python-2.7.9
+Boost/1.58.0-ictce-7.3.5-Python-2.7.9
+Boost/1.58.0-intel-2015b-Python-2.7.9
+Boost/1.58.0-Python-2.7.9
+CMake/3.0.0-ictce-7.3.5
+CMake/3.0.0-intel-2015b
+CMake/3.3.1-foss-2015g
+CMake/3.3.1-GNU-4.9.3-2.25
+CMake/3.3.1-GNU-5.1.0-2.25
+Doxygen/1.8.7-intel-2015b
+guile/1.8.8-foss-2015b
+guile/1.8.8-foss-2015g
+guile/1.8.8-intel-2015b
+JUnit/4.11-Java-1.7.0_79
+libSM/1.2.2-intel-2015b
+M4/1.4.16-intel-2015b
+M4/1.4.17
+M4/1.4.17-foss-2015b
+M4/1.4.17-GCC-4.9.3-binutils-2.25
+M4/1.4.17-GNU-4.9.3-2.25
+M4/1.4.17-GNU-5.1.0-2.25
+M4/1.4.17-intel-2015b
+make/3.82-intel-2015b
+ncurses/5.9-foss-2015b
+ncurses/5.9-foss-2015g
+ncurses/5.9-GNU-4.9.3-2.25
+ncurses/5.9-GNU-5.1.0-2.25
+ncurses/5.9-gompi-2015e
+ncurses/5.9-ictce-5.5.0
+ncurses/5.9-ictce-7.3.5
+ncurses/5.9-intel-2015b
+PCRE/8.36-intel-2015b
+pkg-config/0.27.1-foss-2015b
+pkg-config/0.27.1-foss-2015g
+pkg-config/0.27.1-intel-2015b
+python-meep/1.4.2-intel-2015b-Python-2.7.9-Meep-1.3
+renderproto/0.11-intel-2015b
+SCons/2.3.6-Python-2.7.9
+SQLite/3.8.8.1-foss-2015b
+SQLite/3.8.8.1-foss-2015g
+SQLite/3.8.8.1-GNU-5.1.0-2.25
+SQLite/3.8.8.1-gompi-2015e
+SQLite/3.8.8.1-ictce-7.3.5
+SQLite/3.8.8.1-intel-2015b
+SWIG/2.0.12-intel-2015b-Python-2.7.9
+SWIG/2.0.12-Python-2.7.9
+SWIG/3.0.7-Python-2.7.9
+xbitmaps/1.1.1-intel-2015b
+xcb-proto/1.10-Python-2.7.8
+xcb-proto/1.11-intel-2015b-Python-2.7.9
+xextproto/7.3.0-intel-2015b
+xineramaproto/1.2.1-intel-2015b
+xproto/7.0.26-intel-2015b
+xtrans/1.3.4-intel-2015b
+xtrans/1.3.5-intel-2015b
+
+------------------------------ /apps/modules/lang ------------------------------
+Bison/2.5-intel-2015b               Mono/4.0.3.20-GNU-5.1.0-2.25
+Bison/2.7-foss-2015b                NASM/2.11.05-foss-2015b
+Bison/2.7-foss-2015g                NASM/2.11.05-intel-2015b
+Bison/2.7-GNU-5.1.0-2.25            NASM/2.11.06-intel-2015b
+Bison/2.7-intel-2015b               Perl/5.16.3-intel-2015b
+Bison/3.0.2-intel-2015b             Perl/5.20.2-bare
+Bison/3.0.4-GCC-4.9.3-binutils-2.25 Python/2.7.8-intel-2015b
+byacc/20120526-foss-2015b           Python/2.7.9-foss-2015b
+byacc/20120526-foss-2015g           Python/2.7.9-foss-2015g
+byacc/20120526-intel-2015b          Python/2.7.9-GNU-5.1.0-2.25
+flex/2.5.35-intel-2015b             Python/2.7.9-gompi-2015e
+flex/2.5.37-intel-2015b             Python/2.7.9-ictce-7.3.5
+flex/2.5.38-GCC-4.8.3               Python/2.7.9-intel-2015b
+flex/2.5.39-foss-2015b              R/3.1.1-intel-2015b
+flex/2.5.39-foss-2015g              Racket/6.1.1-GNU-5.1.0-2.25
+flex/2.5.39-GCC-4.9.3-binutils-2.25 Ruby/2.1.5-intel-2015b
+flex/2.5.39-intel-2015b             Tcl/8.5.12-intel-2015b
+Java/1.7.0_79                       Tcl/8.6.3-foss-2015b
+Java/1.8.0_51                       Tcl/8.6.3-foss-2015g
+libgdiplus/3.12-GCC-4.4.7-system    Tcl/8.6.3-GNU-5.1.0-2.25
+libgdiplus/3.12-GNU-5.1.0-2.25      Tcl/8.6.3-gompi-2015e
+Mono/3.12.1                         Tcl/8.6.3-ictce-7.3.5
+Mono/3.12.1-GCC-4.4.7-system        Tcl/8.6.3-intel-2015b
+
+------------------------------ /apps/modules/lib -------------------------------
+libffi/3.0.13-foss-2015b             libtool/2.4.6-GNU-4.9.3-2.25
+libffi/3.0.13-foss-2015g             libtool/2.4.6-GNU-5.1.0-2.25
+libffi/3.0.13-intel-2015b            libunistring/0.9.3-foss-2015b
+libffi/3.1-foss-2015b                libunistring/0.9.3-foss-2015g
+libffi/3.1-GNU-5.1.0-2.25            libunistring/0.9.3-intel-2015b
+libffi/3.1-intel-2015b               libxcb/1.10-Python-2.7.8
+libjpeg-turbo/1.3.1-foss-2015b       libxcb/1.11-intel-2015b-Python-2.7.9
+libjpeg-turbo/1.3.1-intel-2015b      libxml2/2.9.2-foss-2015b
+libjpeg-turbo/1.4.0-intel-2015b      libxml2/2.9.2-foss-2015g
+libmatheval/1.1.8-foss-2015b         libxml2/2.9.2-GNU-5.1.0-2.25
+libmatheval/1.1.8-foss-2015g         libxml2/2.9.2-gompi-2015e
+libmatheval/1.1.8-intel-2015b        libxml2/2.9.2-ictce-7.3.5
+libpng/1.6.12-foss-2015b             libxml2/2.9.2-intel-2015b
+libpng/1.6.12-intel-2015b            OpenCoarrays/1.0.0-GNU-5.1.0-2.25
+libpng/1.6.9-ictce-5.5.0             OpenCoarrays/1.0.1-GNU-5.1.0-2.25
+libpng/1.6.9-intel-2015b             tbb/4.3.5.187
+libpthread-stubs/0.3-intel-2015b     zlib/1.2.7-foss-2015b
+libreadline/6.2-ictce-5.5.0          zlib/1.2.7-ictce-5.5.0
+libreadline/6.2-intel-2015b          zlib/1.2.7-intel-2015b
+libreadline/6.3-foss-2015b           zlib/1.2.8
+libreadline/6.3-foss-2015g           zlib/1.2.8-foss-2015b
+libreadline/6.3-GNU-5.1.0-2.25       zlib/1.2.8-foss-2015g
+libreadline/6.3-gompi-2015e          zlib/1.2.8-GCC-4.9.3-binutils-2.25
+libreadline/6.3-ictce-7.3.5          zlib/1.2.8-GCC-5.1.0-binutils-2.25
+libreadline/6.3-intel-2015b          zlib/1.2.8-GNU-5.1.0-2.25
+LibTIFF/4.0.3-intel-2015b            zlib/1.2.8-gompi-2015e
+libtool/2.4.2-foss-2015b             zlib/1.2.8-ictce-7.3.5
+libtool/2.4.2-foss-2015g             zlib/1.2.8-intel-2015b
+libtool/2.4.2-intel-2015b
+
+------------------------------ /apps/modules/math ------------------------------
+FIAT/1.6.0-intel-2015b-Python-2.7.9
+GMP/5.0.5-foss-2015b
+GMP/5.0.5-foss-2015g
+GMP/5.0.5-intel-2015b
+GMP/6.0.0a-foss-2015b
+GMP/6.0.0a-GNU-5.1.0-2.25
+Harminv/1.4-intel-2015b
+ISL/0.14-GNU-5.1.0-2.25
+METIS/5.1.0-intel-2015b
+numpy/1.8.2-intel-2015b-Python-2.7.9
+numpy/1.9.1-intel-2015b-Python-2.7.9
+Octave/3.8.2-intel-2015b
+ParMETIS/4.0.3-intel-2015b
+ScientificPython/2.9.4-intel-2015b-Python-2.7.9
+SCOTCH/5.1.12b_esmumps-foss-2015b
+SCOTCH/6.0.0_esmumps-intel-2015b
+SCOTCH/6.0.3-intel-2015b
+sympy/0.7.6-intel-2015b-Python-2.7.9
+
+------------------------------ /apps/modules/mpi -------------------------------
+impi/4.1.1.036-iccifort-2013.5.192
+impi/4.1.1.036-iccifort-2013.5.192-GCC-4.8.3
+impi/5.0.3.048
+impi/5.0.3.048-iccifort-2015.3.187
+impi/5.0.3.048-iccifort-2015.3.187-GNU-5.1.0-2.25
+impi/5.1.1.109-iccifort-2016.0.109-GCC-5.2.0
+MPI_NET/1.2.0-gompi-2015e
+mpt/2.12
+MVAPICH2/2.1-GCC-4.4.7-system
+MVAPICH2/2.1-GNU-5.1.0-2.25
+MVAPICH2/2.1-iccifort-2015.3.187-GNU-5.1.0-2.25
+OpenMPI/1.8.6-GCC-4.4.7-system
+OpenMPI/1.8.6-GNU-5.1.0-2.25
+OpenMPI/1.8.6-iccifort-2015.3.187-GNU-5.1.0-2.25
+OpenMPI/1.8.8-GNU-4.9.3-2.25
+
+----------------------------- /apps/modules/numlib -----------------------------
+FFTW/2.1.5-gompi-2015b
+FFTW/2.1.5-iimpi-7.3.5-GNU-5.1.0-2.25
+FFTW/3.3.4-gompi-2015b
+FFTW/3.3.4-gompi-2015e
+FFTW/3.3.4-gompi-2015g
+FFTW/3.3.4-intel-2015b
+GSL/1.16-intel-2015b
+Hypre/2.10.0b-intel-2015b
+imkl/11.0.5.192-iimpi-5.5.0
+imkl/11.0.5.192-iimpi-5.5.0-GCC-4.8.3
+imkl/11.2.3.187
+imkl/11.2.3.187-iimpi-7.3.5
+imkl/11.2.3.187-iimpi-7.3.5-GNU-5.1.0-2.25
+imkl/11.3.0.109-iimpi-2016.00-GCC-5.2.0
+OpenBLAS/0.2.14-GNU-4.9.3-2.25-LAPACK-3.5.0
+OpenBLAS/0.2.14-GNU-5.1.0-2.25-LAPACK-3.5.0
+OpenBLAS/0.2.14-gompi-2015e-LAPACK-3.5.0
+OpenBLAS/0.2.14-LAPACK-3.5.0
+PETSc/3.6.1-intel-2015b-Python-2.7.9
+ScaLAPACK/2.0.2-gompi-2015b-OpenBLAS-0.2.14-LAPACK-3.5.0
+ScaLAPACK/2.0.2-gompi-2015e-OpenBLAS-0.2.14-LAPACK-3.5.0
+ScaLAPACK/2.0.2-gompi-2015g-OpenBLAS-0.2.14-LAPACK-3.5.0
+ScaLAPACK/2.0.2-OpenBLAS-0.2.14-LAPACK-3.5.0
+SuiteSparse/4.4.3-intel-2015b-ParMETIS-4.0.3
+
+------------------------------ /apps/modules/perf ------------------------------
+MAP/4.2                  OTF2/1.4-intel-2015b     perfcatcher/1.0
+MAP/5.0.1                PAPI/5.4.0-intel-2015b   PerfReports/5.0.1
+OPARI2/1.1.4-intel-2015b perfboost/1.0            perfsuite/1a5.3
+
+------------------------------ /apps/modules/phys ------------------------------
+Meep/1.3-intel-2015b
+
+----------------------------- /apps/modules/system -----------------------------
+hwloc/1.11.0-GNU-4.9.3-2.25 hwloc/1.5-GCC-4.4.7-system
+hwloc/1.11.0-GNU-5.1.0-2.25
+
+--------------------------- /apps/modules/toolchain ----------------------------
+foss/2015b                         ictce/5.5.0
+foss/2015e                         ictce/7.3.5
+foss/2015g                         iimpi/2016.00-GCC-5.2.0
+GNU/4.9.3-2.25                     iimpi/5.5.0
+GNU/5.1.0-2.25                     iimpi/5.5.0-GCC-4.8.3
+GNU/5.1.0-2.25-intel-2015b         iimpi/7.3.5
+gompi/2015b                        iimpi/7.3.5-GNU-5.1.0-2.25
+gompi/2015e                        intel/2014.06
+gompi/2015g                        intel/2015b
+iccifort/2013.5.192                intel/2015b-intel-2015b
+iccifort/2013.5.192-GCC-4.8.3      intel/2016.00
+iccifort/2015.3.187                iompi/2015.03
+iccifort/2015.3.187-GNU-5.1.0-2.25 PRACE/20150630-intel-2015b
+iccifort/2016.0.109-GCC-5.2.0
+
+----------------------------- /apps/modules/tools ------------------------------
+Bash/4.2-intel-2015b                  MATLAB/2015a-EDU
+binutils/2.25                         Mercurial/3.5-Python-2.7.9
+binutils/2.25-foss-2015b              MIKE/2014
+binutils/2.25-GCC-4.9.3-binutils-2.25 MIKE/2016
+binutils/2.25-GCC-5.1.0-binutils-2.25 numactl/2.0.10-GNU-4.9.3-2.25
+bzip2/1.0.6-foss-2015b                numactl/2.0.10-GNU-5.1.0-2.25
+bzip2/1.0.6-foss-2015g                numactl/2.0.9-GCC-4.4.7-system
+bzip2/1.0.6-GNU-5.1.0-2.25            parallel/20150322-GNU-5.1.0-2.25
+bzip2/1.0.6-gompi-2015e               QEMU/2.1.2-GCC-4.4.7-system
+bzip2/1.0.6-ictce-7.3.5               QEMU/2.1.2-GCC-4.4.7-system-VDE2
+bzip2/1.0.6-intel-2015b               Szip/2.1-foss-2015b
+cURL/7.37.1-intel-2015b               Szip/2.1-intel-2015b
+expat/2.1.0-foss-2015b                tcsh/6.18.01-intel-2015b
+expat/2.1.0-intel-2015b               turbovnc/1.2.3
+gzip/1.6-foss-2015g                   util-linux/2.26.1
+gzip/1.6-intel-2015b                  VDE2/2.3.2-GCC-4.4.7-system
+HPL/2.1-foss-2015b                    VirtualGL/2.4.1
+HPL/2.1-intel-2015b                   Wine/1.7.29-GCC-4.4.7-system
+MATLAB/2015a-COM                      Wine/1.7.29-GNU-5.1.0-2.25
+
+------------------------------ /apps/modules/vis -------------------------------
+cairo/1.12.18-foss-2015b              libX11/1.6.2-intel-2015b-Python-2.7.9
+ffmpeg/2.4-intel-2015b                libX11/1.6.2-Python-2.7.8
+FLTK/1.3.2-intel-2015b                libXau/1.0.8-intel-2015b
+fontconfig/2.11.1-foss-2015b          libXdmcp/1.1.2-intel-2015b
+fontconfig/2.11.1-intel-2015b         libXext/1.3.2-Python-2.7.8
+freetype/2.5.3-foss-2015b             libXext/1.3.3-intel-2015b
+freetype/2.5.3-intel-2015b            libXft/2.3.2-intel-2015b
+gettext/0.19.2-foss-2015b             libXinerama/1.1.3-intel-2015b
+gettext/0.19.2-GNU-5.1.0-2.25         libXrender/0.9.8-intel-2015b
+gettext/0.19.2-intel-2015b            libXt/1.1.4-intel-2015b-libX11-1.6.2
+GLib/2.40.0-intel-2015b               motif/2.3.4-intel-2015b-libX11-1.6.2
+GPI-2/1.1.1-gompi-2015e               OpenCV/2.4.9-intel-2015b
+GPI-2/1.1.1-gompi-2015e-MPI           OpenCV/3.0.0-intel-2015b
+grace/5.1.25-intel-2015b              p4vasp/0.3.29-GNU-4.9.3-2.25
+inputproto/2.3-intel-2015b            pixman/0.32.6-foss-2015b
+JasPer/1.900.1-intel-2015b            pixman/0.32.6-intel-2015b
+kbproto/1.0.6-intel-2015b             Tk/8.5.12-intel-2015b
+libICE/1.0.9-intel-2015b
