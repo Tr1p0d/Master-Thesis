@@ -54,7 +54,7 @@
 %---------------------------------------------------------------------------
 \projectinfo{
   %Prace
-  project=DP,            %typ prace BP/SP/DP/DR
+  project=SP,            %typ prace BP/SP/DP/DR
   year=2015,             %rok
   date=\today,           %datum odevzdani
   %Nazev prace
@@ -74,28 +74,100 @@
   %bud pomoci nasledujicich parametru nebo pomoci vyhrazenych maker (viz dale)
   %===========================================================================
   %Klicova slova
-  keywords.cs={Klíèová slova v èeském jazyce.}, %klicova slova v ceskem jazyce
-  keywords.en={Klíèová slova v anglickém jazyce.}, %klicova slova v anglickem jazyce
+  keywords.cs={	evoluèní návrh
+  			  , ha¹ovací funkce
+  			  , genetické programování
+  			  , poèítání podle pøírody
+  			  , internetový protokol
+  			  }, %klicova slova v ceskem jazyce
+  keywords.en={ evolution design
+  			  , hash function
+  			  , genetic programming
+  			  , natural computing
+  			  , internet protocol
+  			  }, %klicova slova v anglickem jazyce
   %Abstract
-  abstract.cs={Výtah (abstrakt) práce v èeském jazyce.}, % abstrakt v ceskem jazyce
-  abstract.en={Výtah (abstrakt) práce v anglickém jazyce.}, % abstrakt v anglickem jazyce
+  abstract.cs={
+				Ha¹ovací tabulky jsou rychlé vyhledávaci struktury, které se staly souèástí
+  				moderního svìta výpoèetních technologií a svou snadnou implementací si získali
+  				mnoho pøíznivcù v øadách programátorù. Volba vhodné ha¹ovací funkce je klíèová.
+  				Nevhodnì zvolená ha¹ovací funkce mù¾e mít za následek ¹patný výkon ha¹ovací tabulky
+  				a aplikace na ní navázanou. 
+  			    % continue
+  				V souèasné dobì existují velmi dobré implementace obecných ha¹ovacích funkcí, tedy
+  				takových, jejich¾ vstup není omezen na konkrétrní doménu. Na druhé stranì, pokud
+  				známe vstupní doménu, mù¾eme navrhnout ha¹ovací funkcí na míru dané aplikaci a tím
+  				dosáhnout výraznì lep¹ích výsledkù ne¾ v pøípadì ha¹ovací funkce obecné.
+  				% problem
+  				Návrh ha¹ovací funkce není triviální zále¾itost. Neexistují pevnì dané normy,
+  				pravidla, návody ani automatizované nástroje, který by za nás tuto práci odvedly.
+  				V pøípadì ruèního návrhu se autor ha¹ovací funkce musí spoléhat na své znalosti,
+  				zku¹enosti, vynalézavost a intuici. 
+  				% approach
+  				V pøípadì takto komplikovaných úloh je nìkdy vhodné se uchýlit k ménì tradièním 
+  				technikám návrhu jako jsou evoluèní algoritmy. Evoluèní algoritmy jsou jednou z
+  				nejúspì¹nìj¹ích aplikací poèítání podle pøírody, tedy pøístupu k øe¹ení problémù,
+  				který se inspiruje v pøírodních procesech, kdy v pøípadì evoluèních algoritmù se jedná 
+  				o proces reproduce druhù. 
+  				% solution design
+  				V této práci se budeme zabývat evoluèním návrhem ha¹ovacích funkcí pro doménu
+  				\texttt{IP} adres, unikátních identifikátorù sí»ového rozhraní v sítích øízených
+  				internetovým protokolem. Vzhledem k tomu, ¾e známe konkrétní doménu, kterou budeme
+  				ha¹ovat, mù¾eme parametry evoluèního algoritmu pøizpùsobit tak, aby generované funkce
+  				byly nejvýkonìj¹í. Vybraným evoluèním algoritmem je genetické programování, velmi
+  				specifická podskupina poèítání podle pøírody, která svými vlastnosmi umo¾òuje 
+  				navrhnovat skuteènì kvalitní ha¹ovací funkce.
+  				% results
+  				% conclusion
+  			  }, % abstrakt v ceskem jazyce
+  abstract.en={ % motivation
+  				Hash tables are fast associative array implementations, which became part of modern
+  				world of information technology and thanks to its simplicity became very popular 
+  				among computer programmers. The choice of proper hash function is very important.
+  				Improperly selected hash function can result in poor hash table performance and its
+  				application.
+  				% continue
+  				Currently there are many exceptional implementations of general hash functions. Such
+  				functions are not constrained to a concrete set of inputs, they perform on any
+  				input. On the other hand if we know the input domain we can design a specific hash 
+  				function for desired application thus reaching better levels of performance compare to
+  				a general hash function. 
+  				% problem
+  				However has function design is not trivial. There are no rules, standards, guides nor
+  				automated tools that would help us with such a task. In case of manual design the hash
+  				function author has to rely on his/her knowledge, experience, inventiveness and 
+  				intuition.  
+  				% approach
+  				In case of such complicated tasks there is sometimes advantageous to choose a different
+  				path and use techniques such as evolution algorithms. Evolution algorithms are one of 
+  				the most successful application of natural computing. Natural computing is an approach
+  				of certain problem solutions that are inspired by some natural processes. In case of
+  				evolution algorithms the inspiration was the process of species reproduction.
+  				% solution design
+  				In this thesis we will design hash functions for the domain of \texttt{IP} addresses,
+  				that serve as unique network device interface identifier in internet protocol networks.
+  				Since we know the exact hashing domain, we can very accurately choose evolution algorithm
+  				parameters so the evolved function will perform on its best. Tho chosen subset of 
+  				natural computing is genetic programming, a very specific technique that is an adequate 
+				approach to our problem thanks to its properties. \newpage				 
+  			  }, % abstrakt v anglickem jazyce
   %Prohlaseni
-  declaration={Prohla¹uji, ¾e jsem tuto bakaláøskou práci vypracoval samostatnì pod vedením pana ...},
+  declaration={Prohla¹uji, ¾e jsem tuto bakaláøskou práci vypracoval samostatnì pod vedením pana Rolanda Dobaie},
   %Podekovani (nepovinne)
-  acknowledgment={Zde je mo¾né uvést podìkování vedoucímu práce a tìm, kteøí poskytli odbornou pomoc.} % nepovinne
+  %acknowledgment={Zde je mo¾né uvést podìkování vedoucímu práce a tìm, kteøí poskytli odbornou pomoc.} % nepovinne
 }
 
 %Abstrakt (cesky, anglicky)
-%\abstract[cs]{Do tohoto odstavce bude zapsán výtah (abstrakt) práce v èeském jazyce.}
-%\abstract[en]{Do tohoto odstavce bude zapsán výtah (abstrakt) práce v anglickém jazyce.}
-
+%\abstract[cs]{}
+%\abstract[en]{}
+  			  
 %Klicova slova (cesky, anglicky)
 %\keywords[cs]{Sem budou zapsána jednotlivá klíèová slova v èeském jazyce, oddìlená èárkami.}
 %\keywords[en]{Sem budou zapsána jednotlivá klíèová slova v anglickém jazyce, oddìlená èárkami.}
 
 %Prohlaseni
-\declaration{Prohla¹uji, ¾e jsem tuto bakaláøskou práci vypracoval samostatnì pod vedením pana X...
-Dal¹í informace mi poskytli...
+\declaration{Prohla¹uji, ¾e jsem tuto bakaláøskou práci vypracoval samostatnì pod vedením pana Rolanda Dobaie
+%Dal¹í informace mi poskytli...
 Uvedl jsem v¹echny literární prameny a publikace, ze kterých jsem èerpal.}
 
 %Podekovani (nepovinne)
