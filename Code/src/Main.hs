@@ -31,3 +31,7 @@ import AI.GP.Class.Population
 main ::  IO ()
 main = let a=a in a
 
+--data E
+--    = Plus E E
+--    | Const Double
+

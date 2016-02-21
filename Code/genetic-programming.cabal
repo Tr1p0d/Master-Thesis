@@ -49,7 +49,18 @@ cabal-version:       >=1.10
 library
     -- Modules exported by the library.
     exposed-modules:    AI.GP
+                        AI.GP.Class.BreedMethod
+                        AI.GP.Class.EllitismMethod
+                        AI.GP.Class.InitMethod
+                        AI.GP.Class.MutationMethod
                         AI.GP.Class.Population
+                        AI.GP.Class.Program
+                        AI.GP.Class.SelectionMethod
+                        AI.GP.Type.Evolution
+                        AI.GP.Type.EvolutionParams
+                        AI.GP.Type.EvolutionState
+                        AI.GP.Type.Population
+                        AI.GP.Type.PopulationType
 
     -- Modules included in this library but not exported.
     -- other-modules:
@@ -59,10 +70,16 @@ library
 
     -- Other library packages from which modules are imported.
     build-depends:      base >=4.8 && <4.9
-
-                        , lens ==4.13.*
+                        -- included in Haskell Platform
+                        , transformers == 0.5.*
                         , vector ==0.11.*
+                        -- included in Haskell Platform
+
+                        -- hackage packages
+                        , lens ==4.13.*
+                        , monad-loops ==0.4.*
                         , MonadRandom ==0.4.*
+                        -- hackage packages
 
     -- Directories containing source files.
     hs-source-dirs:      src
@@ -74,10 +91,16 @@ library
 
 executable sampleRun
     build-depends:      base >=4.8 && <4.9
-
-                        , lens ==4.13.*
+                        -- included in Haskell Platform
+                        , transformers == 0.5.*
                         , vector ==0.11.*
+                        -- included in Haskell Platform
+
+                        -- hackage packages
+                        , lens ==4.13.*
+                        , monad-loops ==0.4.*
                         , MonadRandom ==0.4.*
+                        -- hackage packages
 
     -- Directories containing source files.
     hs-source-dirs:      src
