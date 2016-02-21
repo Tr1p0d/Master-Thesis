@@ -50,7 +50,6 @@ library
     -- Modules exported by the library.
     exposed-modules:    AI.GP
                         AI.GP.Class.Population
-                        AI.GP.Class.GPExpression
 
     -- Modules included in this library but not exported.
     -- other-modules:
@@ -60,6 +59,8 @@ library
 
     -- Other library packages from which modules are imported.
     build-depends:      base >=4.8 && <4.9
+
+                        , lens ==4.13.*
                         , vector ==0.11.*
                         , MonadRandom ==0.4.*
 
@@ -73,6 +74,8 @@ library
 
 executable sampleRun
     build-depends:      base >=4.8 && <4.9
+
+                        , lens ==4.13.*
                         , vector ==0.11.*
                         , MonadRandom ==0.4.*
 

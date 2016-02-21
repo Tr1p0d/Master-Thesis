@@ -14,8 +14,20 @@
 -------------------------------------------------------------------------------
 module AI.GP.Class.Population where
 
-import Data.Traversable (Traversable)
+import Control.Applicative ((<$>))
+import Control.Monad.Random (getRandomR)
+import Control.Monad.Random.Class (MonadRandom)
 
---import AI.GP.Class.GPExpression (GPExpression)
+import Data.List ((!!))
+import Data.Foldable (length)
+import Data.Traversable (Traversable)
+import qualified Data.Vector as V (Vector, length, (!))
 
 class (Traversable p) => Population p where
+    sample :: (MonadRandom m) => p a -> m a
+
+instance Population [] where
+    sample list = (list !!) <$> getRandomR (0, length list)
+
+instance Population V.Vector where
+    sample v = (v V.!) <$> getRandomR (0, V.length v)
