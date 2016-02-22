@@ -1,4 +1,8 @@
+{-# LANGUAGE NoImplicitPrelude #-}
+
 module AI.GP.Class.Program where
+
+import Prelude (Double)
 
 import Control.Monad.Random.Class (MonadRandom)
 

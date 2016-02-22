@@ -3,9 +3,9 @@
 
 module AI.GP.Type.EvolutionState where
 
-import Prelude (Int)
+import Prelude ((+), Int)
 
-import Control.Lens (makeLenses)
+import Control.Lens ((%~), makeLenses)
 
 data EvolutionState = EvolutionState
     { _getGeneration :: Int
@@ -13,3 +13,5 @@ data EvolutionState = EvolutionState
     }
 makeLenses ''EvolutionState
 
+newGeneration :: EvolutionState -> EvolutionState
+newGeneration = getGeneration %~ (+1)

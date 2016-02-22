@@ -1,26 +1,21 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-{-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE TemplateHaskell #-}
 
 module AI.GP where
 
-import Prelude ((+))
-
-import Control.Applicative ((<$>), Applicative)
-import Control.Monad (Monad, (>>=), return)
+import Control.Applicative (Applicative)
+import Control.Monad (Monad((>>), (>>=), return))
+import Data.Foldable (any)
 import Data.Function (($), (.))
-import Data.Functor (Functor)
-import Data.Traversable (mapM)
+import Data.Functor (Functor(fmap))
 
-import Control.Monad.Trans.State (StateT, withStateT)
+import Control.Monad.State.Class (MonadState, modify)
+import Control.Monad.Trans.State (StateT)
 
---import Control.Monad.Loops (iterateUntil)
---import Control.Monad.Random (getRandom, getRandomR)
 import Control.Monad.Trans.Class (MonadTrans)
 import Control.Monad.Random.Class (MonadRandom)
-import Control.Lens ((^.), (%~))
+import Control.Lens ((^.), (.~), (&))
 
 import AI.GP.Class.Population (Population)
 import AI.GP.Class.Program (Program(eval))
@@ -37,87 +32,87 @@ import AI.GP.Type.EvolutionParams
     , initMethod
     , mutationMethod
     , selectionMethod
+    , terminationCondition
     )
-import AI.GP.Type.EvolutionState (EvolutionState, getGeneration)
+import AI.GP.Type.EvolutionState (EvolutionState, newGeneration)
+import AI.GP.Type.Fitnesse (emptyFitness, getScore, fitEnough)
 import AI.GP.Type.Population
     ( GPEvaluatedPopulation(GPEvaluatedPopulation)
     , GPPopulation
+    , getEvalutedPopulation
     , getPopulation
     , mkGenerationZero
     )
 import AI.GP.Type.PopulationType (PopulationType(Generation, Initial))
 
 newtype Evolution m a = Evolution {runEvolution :: StateT EvolutionState m a}
-    deriving (Functor, Applicative, Monad, MonadRandom, MonadTrans)
+    deriving
+        ( Applicative
+        , Functor
+        , Monad
+        , MonadRandom
+        , MonadState EvolutionState
+        , MonadTrans
+        )
 
---fullMethod :: (MonadRandom m) => Int -> m E
---fullMethod 0 = Const <$> getRandom
---fullMethod n = sample [Plus] <*> subExpr <*> subExpr
---  where
---    subExpr = fullMethod $ n - 1
-
---tournament
---    :: (MonadRandom m)
---    => Int -- | Tournament rounds
---    -> Int -- | Tournament size
---    -> V.Vector (Double, e)
---    -> m (V.Vector e)
---tournament _r s ep = V.replicateM s (randomElem ep)
+type EvolutionResult m p e = Evolution m (GPEvaluatedPopulation p e)
 
 evolve
     ::  ( BreedMethod b
         , EllitismMethod el
         , InitMethod i
+        , MonadRandom m
         , MutationMethod mut
         , Population p
         , Program e
         , SelectionMethod s
-        , MonadRandom m
         )
-    => EvolutionParams i s b mut el p e -> Evolution m a
-evolve e = (init $ e ^. initMethod) >>= evolveWithInitialPopulation e
+    => EvolutionParams i s b mut el p e
+    -> EvolutionResult m p e
+evolve e = init (e ^. initMethod) >>= evolveWithInitialPopulation e
 
 evolveWithInitialPopulation
     ::  ( BreedMethod b
         , EllitismMethod el
         , InitMethod i
+        , MonadRandom m
         , MutationMethod mut
         , Population p
         , Program e
         , SelectionMethod s
-        , MonadRandom m
         )
     => EvolutionParams i s b mut el p e
     -> GPPopulation p 'Initial e
-    -> Evolution m a
+    -> EvolutionResult m p e
 evolveWithInitialPopulation e = evolveWith e . mkGenerationZero
 
 evolveWith
     ::  ( BreedMethod b
         , EllitismMethod el
         , InitMethod i
+        , MonadRandom m
         , MutationMethod mut
         , Population p
         , Program e
         , SelectionMethod s
-        , MonadRandom m
         )
     => EvolutionParams i s b mut el p e
     -> GPPopulation p 'Generation e
-    -> Evolution m a
+    -> EvolutionResult m p e
 evolveWith e p = do
-    evaluated <-  GPEvaluatedPopulation <$> mapM eval' (p ^. getPopulation)
-    selection <- select (e ^. selectionMethod) evaluated
-    breed <- cross (e ^. breedMethod) selection
-    offsprings <- mutate (e ^. mutationMethod) breed
-    nextGen <- replenish (e ^. ellitismMethod) evaluated offsprings
-    continueEvolution nextGen
+    let evaluated = GPEvaluatedPopulation $ fmap eval' (p ^. getPopulation)
+    if any (^. fitEnough) (evaluated ^. getEvalutedPopulation)
+    then return evaluated
+    else do
+        selection <- select (e ^. selectionMethod) evaluated
+        breed <- cross (e ^. breedMethod) selection
+        offsprings <- mutate (e ^. mutationMethod) breed
+        nextGen <- replenish (e ^. ellitismMethod) evaluated offsprings
+        continueEvolution nextGen
   where
-    eval' prog = return (eval prog, prog)
-    --continueEvolution = do
-    --    lift $ modify incrementGeneration
-    -- | get rid of this ugliness later
-    continueEvolution ng =
-        Evolution $ withStateT incrementGeneration
-            $ runEvolution $ evolveWith e ng
-    incrementGeneration = getGeneration %~ (+1)
+    continueEvolution ng = modify newGeneration >> evolveWith e ng
+    eval' prog =
+        emptyFitness prog & getScore .~ fitnesse & fitEnough .~ cond
+      where
+        fitnesse = eval prog
+        cond = e ^. terminationCondition $ fitnesse

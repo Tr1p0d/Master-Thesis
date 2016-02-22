@@ -5,11 +5,10 @@
 
 module AI.GP.Type.Population where
 
-import Prelude (Double)
-
 import Control.Lens (makeLenses)
 
 import AI.GP.Type.PopulationType (PopulationType(Generation, Initial))
+import AI.GP.Type.Fitnesse (Fitnesse)
 
 data GPPopulation p (t :: PopulationType) e = GPPopulation
     { _getPopulation :: p e
@@ -17,7 +16,7 @@ data GPPopulation p (t :: PopulationType) e = GPPopulation
 makeLenses ''GPPopulation
 
 data GPEvaluatedPopulation p e = GPEvaluatedPopulation
-    { _getEvalutedPopulation :: p (Double, e)
+    { _getEvalutedPopulation :: p (Fitnesse e)
     }
 makeLenses ''GPEvaluatedPopulation
 
