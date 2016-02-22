@@ -9,15 +9,18 @@ import Data.Bool (Bool(False))
 
 import Control.Lens (makeLenses)
 
-data Fitnesse e = Fitnesse
+data Fitness e = Fitness
     { _getIndividual :: e
     , _getScore :: Double
     , _fitEnough :: Bool
     }
-makeLenses ''Fitnesse
+makeLenses ''Fitness
 
-emptyFitness :: e -> Fitnesse e
-emptyFitness e = Fitnesse e 0.0 False
+emptyFitness :: e -> Fitness e
+emptyFitness e = Fitness e 0.0 False
 
-mkFitness :: e -> Double -> Bool -> Fitnesse e
-mkFitness = Fitnesse
+discardFitness :: Fitness e -> e
+discardFitness =  _getIndividual
+
+mkFitness :: e -> Double -> Bool -> Fitness e
+mkFitness = Fitness

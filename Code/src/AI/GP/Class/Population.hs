@@ -15,21 +15,27 @@
 module AI.GP.Class.Population where
 
 import Control.Applicative ((<$>))
+import Control.Monad (Monad)
+import qualified Control.Monad as L (replicateM)
 import Control.Monad.Random (getRandomR)
 import Control.Monad.Random.Class (MonadRandom)
 
 import qualified Data.List as L ((!!))
 import Data.Foldable (length)
 import Data.Functor (Functor)
+import Data.Int (Int)
 import Data.Traversable (Traversable)
 
-import qualified Data.Vector as V (Vector, (!))
+import qualified Data.Vector as V (Vector, (!), replicateM)
 
 class (Functor p, Traversable p) => Population p where
+    replicate :: (Monad m) => Int -> m a -> m (p a)
     sample :: (MonadRandom m) => p a -> m a
 
 instance Population [] where
     sample list = (list L.!!) <$> getRandomR (0, length list)
+    replicate = L.replicateM
 
 instance Population V.Vector where
     sample v = (v V.!) <$> getRandomR (0, length v)
+    replicate = V.replicateM
