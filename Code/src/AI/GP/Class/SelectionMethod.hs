@@ -14,4 +14,3 @@ class SelectionMethod s where
     select
         :: (MonadRandom m, Population p, Program e)
         => s -> GPEvaluatedPopulation p e -> m (GPPopulation p 'Selection e)
-

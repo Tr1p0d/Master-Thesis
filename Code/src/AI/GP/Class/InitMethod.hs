@@ -14,4 +14,3 @@ class InitMethod i where
     init
         :: (MonadRandom m, Population p, Program e)
         => i -> m (GPPopulation p 'Initial e)
-

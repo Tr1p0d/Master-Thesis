@@ -1,10 +1,11 @@
 {-# LANGUAGE DataKinds #-}
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 
 module AI.GP where
 
-import Control.Applicative (Applicative)
+import Control.Applicative (Applicative, (<$>), (<*))
 import Control.Monad (Monad((>>), (>>=), return))
 import Data.Foldable (any)
 import Data.Function (($), (.))
@@ -13,6 +14,7 @@ import Data.Functor (Functor(fmap))
 import Control.Monad.State.Class (MonadState, modify)
 import Control.Monad.Trans.State (StateT)
 
+import Control.Monad.Loops (iterateUntilM)
 import Control.Monad.Trans.Class (MonadTrans)
 import Control.Monad.Random.Class (MonadRandom)
 import Control.Lens ((^.), (.~), (&))
@@ -61,6 +63,7 @@ evolve
     ::  ( BreedMethod b
         , EllitismMethod el
         , InitMethod i
+     --   , MonadState EvolutionState m
         , MonadRandom m
         , MutationMethod mut
         , Population p
@@ -75,6 +78,7 @@ evolveWithInitialPopulation
     ::  ( BreedMethod b
         , EllitismMethod el
         , InitMethod i
+     --   , MonadState EvolutionState m
         , MonadRandom m
         , MutationMethod mut
         , Population p
@@ -90,6 +94,7 @@ evolveWith
     ::  ( BreedMethod b
         , EllitismMethod el
         , InitMethod i
+    --    , MonadState EvolutionState m
         , MonadRandom m
         , MutationMethod mut
         , Population p
@@ -99,20 +104,22 @@ evolveWith
     => EvolutionParams i s b mut el p e
     -> GPPopulation p 'Generation e
     -> EvolutionResult m p e
-evolveWith e p = do
-    let evaluated = GPEvaluatedPopulation $ fmap eval' (p ^. getPopulation)
-    if any (^. fitEnough) (evaluated ^. getEvalutedPopulation)
-    then return evaluated
-    else do
-        selection <- select (e ^. selectionMethod) evaluated
-        breed <- cross (e ^. breedMethod) selection
-        offsprings <- mutate (e ^. mutationMethod) breed
-        nextGen <- replenish (e ^. ellitismMethod) evaluated offsprings
-        continueEvolution nextGen
+evolveWith e p = iterateUntilM
+    isFinalPopulation
+    computeNewGeneration
+    $ evalGeneration p
   where
-    continueEvolution ng = modify newGeneration >> evolveWith e ng
+    isFinalPopulation ep = any (^. fitEnough) (ep ^. getEvalutedPopulation)
+    evalGeneration p' = GPEvaluatedPopulation $ fmap eval' (p' ^. getPopulation)
     eval' prog =
         emptyFitness prog & getScore .~ fitnesse & fitEnough .~ cond
       where
         fitnesse = eval prog
         cond = e ^. terminationCondition $ fitnesse
+    computeNewGeneration ep = evalGeneration <$>
+        (select (e ^. selectionMethod) ep
+        >>= cross (e ^. breedMethod)
+        >>= mutate (e ^. mutationMethod)
+        >>= replenish (e ^. ellitismMethod) ep
+        {-<* mkNewGeneration-})
+    --mkNewGeneration = modify newGeneration

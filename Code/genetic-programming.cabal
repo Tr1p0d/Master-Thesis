@@ -57,6 +57,8 @@ library
                         AI.GP.Class.Population
                         AI.GP.Class.Program
                         AI.GP.Class.SelectionMethod
+                        AI.GP.Instance.Init.Full
+                        AI.GP.Instance.Selection.Tournament
                         AI.GP.Type.Class.Init.Full
                         AI.GP.Type.Class.Selection.Tournament
                         AI.GP.Type.Evolution
@@ -82,7 +84,7 @@ library
 
                         -- hackage packages
                         , lens ==4.13.*
-     --                   , monad-loops ==0.4.*
+                        , monad-loops ==0.4.*
                         , MonadRandom ==0.4.*
                         -- hackage packages
 
@@ -104,7 +106,7 @@ executable sampleRun
 
                         -- hackage packages
                         , lens ==4.13.*
-    --                    , monad-loops ==0.4.*
+                        , monad-loops ==0.4.*
                         , MonadRandom ==0.4.*
                         -- hackage packages
 
