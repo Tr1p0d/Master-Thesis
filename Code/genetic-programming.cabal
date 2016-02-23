@@ -58,8 +58,10 @@ library
                         AI.GP.Class.Program
                         AI.GP.Class.SelectionMethod
                         AI.GP.Instance.Init.Full
+                        AI.GP.Instance.Mutation.Point
                         AI.GP.Instance.Selection.Tournament
                         AI.GP.Type.Class.Init.Full
+                        AI.GP.Type.Class.Mutation.Point
                         AI.GP.Type.Class.Selection.Tournament
                         AI.GP.Type.Evolution
                         AI.GP.Type.EvolutionParams

@@ -2,19 +2,14 @@
 
 module AI.GP.Instance.Selection.Tournament where
 
-import Prelude (Double)
-
-import Data.Foldable (asum)
-import Data.Function ((.))
 import Data.Int (Int)
-import Data.Traversable (sequence)
 import Control.Applicative ((<$>))
 
 import Control.Lens ((^.))
 import Control.Monad.Random.Class (MonadRandom)
 
 import AI.GP.Class.SelectionMethod (SelectionMethod, select)
-import AI.GP.Class.Population (Population, replicate, sample)
+import AI.GP.Class.Population (Population, replicate, merge, sample)
 import AI.GP.Class.Program (Program)
 import AI.GP.Type.Class.Selection.Tournament
     (Tournament
@@ -36,13 +31,12 @@ tournamentSelection
     -> Int -- | Rounds in tournament
     -> p (Fitness e)
     -> m (p e)
-tournamentSelection roundSize rounds =
-    tournamentRound roundSize
+tournamentSelection rs rnds ep =
+    merge <$> replicate rnds (tournamentRound rs ep)
 
 tournamentRound
     :: (MonadRandom m, Population p, Program e)
     => Int -- | Round size
     -> p (Fitness e)
     -> m (p e)
-tournamentRound roundSize ep =
-    replicate roundSize (discardFitness <$> sample ep)
+tournamentRound rs ep = replicate rs (discardFitness <$> sample ep)

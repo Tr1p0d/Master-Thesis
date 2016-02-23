@@ -5,13 +5,13 @@
 
 module AI.GP where
 
-import Control.Applicative (Applicative, (<$>), (<*))
-import Control.Monad (Monad((>>), (>>=), return))
+import Control.Applicative (Applicative, (<$>))
+import Control.Monad (Monad((>>=)))
 import Data.Foldable (any)
 import Data.Function (($), (.))
 import Data.Functor (Functor(fmap))
 
-import Control.Monad.State.Class (MonadState, modify)
+import Control.Monad.State.Class (MonadState)
 import Control.Monad.Trans.State (StateT)
 
 import Control.Monad.Loops (iterateUntilM)
@@ -36,7 +36,7 @@ import AI.GP.Type.EvolutionParams
     , selectionMethod
     , terminationCondition
     )
-import AI.GP.Type.EvolutionState (EvolutionState, newGeneration)
+import AI.GP.Type.EvolutionState (EvolutionState)
 import AI.GP.Type.Fitnesse (emptyFitness, getScore, fitEnough)
 import AI.GP.Type.Population
     ( GPEvaluatedPopulation(GPEvaluatedPopulation)

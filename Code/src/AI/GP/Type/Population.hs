@@ -8,7 +8,7 @@ module AI.GP.Type.Population where
 import Control.Lens (makeLenses)
 
 import AI.GP.Type.PopulationType
-    ( PopulationType(Generation, Initial, Selection)
+    ( PopulationType(Generation, Initial, Muted, Selection)
     )
 import AI.GP.Type.Fitnesse (Fitness)
 
@@ -27,6 +27,9 @@ mkInitial = GPPopulation
 
 mkSelection :: p e -> GPPopulation p 'Selection e
 mkSelection = GPPopulation
+
+mkMuted :: p e -> GPPopulation p 'Muted e
+mkMuted = GPPopulation
 
 mkGenerationZero :: GPPopulation p 'Initial e -> GPPopulation p 'Generation e
 mkGenerationZero (GPPopulation p) = GPPopulation p
