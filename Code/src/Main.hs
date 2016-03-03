@@ -1,26 +1,17 @@
-{-# LANGUAGE NoImplicitPrelude #-}
-
 module Main where
 
---import Control.Applicative ((<$>))
---import Control.Monad (replicateM, return)
---import Control.Monad.Random (Rand, StdGen, getRandom,  getRandomR, evalRandIO)
---import Data.Either (Either(Left,Right))
---import Data.Function (($), const)
---import Data.Int (Int)
---import Data.Proxy (Proxy)
---import Data.Traversable (sequence)
---import qualified Data.Vector as V (Vector, empty, fromList, length, replicateM)
-import System.IO (IO)
---import Text.Show (Show)
---
---import AI.GP
---import AI.GP.Class.Population
+import Control.Monad (replicateM)
+import Control.Monad.Identity (Identity(Identity))
 
-main ::  IO ()
+import AI.GP.Init
+
+main :: IO ()
 main = let a=a in a
 
---data E
---    = Plus E E
---    | Const Double
+data Op = Plus | Minus deriving (Show)
+data Term = Const Int deriving (Show)
 
+plusTree = full (Identity Plus) (Identity (Const 1)) 2
+minusTree = full (Identity Minus) (Identity (Const 1)) 2
+
+population = replicateM 3 plusTree

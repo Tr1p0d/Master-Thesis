@@ -7,29 +7,26 @@ module AI.GP.Type.Population where
 
 import Control.Lens (makeLenses)
 
+import qualified Data.Vector as V (Vector)
+
 import AI.GP.Type.PopulationType
     ( PopulationType(Generation, Initial, Muted, Selection)
     )
 import AI.GP.Type.Fitnesse (Fitness)
 
-data GPPopulation p (t :: PopulationType) e = GPPopulation
-    { _getPopulation :: p e
+data GPPopulation (t :: PopulationType) e = GPPopulation
+    { _getPopulation :: V.Vector e
     }
 makeLenses ''GPPopulation
 
-data GPEvaluatedPopulation p e = GPEvaluatedPopulation
-    { _getEvalutedPopulation :: p (Fitness e)
-    }
-makeLenses ''GPEvaluatedPopulation
-
-mkInitial :: p e -> GPPopulation p 'Initial e
+mkInitial :: V.Vector e -> GPPopulation 'Initial e
 mkInitial = GPPopulation
 
-mkSelection :: p e -> GPPopulation p 'Selection e
+mkSelection :: V.Vector e -> GPPopulation 'Selection e
 mkSelection = GPPopulation
 
-mkMuted :: p e -> GPPopulation p 'Muted e
+mkMuted :: V.Vector e -> GPPopulation 'Muted e
 mkMuted = GPPopulation
 
-mkGenerationZero :: GPPopulation p 'Initial e -> GPPopulation p 'Generation e
+mkGenerationZero :: GPPopulation 'Initial e -> GPPopulation 'Generation e
 mkGenerationZero (GPPopulation p) = GPPopulation p

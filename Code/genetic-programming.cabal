@@ -49,26 +49,17 @@ cabal-version:       >=1.10
 
 library
     -- Modules exported by the library.
-    exposed-modules:    AI.GP
-                        AI.GP.Class.BreedMethod
-                        AI.GP.Class.EllitismMethod
-                        AI.GP.Class.InitMethod
-                        AI.GP.Class.MutationMethod
-                        AI.GP.Class.Population
-                        AI.GP.Class.Program
-                        AI.GP.Class.SelectionMethod
-                        AI.GP.Instance.Init.Full
-                        AI.GP.Instance.Mutation.Point
-                        AI.GP.Instance.Selection.Tournament
-                        AI.GP.Type.Class.Init.Full
-                        AI.GP.Type.Class.Mutation.Point
-                        AI.GP.Type.Class.Selection.Tournament
-                        AI.GP.Type.Evolution
-                        AI.GP.Type.EvolutionParams
-                        AI.GP.Type.EvolutionState
+    exposed-modules:
+                        AI.GP
+                        AI.GP.Crossover
+                        AI.GP.Init
                         AI.GP.Type.Fitnesse
+                        AI.GP.Type.GProgram
+                        AI.GP.Type.GPZipper
                         AI.GP.Type.Population
                         AI.GP.Type.PopulationType
+
+                        Data.Bifunctor.Extended
 
     -- Modules included in this library but not exported.
     -- other-modules:
@@ -80,14 +71,14 @@ library
     build-depends:      base >=4.8 && <4.9
                         -- included in Haskell Platform
                         , mtl ==2.2.*
-                        , transformers ==0.5.*
+                        , transformers >= 0.4 && <=0.5
                         , vector ==0.11.*
                         -- included in Haskell Platform
 
                         -- hackage packages
                         , lens ==4.13.*
                         , monad-loops ==0.4.*
-                        , MonadRandom ==0.4.*
+                        , random-fu ==0.2.*
                         -- hackage packages
 
     -- Directories containing source files.
@@ -96,28 +87,38 @@ library
     -- Base language which the package is written in.
     default-language:    Haskell2010
 
-    ghc-options:        -Wall -fwarn-missing-import-lists -fwarn-implicit-prelude
+    ghc-options:        -Wall
+                        -fwarn-missing-import-lists
+                        -fwarn-implicit-prelude
 
-executable sampleRun
-    build-depends:      base >=4.8 && <4.9
+test-suite unit-test
+    other-modules:
+                        TestCase
+                        TestCase.AI.GP.Init
+    build-depends:
+                        base >=4.8 && <4.9
                         -- included in Haskell Platform
                         , mtl ==2.2.*
-                        , transformers == 0.5.*
+                        , transformers >= 0.4 && <=0.5
                         , vector ==0.11.*
                         -- included in Haskell Platform
 
                         -- hackage packages
                         , lens ==4.13.*
                         , monad-loops ==0.4.*
-                        , MonadRandom ==0.4.*
                         -- hackage packages
+                        -- test suite
+                        , HUnit >= 1.2 && < 2
+                        , test-framework >= 0.8 && < 1
+                        , test-framework-hunit >= 0.2.6
+                        , test-framework-quickcheck2 >= 0.3
+                        -- test suite
 
     -- Directories containing source files.
-    hs-source-dirs:      src
+    hs-source-dirs:     test, src
+    type:               exitcode-stdio-1.0
 
-    main-is:            Main.hs
+    main-is:            unit-tests.hs
 
     -- Base language which the package is written in.
     default-language:    Haskell2010
-
-    ghc-options:        -Wall -fwarn-missing-import-lists -fwarn-implicit-prelude
