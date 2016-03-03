@@ -24,3 +24,7 @@ data GProgram op t
     deriving (Eq, Show)
 
 makeLenses ''GProgram
+
+withOperation :: (op -> op) -> GProgram op t -> GProgram op t
+withOperation f (Node h o l r) = Node h (f o) l r
+withOperation _ leaf = leaf

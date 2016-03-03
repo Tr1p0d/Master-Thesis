@@ -38,6 +38,9 @@ subZippers h z@(Focus a _)
     | (a ^. height) == h = [z]
     | otherwise = subZippers h (left z) ++ subZippers h (right z)
 
+withFocus :: (GProgram op t -> GProgram op t) -> GPZipper op t -> GPZipper op t
+withFocus f (Focus p c) = Focus (f p) c
+
 -- }}} UTILITY FUNCS ----------------------------------------------------------
 -- {{{ CONSTRUCTORS -----------------------------------------------------------
 

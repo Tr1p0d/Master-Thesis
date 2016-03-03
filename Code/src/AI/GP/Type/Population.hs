@@ -12,7 +12,6 @@ import qualified Data.Vector as V (Vector)
 import AI.GP.Type.PopulationType
     ( PopulationType(Generation, Initial, Muted, Selection)
     )
-import AI.GP.Type.Fitnesse (Fitness)
 
 data GPPopulation (t :: PopulationType) e = GPPopulation
     { _getPopulation :: V.Vector e

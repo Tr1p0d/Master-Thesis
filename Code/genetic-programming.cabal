@@ -53,6 +53,7 @@ library
                         AI.GP
                         AI.GP.Crossover
                         AI.GP.Init
+                        AI.GP.Mutation
                         AI.GP.Type.Fitnesse
                         AI.GP.Type.GProgram
                         AI.GP.Type.GPZipper
@@ -68,7 +69,7 @@ library
     -- other-extensions:
 
     -- Other library packages from which modules are imported.
-    build-depends:      base >=4.8 && <4.9
+    build-depends:      base >=4.8 && <5
                         -- included in Haskell Platform
                         , mtl ==2.2.*
                         , transformers >= 0.4 && <=0.5
@@ -93,10 +94,16 @@ library
 
 test-suite unit-test
     other-modules:
+                        AI.GP
+                        AI.GP.Crossover
+                        AI.GP.Init
+                        AI.GP.Type.GProgram
+                        AI.GP.Type.GPZipper
                         TestCase
                         TestCase.AI.GP.Init
+                        TestCase.AI.GP.Crossover
     build-depends:
-                        base >=4.8 && <4.9
+                        base >=4.8 && <5
                         -- included in Haskell Platform
                         , mtl ==2.2.*
                         , transformers >= 0.4 && <=0.5
@@ -106,6 +113,7 @@ test-suite unit-test
                         -- hackage packages
                         , lens ==4.13.*
                         , monad-loops ==0.4.*
+                        , random-fu ==0.2.*
                         -- hackage packages
                         -- test suite
                         , HUnit >= 1.2 && < 2

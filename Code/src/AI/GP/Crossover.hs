@@ -5,11 +5,13 @@ module AI.GP.Crossover where
 import Prelude (Float)
 
 import Control.Applicative ((<$>), (<*>))
-import Control.Monad (return)
-import Data.Function (($), (.))
-import Data.Int (Int)
-import Data.List ((!!))
+import Control.Monad (Monad(return))
 import Data.Foldable (length)
+import Data.Function (($), (.))
+import Data.Functor (Functor)
+import Data.Int (Int)
+import Data.List ((!!), any, null)
+import Data.Maybe (Maybe(Just, Nothing))
 import GHC.Num ((-))
 
 import AI.GP.Type.GProgram (GProgram)
@@ -25,7 +27,7 @@ subtreeCrossoverPreferLeafs
     => (GProgram op t, GProgram op t)
     -> Int      -- | Uppwer bound
     -> Float    -- | percentil of Leaf preference
-    -> m (GProgram op t, GProgram op t)
+    -> m (Maybe (GProgram op t, GProgram op t))
 subtreeCrossoverPreferLeafs ps ub preference = do
     leaf <- sample $ bernoulli preference
     if leaf then subtreeCrossoverLeaf ps else subtreeCrossoverUniformNodes ps ub
@@ -34,7 +36,7 @@ subtreeCrossoverUniform
     :: (MonadRandom m)
     => (GProgram op t, GProgram op t)
     -> Int -- | Uppwer bound
-    -> m (GProgram op t, GProgram op t)
+    -> m (Maybe (GProgram op t, GProgram op t))
 subtreeCrossoverUniform ps = subtreeCrossoverUniformGen ps 0
 
 subtreeCrossoverUniformGen
@@ -42,31 +44,34 @@ subtreeCrossoverUniformGen
     => (GProgram op t, GProgram op t)
     -> Int -- | Lower bound
     -> Int -- | Uppwer bound
-    -> m (GProgram op t, GProgram op t)
+    -> m (Maybe (GProgram op t, GProgram op t))
 subtreeCrossoverUniformGen ps lb ub =
-    subtreeCrossoverGen ps $ sample $ uniform lb ub
+    subtreeCrossoverGen ps (sample $ uniform lb ub) arbitraryUniform
 
 subtreeCrossoverGen
-    :: (MonadRandom m)
+    :: (Monad m)
     => (GProgram op t, GProgram op t)
     -> m Int
-    -> m (GProgram op t, GProgram op t)
-subtreeCrossoverGen ps g = do
-    r <- g
+    -> ([GPZipper op t] -> m (GPZipper op t))
+    -> m (Maybe (GProgram op t, GProgram op t))
+subtreeCrossoverGen ps gen sel = do
+    r <- gen
     let (r1, r2) = commonRegions r ps
-    mkProgramTuple <$> arbitrary' r1  <*> arbitrary' r2
+    if any null [r1,r2]
+    then return Nothing
+    else (Just .) . mkProgramTuple <$> sel r1 <*> sel r2
 
 subtreeCrossoverLeaf
     :: (MonadRandom m)
     => (GProgram op t, GProgram op t)
-    -> m (GProgram op t, GProgram op t)
-subtreeCrossoverLeaf ps = subtreeCrossoverGen ps $ return 0
+    -> m (Maybe (GProgram op t, GProgram op t))
+subtreeCrossoverLeaf ps = subtreeCrossoverGen ps (return 0) arbitraryUniform
 
 subtreeCrossoverUniformNodes
     :: (MonadRandom m)
     => (GProgram op t, GProgram op t)
     -> Int -- | Uppwer bound
-    -> m (GProgram op t, GProgram op t)
+    -> m (Maybe (GProgram op t, GProgram op t))
 subtreeCrossoverUniformNodes ps = subtreeCrossoverUniformGen ps 1
 
 --- <<< VARIOUS UTILITY FUNCTIONS ---------------------------------------------
@@ -77,10 +82,12 @@ commonRegions
     -> ([GPZipper op t], [GPZipper op t])
 commonRegions height = bimap' (subZippers height) . bimap' toGPZipper
 
-arbitrary :: (MonadRandom m) => [a] -> Int -> m a
-arbitrary list elems = (list !!) <$> sample (uniform 0 $ elems - 1)
+arbitrary :: (Functor m) => m Int -> [a] -> m a
+arbitrary selector list = (list !!) <$> selector
 
-arbitrary' :: (MonadRandom m) => [a] -> m a
-arbitrary' list = arbitrary list (length list)
+arbitraryUniform :: (MonadRandom m) => [a] -> m a
+arbitraryUniform list = arbitrary selector list
+  where
+    selector = sample $ uniform 0 ((length list) -1)
 
 --- >>> VARIOUS UTILITY FUNCTIONS ---------------------------------------------
