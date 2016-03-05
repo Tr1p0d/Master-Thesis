@@ -6,17 +6,18 @@ import Prelude (Float)
 
 import Control.Applicative ((<$>), (<*>))
 import Control.Monad (Monad(return))
-import Data.Foldable (length)
 import Data.Function (($), (.))
-import Data.Functor (Functor)
 import Data.Int (Int)
-import Data.List ((!!), any, null)
+import Data.List (any, null)
 import Data.Maybe (Maybe(Just, Nothing))
-import GHC.Num ((-))
 
 import AI.GP.Type.GProgram (GProgram)
-import AI.GP.Type.GPZipper (GPZipper, mkProgramTuple, subZippers, toGPZipper)
-import Data.Bifunctor.Extended (bimap')
+import AI.GP.Type.GPZipper
+    ( GPZipper
+    , commonRegions
+    , mkProgramTuple
+    )
+import AI.GP.Utils (arbitraryUniform)
 import Data.Random (MonadRandom, sample)
 import Data.Random.Distribution.Bernoulli (bernoulli)
 import Data.Random.Distribution.Uniform (uniform)
@@ -73,21 +74,3 @@ subtreeCrossoverUniformNodes
     -> Int -- | Uppwer bound
     -> m (Maybe (GProgram op t, GProgram op t))
 subtreeCrossoverUniformNodes ps = subtreeCrossoverUniformGen ps 1
-
---- <<< VARIOUS UTILITY FUNCTIONS ---------------------------------------------
-
-commonRegions
-    :: Int
-    -> (GProgram op t, GProgram op t)
-    -> ([GPZipper op t], [GPZipper op t])
-commonRegions height = bimap' (subZippers height) . bimap' toGPZipper
-
-arbitrary :: (Functor m) => m Int -> [a] -> m a
-arbitrary selector list = (list !!) <$> selector
-
-arbitraryUniform :: (MonadRandom m) => [a] -> m a
-arbitraryUniform list = arbitrary selector list
-  where
-    selector = sample $ uniform 0 ((length list) -1)
-
---- >>> VARIOUS UTILITY FUNCTIONS ---------------------------------------------

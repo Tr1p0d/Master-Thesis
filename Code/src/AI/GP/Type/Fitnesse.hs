@@ -9,6 +9,8 @@ import Data.Bool (Bool(False))
 
 import Control.Lens (makeLenses)
 
+import AI.GP.Type.GProgram (GProgram)
+
 data Fitness e = Fitness
     { _getIndividual :: e
     , _getScore :: Double
@@ -16,8 +18,8 @@ data Fitness e = Fitness
     }
 makeLenses ''Fitness
 
-emptyFitness :: e -> Fitness e
-emptyFitness e = Fitness e 0.0 False
+emptyFitness :: GProgram op t -> Fitness (GProgram op t)
+emptyFitness p = Fitness p 0.0 False
 
 discardFitness :: Fitness e -> e
 discardFitness =  _getIndividual

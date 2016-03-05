@@ -54,11 +54,13 @@ library
                         AI.GP.Crossover
                         AI.GP.Init
                         AI.GP.Mutation
+                        AI.GP.Selection
                         AI.GP.Type.Fitnesse
                         AI.GP.Type.GProgram
                         AI.GP.Type.GPZipper
                         AI.GP.Type.Population
                         AI.GP.Type.PopulationType
+                        AI.GP.Utils
 
                         Data.Bifunctor.Extended
 
@@ -97,11 +99,18 @@ test-suite unit-test
                         AI.GP
                         AI.GP.Crossover
                         AI.GP.Init
+                        AI.GP.Mutation
+                        AI.GP.Selection
                         AI.GP.Type.GProgram
                         AI.GP.Type.GPZipper
+                        AI.GP.Utils
+
+                        Data.Bifunctor.Extended
+
                         TestCase
                         TestCase.AI.GP.Init
                         TestCase.AI.GP.Crossover
+                        TestCase.AI.GP.Mutation
     build-depends:
                         base >=4.8 && <5
                         -- included in Haskell Platform

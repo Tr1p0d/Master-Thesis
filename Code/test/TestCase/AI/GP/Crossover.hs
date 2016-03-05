@@ -30,7 +30,7 @@ data Terminal
 tests :: [Test]
 tests =
     [ testGroup "Subtree crossover"
-        [ testCase "Subtree crossover nonempty CR"
+        [ testCase "Subtree crossover non-empty CR"
             test_SubteeCrossover_NonEmpty_CR
         , testCase "Subtree crossover empty CR"
             test_SubteeCrossover_Empty_CR

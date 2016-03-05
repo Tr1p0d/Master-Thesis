@@ -25,7 +25,10 @@ data GPContext op t
 
 makeLenses ''GPContext
 
-data GPZipper op t = Focus (GProgram op t) [GPContext op t]
+data GPZipper op t = Focus
+    { _focus :: GProgram op t
+    , _context :: [GPContext op t]
+    }
     deriving (Show)
 
 makeLenses ''GPZipper
@@ -37,6 +40,13 @@ subZippers h z@(Focus a _)
     | (a ^. height) < h = []
     | (a ^. height) == h = [z]
     | otherwise = subZippers h (left z) ++ subZippers h (right z)
+
+commonRegions
+    :: Int
+    -> (GProgram op t, GProgram op t)
+    -> ([GPZipper op t], [GPZipper op t])
+commonRegions h = bimap' (subZippers h) . bimap' toGPZipper
+
 
 withFocus :: (GProgram op t -> GProgram op t) -> GPZipper op t -> GPZipper op t
 withFocus f (Focus p c) = Focus (f p) c

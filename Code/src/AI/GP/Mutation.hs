@@ -2,13 +2,20 @@
 
 module AI.GP.Mutation where
 
+import Prelude (Float)
+
 import Control.Applicative ((<$>))
 import Control.Monad (Monad(return))
-import Data.Function ((.), const)
+import Data.Function (($), (.), const)
 import Data.Int (Int)
 import Data.Maybe (Maybe(Just, Nothing))
 
-import AI.GP.Type.GProgram (GProgram, withOperation)
+import Control.Lens ((^.))
+import Data.Random (MonadRandom, sample)
+import Data.Random.Distribution.Bernoulli (bernoulli)
+import Data.Random.Distribution.Uniform (uniform)
+
+import AI.GP.Type.GProgram (GProgram, height, withOperation)
 import AI.GP.Type.GPZipper
     ( GPZipper
     , fromGPZipper
@@ -16,9 +23,39 @@ import AI.GP.Type.GPZipper
     , toGPZipper
     , withFocus
     )
---import Data.Random (MonadRandom, sample)
---import Data.Random.Distribution.Bernoulli (bernoulli)
---import Data.Random.Distribution.Uniform (uniform)
+import AI.GP.Utils (arbitraryUniform)
+
+pointMutationPreferLeafs
+    :: (MonadRandom m)
+    => GProgram op t
+    -> [op]
+    -> Float -- ^ Percentil of leaf preference.
+    -> m (Maybe (GProgram op t))
+pointMutationPreferLeafs prog op prob = do
+    leaf <- sample $ bernoulli prob
+    if leaf then muteLeaf else muteNode
+  where
+    muteLeaf = pointMutationLeaf prog op
+    muteNode = pointMutationUniformNode prog (prog ^. height) op
+
+pointMutationUniformNode
+    :: (MonadRandom m)
+    => GProgram op t
+    -> Int -- ^ Upper bound
+    -> [op] -- ^ Operation set
+    -> m (Maybe (GProgram op t))
+pointMutationUniformNode program ub =
+    pointMutationGen program uniformHeight arbitraryUniform . arbitraryUniform
+  where
+    uniformHeight = (sample $ uniform 1 ub)
+
+pointMutationLeaf
+    :: (MonadRandom m)
+    => GProgram op t
+    -> [op]
+    -> m (Maybe (GProgram op t))
+pointMutationLeaf program =
+    pointMutationGen program (return 0) arbitraryUniform . arbitraryUniform
 
 pointMutationGen
     :: (Monad m)
