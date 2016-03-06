@@ -5,9 +5,11 @@ module AI.GP.Type.Fitnesse where
 
 import Prelude (Double)
 
-import Data.Bool (Bool(False))
+import Data.Bool (Bool(False), otherwise)
+import Data.Eq ((==), Eq)
+import Data.Ord ((>), (<), Ord, Ordering(LT, EQ, GT), compare)
 
-import Control.Lens (makeLenses)
+import Control.Lens ((^.), makeLenses)
 
 import AI.GP.Type.GProgram (GProgram)
 
@@ -17,6 +19,15 @@ data Fitness e = Fitness
     , _fitEnough :: Bool
     }
 makeLenses ''Fitness
+
+instance Eq (Fitness a) where
+    a == b = (a ^. getScore) == (b ^. getScore)
+
+instance Ord (Fitness a) where
+    compare a b
+       | (a ^. getScore) > (b ^. getScore) = GT
+       | (a ^. getScore) < (b ^. getScore) = LT
+       | otherwise = EQ
 
 emptyFitness :: GProgram op t -> Fitness (GProgram op t)
 emptyFitness p = Fitness p 0.0 False
