@@ -37,3 +37,5 @@ discardFitness =  _getIndividual
 
 mkFitness :: e -> Double -> Bool -> Fitness e
 mkFitness = Fitness
+
+
