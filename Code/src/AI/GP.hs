@@ -1,63 +1,62 @@
-{-# LANGUAGE DeriveFunctor #-}
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE TemplateHaskell #-}
 
 module AI.GP where
 
-import Prelude (Double)
+import Prelude (div, (-))
 
-import Control.Applicative (Applicative, (<$>))
-import Control.Monad (Monad((>>=), return))
+import Control.Applicative ((<$>))
+import Control.Monad (Monad((>>=), return), mapM)
 --import Data.Foldable (any)
+import Data.Bool (not)
 import Data.Function (($), (.))
-import Data.Functor (Functor(fmap))
+import Data.Random (MonadRandom)
 
-import Control.Monad.Trans.Class (MonadTrans, lift)
-import Control.Monad.Trans.State.Lazy (StateT, put)
-import qualified Data.Vector as V (replicateM)
+import Control.Monad.Trans.Class (lift)
+import qualified Data.Vector as V (replicate, replicateM, filter, null)
 
-import Control.Lens ((^.), makeLenses)
-import Data.Int (Int)
-import Data.Maybe (Maybe)
-import Data.Random (MonadRandom, sample)
-import Data.Random.Distribution.Uniform (uniform)
+import Control.Lens ((^.))
+--import Data.Random.Distribution.Uniform (uniform)
 
-import AI.GP.Type.GProgram (GProgram)
+import AI.GP.Mutation (stdMute)
+import AI.GP.Type.Evolution
+    ( Evolution
+    , EvolutionResult
+    , nextGeneration
+    , startEvolution
+    )
+import AI.GP.Type.Fitnesse (evalIndividual, fitEnough)
+import AI.GP.Type.GPEvolutionParams
+    ( GPEvolutionParams
+    , crossoverMethod
+    , fitness
+    , initMethod
+    , mutationMethod
+    , mutationProbability
+    , populationSize
+    , populationSize
+    , replenishMethod
+    , selectionMethod
+    , terminate
+    )
 import AI.GP.Type.Population
-    ( EvaluedPopulation
-    , Generation
+    ( Generation
     , InitialPopulation
-    , SelectionPopulation
+    , evalPopulation
+    , getPopulation
+    , mergeGeneration
+    , mkBreed
+    , mkGeneration
     , mkGenerationZero
     , mkInitial
+    , mkMuted
+    , populationLength
     )
-
-data GPEvolutionSetup m op t = GPEvolutionSetup
-    { _populationSize :: Int
-    , _initMethod :: m (GProgram op t)
-    , _mutationMethod :: m (Maybe (GProgram op t))
-    , _crossoverMethod :: m (Maybe (GProgram op t, GProgram op t))
-    , _selectionMethod
-        :: m (EvaluedPopulation op t -> m (SelectionPopulation op t))
-    , _fitness :: GProgram op t -> m Double
-    }
-makeLenses ''GPEvolutionSetup
-
-newtype EvolutionState = EvolutionState
-    { _generation :: Int
-    }
-
-startEvolution :: (Monad m) => Evolution m ()
-startEvolution = Evolution $ put $ EvolutionState 0
-
-newtype Evolution m a = Evolution { runEvolution :: StateT EvolutionState m a }
-    deriving (Functor, Applicative, Monad, MonadTrans)
+import AI.GP.Utils (getArbitraryPair, flatten)
 
 evolve
-    :: (Monad m)
-    => GPEvolutionSetup m op t
-    -> Evolution m ()
+    :: (MonadRandom m)
+    => GPEvolutionParams m op t
+    -> Evolution m (EvolutionResult op t)
 evolve setup = do
     initialPopulation <- mkInitialPopulation
     evolveWithInitPopulation setup initialPopulation
@@ -67,18 +66,48 @@ evolve setup = do
         (setup ^. initMethod))
 
 evolveWithInitPopulation
-    :: (Monad m)
-    => GPEvolutionSetup m op t
+    :: (MonadRandom m)
+    => GPEvolutionParams m op t
     -> InitialPopulation op t
-    -> Evolution m ()
+    -> Evolution m (EvolutionResult op t)
 evolveWithInitPopulation setup population = do
     startEvolution
     evolveWith setup (mkGenerationZero population)
 
 evolveWith
-    :: (Monad m)
-    => GPEvolutionSetup m op t
+    :: (MonadRandom m)
+    => GPEvolutionParams m op t
     -> Generation op t
-    -> Evolution m ()
+    -> Evolution m (EvolutionResult op t)
 evolveWith setup population = do
+    evalued <- lift $ evalPopulation fitness' population
+    let fitEnough' = fitEnoughIndividuals evalued
+    if not $ V.null fitEnough'
+    then return fitEnough'
+    else do
+        selection <- lift $ (setup ^. selectionMethod) evalued
+        breed <- lift $ mkBreed <$> crossover selection
+        lift $ mkMuted <$> mute breed
+        >>= lift . replenish evalued
+        >>= nextGeneration . evolveWith setup
+  where
+    fitness' = evalIndividual (setup ^. fitness) (setup ^. terminate)
+    fitEnoughIndividuals = V.filter (^. fitEnough) . ( ^. getPopulation)
 
+    crossover selection = flatten <$> V.replicateM
+        (setup ^. populationSize `div` 2)
+        (getArbitraryPair selection >>= setup ^. crossoverMethod)
+
+    mute breed = mapM stdMute' (breed ^. getPopulation)
+      where
+        stdMute' = stdMute
+            (setup ^. mutationProbability)
+            (setup ^. mutationMethod)
+
+    replenish evalued muted = return $ mergeGeneration muted replenished
+      where
+        replenished = mkGeneration
+            $ V.replicate replenishSize
+            $ (setup ^. replenishMethod) evalued
+
+        replenishSize = populationLength evalued - populationLength muted

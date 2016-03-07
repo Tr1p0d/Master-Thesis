@@ -25,6 +25,8 @@ data GProgram op t
 
 makeLenses ''GProgram
 
+type IndividualPair op t = (GProgram op t, GProgram op t)
+
 withOperation :: (op -> op) -> GProgram op t -> GProgram op t
 withOperation f (Node h o l r) = Node h (f o) l r
 withOperation _ leaf = leaf

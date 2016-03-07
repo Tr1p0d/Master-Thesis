@@ -8,11 +8,16 @@ module AI.GP.Type.Population
     , emptySelection
     , evalPopulation
     , getPopulation
+    , mergeGeneration
+    , mkBreed
+    , mkGeneration
     , mkGenerationZero
     , mkInitial
     , mkMuted
     , mkSelection
+    , populationLength
     -- Type aliases
+    , BreedPopulation
     , EvaluedPopulation
     , Generation
     , InitialPopulation
@@ -24,15 +29,17 @@ module AI.GP.Type.Population
 
 import Control.Applicative ((<$>))
 import Control.Monad (Monad)
-import Data.Function ((.))
+import Data.Int (Int)
+import Data.Foldable (length)
+import Data.Function (($), (.))
 
 import Control.Lens (makeLenses)
-import qualified Data.Vector as V (Vector, mapM, empty)
+import qualified Data.Vector as V (Vector, (++), mapM, empty)
 
 import AI.GP.Type.Fitnesse (Fitness)
 import AI.GP.Type.GProgram (GProgram)
 import AI.GP.Type.PopulationType
-    ( PopulationType(Evaluated, Generation, Initial, Muted, Selection)
+    ( PopulationType(Breed, Evaluated, Generation, Initial, Muted, Selection)
     )
 
 data GPPopulation (t :: PopulationType) e = GPPopulation
@@ -40,6 +47,7 @@ data GPPopulation (t :: PopulationType) e = GPPopulation
     }
 makeLenses ''GPPopulation
 
+type BreedPopulation op t = GPPopulation 'Muted (GProgram op t)
 type EvaluedPopulation op t =
     GPPopulation 'Evaluated (Fitness (GProgram op t))
 type Generation op t = GPPopulation 'Generation (GProgram op t)
@@ -56,8 +64,14 @@ mkSelection = GPPopulation
 emptySelection :: GPPopulation 'Selection e
 emptySelection = GPPopulation V.empty
 
+mkBreed :: V.Vector e -> GPPopulation 'Breed e
+mkBreed = GPPopulation
+
 mkMuted :: V.Vector e -> GPPopulation 'Muted e
 mkMuted = GPPopulation
+
+mkGeneration :: V.Vector e -> GPPopulation 'Generation e
+mkGeneration = GPPopulation
 
 mkGenerationZero :: GPPopulation 'Initial e -> GPPopulation 'Generation e
 mkGenerationZero (GPPopulation p) = GPPopulation p
@@ -68,3 +82,12 @@ evalPopulation
     -> GPPopulation 'Generation (GProgram op t)
     -> m (GPPopulation 'Evaluated (Fitness (GProgram op t)))
 evalPopulation eval = (GPPopulation <$>) . V.mapM eval . _getPopulation
+
+populationLength :: GPPopulation a e -> Int
+populationLength = length . _getPopulation
+
+mergeGeneration
+    :: GPPopulation a e
+    -> GPPopulation b e
+    -> GPPopulation 'Generation e
+mergeGeneration a b = mkGeneration $ _getPopulation a V.++ _getPopulation b

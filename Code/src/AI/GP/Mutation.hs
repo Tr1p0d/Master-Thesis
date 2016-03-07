@@ -25,6 +25,18 @@ import AI.GP.Type.GPZipper
     )
 import AI.GP.Utils (arbitraryUniform)
 
+stdMute
+    :: (MonadRandom m)
+    => Float
+    -> (GProgram op t -> m (GProgram op t))
+    -> GProgram op t
+    -> m (GProgram op t)
+stdMute prob mutM individual = do
+    mute <- sample $ bernoulli prob
+    if mute
+    then mutM individual
+    else return individual
+
 pointMutationPreferLeafs
     :: (MonadRandom m)
     => GProgram op t
@@ -47,7 +59,7 @@ pointMutationUniformNode
 pointMutationUniformNode program ub =
     pointMutationGen program uniformHeight arbitraryUniform . arbitraryUniform
   where
-    uniformHeight = (sample $ uniform 1 ub)
+    uniformHeight = sample $ uniform 1 ub
 
 pointMutationLeaf
     :: (MonadRandom m)

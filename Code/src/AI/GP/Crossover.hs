@@ -25,11 +25,11 @@ import Data.Random.Distribution.Uniform (uniform)
 
 subtreeCrossoverPreferLeafs
     :: (MonadRandom m)
-    => (GProgram op t, GProgram op t)
-    -> Int      -- | Uppwer bound
+    => Int      -- | Uppwer bound
     -> Float    -- | percentil of Leaf preference
+    -> (GProgram op t, GProgram op t)
     -> m (Maybe (GProgram op t, GProgram op t))
-subtreeCrossoverPreferLeafs ps ub preference = do
+subtreeCrossoverPreferLeafs ub preference ps = do
     leaf <- sample $ bernoulli preference
     if leaf then subtreeCrossoverLeaf ps else subtreeCrossoverUniformNodes ps ub
 

@@ -55,6 +55,8 @@ library
                         AI.GP.Init
                         AI.GP.Mutation
                         AI.GP.Selection
+                        AI.GP.Type.Evolution
+                        AI.GP.Type.GPEvolutionParams
                         AI.GP.Type.Fitnesse
                         AI.GP.Type.GProgram
                         AI.GP.Type.GPZipper
@@ -77,7 +79,6 @@ library
                         , transformers >= 0.4 && <=0.5
                         , vector ==0.11.*
                         -- included in Haskell Platform
-
                         -- hackage packages
                         , lens ==4.13.*
                         , monad-loops ==0.4.*
@@ -101,8 +102,11 @@ test-suite unit-test
                         AI.GP.Init
                         AI.GP.Mutation
                         AI.GP.Selection
+                        AI.GP.Type.Fitnesse
                         AI.GP.Type.GProgram
                         AI.GP.Type.GPZipper
+                        AI.GP.Type.Population
+                        AI.GP.Type.PopulationType
                         AI.GP.Utils
 
                         Data.Bifunctor.Extended
@@ -118,7 +122,6 @@ test-suite unit-test
                         , transformers >= 0.4 && <=0.5
                         , vector ==0.11.*
                         -- included in Haskell Platform
-
                         -- hackage packages
                         , lens ==4.13.*
                         , monad-loops ==0.4.*

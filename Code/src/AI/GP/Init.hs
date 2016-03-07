@@ -5,7 +5,6 @@
 module AI.GP.Init where
 
 import Control.Applicative (Applicative, (<$>), (<*>))
-import Data.Function (($))
 import Data.Int (Int)
 import GHC.Num ((-))
 
@@ -21,4 +20,4 @@ full opG tG = \case
     0 -> Leaf 0 <$> tG
     n -> Node n <$> opG <*> subProg n <*> subProg n
   where
-    subProg n = full opG tG $ (n - 1)
+    subProg n = full opG tG (n - 1)
