@@ -3,6 +3,10 @@
 
 module AI.GP.Type.PopulationType where
 
+import Data.Eq (Eq)
+import Text.Show (Show)
+
+
 data PopulationType
     = Breed
     | Evaluated
@@ -11,4 +15,4 @@ data PopulationType
     | Initial
     | Muted
     | Selection
-
+    deriving (Eq, Show)

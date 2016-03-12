@@ -12,7 +12,7 @@ import Test.Framework.Providers.HUnit (testCase)
 import Test.HUnit (Assertion, (@?=))
 
 import AI.GP.Type.GProgram (GProgram(Node, Leaf))
-import AI.GP.Init (full)
+import AI.GP.Init (fullInitGen)
 
 
 tests :: [Test]
@@ -36,7 +36,7 @@ data Terminal
 test_FullMethod_NonNegativeHeight :: Assertion
 test_FullMethod_NonNegativeHeight = expected @?= actual
   where
-    actual = runIdentity (full (Identity Plus) (Identity (Const 1)) 2)
+    actual = runIdentity (fullInitGen (Identity Plus) (Identity (Const 1)) 2)
     expected =
         Node 2 Plus
             (Node 1 Plus
@@ -51,11 +51,11 @@ test_FullMethod_NonNegativeHeight = expected @?= actual
 test_FullMethod_ZeroHeight :: Assertion
 test_FullMethod_ZeroHeight = expected @?= actual
   where
-    actual = runIdentity (full (Identity Plus) (Identity (Const 1)) 0)
+    actual = runIdentity (fullInitGen (Identity Plus) (Identity (Const 1)) 0)
     expected = Leaf 0 (Const 1)
 
 test_FullMethod_NegativeHeight :: Assertion
 test_FullMethod_NegativeHeight = expected @?= actual
   where
-    actual = runIdentity (full (Identity Plus) (Identity (Const 1)) (-1))
+    actual = runIdentity (fullInitGen (Identity Plus) (Identity (Const 1)) (-1))
     expected = Leaf 0 (Const 1)

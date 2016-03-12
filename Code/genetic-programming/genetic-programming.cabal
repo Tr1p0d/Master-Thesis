@@ -76,13 +76,17 @@ library
     build-depends:      base >=4.8 && <5
                         -- included in Haskell Platform
                         , mtl ==2.2.*
+                        , primitive ==0.6.*
                         , transformers >= 0.4 && <=0.5
                         , vector ==0.11.*
                         -- included in Haskell Platform
                         -- hackage packages
+                        , data-default ==0.5.*
                         , lens ==4.13.*
+                        , mwc-random==0.13.*
                         , monad-loops ==0.4.*
                         , random-fu ==0.2.*
+                        , vector-algorithms ==0.7.*
                         -- hackage packages
 
     -- Directories containing source files.
@@ -94,6 +98,7 @@ library
     ghc-options:        -Wall
                         -fwarn-missing-import-lists
                         -fwarn-implicit-prelude
+                        -O2
 
 test-suite unit-test
     other-modules:
@@ -115,6 +120,7 @@ test-suite unit-test
                         TestCase.AI.GP.Init
                         TestCase.AI.GP.Crossover
                         TestCase.AI.GP.Mutation
+                        TestCase.AI.GP.Type.Population
     build-depends:
                         base >=4.8 && <5
                         -- included in Haskell Platform
@@ -123,6 +129,7 @@ test-suite unit-test
                         , vector ==0.11.*
                         -- included in Haskell Platform
                         -- hackage packages
+                        , data-default ==0.5.*
                         , lens ==4.13.*
                         , monad-loops ==0.4.*
                         , random-fu ==0.2.*

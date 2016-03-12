@@ -2,13 +2,14 @@
 
 module TestCase.AI.GP.Crossover where
 
-import Control.Monad.Identity (Identity(Identity, runIdentity))
 import Data.Eq (Eq)
 import Data.Function (($), (.))
 import Data.Int (Int)
 import Data.List (head)
 import Data.Maybe (Maybe(Just, Nothing))
 import Text.Show (Show)
+
+import Control.Monad.Identity (Identity(Identity, runIdentity))
 
 import Test.Framework (Test, testGroup)
 import Test.Framework.Providers.HUnit (testCase)
@@ -17,15 +18,6 @@ import Test.HUnit (Assertion, (@?=))
 import AI.GP.Type.GProgram (GProgram(Node, Leaf))
 import AI.GP.Crossover (subtreeCrossoverGen)
 
-
-data Operation
-    = Plus
-    | Minus
-    deriving (Eq, Show)
-
-data Terminal
-    = Const Int
-    deriving (Eq, Show)
 
 tests :: [Test]
 tests =
@@ -36,6 +28,15 @@ tests =
             test_SubteeCrossover_Empty_CR
         ]
     ]
+
+data Operation
+    = Plus
+    | Minus
+    deriving (Eq, Show)
+
+data Terminal
+    = Const Int
+    deriving (Eq, Show)
 
 testTree1 =
     Node 2 Plus
@@ -60,14 +61,13 @@ testTree2 =
         )
 
 test_SubteeCrossover_NonEmpty_CR :: Assertion
-test_SubteeCrossover_NonEmpty_CR = Just (testTree2, testTree1) @?= actual
+test_SubteeCrossover_NonEmpty_CR = (testTree2, testTree1) @?= actual
   where
     actual = runIdentity $ subtreeCrossoverGen
         (testTree1, testTree2) (Identity 2) (Identity . head)
 
-
 test_SubteeCrossover_Empty_CR :: Assertion
-test_SubteeCrossover_Empty_CR = Nothing @?= actual
+test_SubteeCrossover_Empty_CR = (testTree2, testTree1) @?= actual
   where
     actual = runIdentity $ subtreeCrossoverGen
         (Leaf 0 (Const 1), testTree2) (Identity 2) (Identity . head)

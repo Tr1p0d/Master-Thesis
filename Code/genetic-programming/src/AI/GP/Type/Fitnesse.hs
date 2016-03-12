@@ -10,16 +10,20 @@ import Data.Bool (Bool(False), otherwise)
 import Data.Eq ((==), Eq)
 import Data.Function (($))
 import Data.Ord ((>), (<), Ord, Ordering(LT, EQ, GT), compare)
+import Text.Show (Show)
 
 import Control.Lens ((^.), makeLenses)
+import Data.Default (Default(def))
 
-import AI.GP.Type.GProgram (GProgram)
+import AI.GP.Type.GProgram (Individual, GProgram)
+
 
 data Fitness e = Fitness
     { _getIndividual :: e
     , _getScore :: Double
     , _fitEnough :: Bool
     }
+    deriving (Show)
 makeLenses ''Fitness
 
 instance Eq (Fitness a) where
@@ -31,17 +35,22 @@ instance Ord (Fitness a) where
        | (a ^. getScore) < (b ^. getScore) = LT
        | otherwise = EQ
 
+instance (Default a) => Default (Fitness a) where
+    def = Fitness def 0.0 False
+
+type EvaluatedIndividual op t = Fitness (GProgram op t)
+
 evalIndividual
     :: (Monad m)
-    => (GProgram op t -> m Double)
+    => (Individual op t -> m Double)
     -> (Double -> Bool)
-    -> GProgram op t
-    -> m (Fitness (GProgram op t))
+    -> Individual op t
+    -> m (EvaluatedIndividual op t)
 evalIndividual eval cond individual = do
     fitness <- eval individual
     return $ mkFitness individual fitness (cond fitness)
 
-emptyFitness :: GProgram op t -> Fitness (GProgram op t)
+emptyFitness :: Individual op t -> EvaluatedIndividual op t
 emptyFitness p = Fitness p 0.0 False
 
 discardFitness :: Fitness e -> e

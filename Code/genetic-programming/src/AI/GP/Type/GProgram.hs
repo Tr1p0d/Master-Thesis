@@ -8,6 +8,7 @@ import Data.Int (Int)
 import Text.Show (Show)
 
 import Control.Lens (makeLenses)
+import Data.Default (Default(def))
 
 
 data GProgram op t
@@ -22,9 +23,14 @@ data GProgram op t
         , _val :: t
         }
     deriving (Eq, Show)
-
 makeLenses ''GProgram
 
+instance Default (GProgram op t) where
+    def = Leaf 0 undefined
+      where
+        undefined = undefined
+
+type Individual op t = GProgram op t
 type IndividualPair op t = (GProgram op t, GProgram op t)
 
 withOperation :: (op -> op) -> GProgram op t -> GProgram op t

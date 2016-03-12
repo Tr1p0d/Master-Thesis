@@ -10,7 +10,7 @@ import Data.Int (Int)
 
 import Control.Lens (makeLenses)
 
-import AI.GP.Type.GProgram (GProgram, IndividualPair)
+import AI.GP.Type.GProgram (Individual, IndividualPair)
 import AI.GP.Type.Population
     ( EvaluedPopulation
     , SelectionPopulation
@@ -18,20 +18,22 @@ import AI.GP.Type.Population
 
 data GPEvolutionParams m op t = GPEvolutionParams
     { _populationSize :: Int
-    , _initMethod :: m (GProgram op t)
+    , _initMethod :: m (Individual op t)
 
     , _selectionMethod
         :: EvaluedPopulation op t -> m (SelectionPopulation op t)
-    , _fitness :: GProgram op t -> m Double
+    , _fitness :: Individual op t -> m Double
     , _terminate :: Double -> Bool
 
     , _breedSize :: Int
     , _crossoverMethod :: IndividualPair op t -> m (IndividualPair op t)
 
     , _mutationProbability :: Float
-    , _mutationMethod :: GProgram op t -> m (GProgram op t)
+    , _mutationMethod :: Individual op t -> m (Individual op t)
 
-    , _replenishMethod :: EvaluedPopulation op t -> GProgram op t
+    , _replenishMethod :: EvaluedPopulation op t -> m (Individual op t)
+
+    , _maxGenerations :: Int
 
     }
 makeLenses ''GPEvolutionParams

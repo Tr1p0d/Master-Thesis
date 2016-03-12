@@ -2,7 +2,7 @@
 
 module AI.GP.Crossover where
 
-import Prelude (Float)
+import Prelude (Float, error)
 
 import Control.Applicative ((<$>), (<*>))
 import Control.Monad (Monad(return))
@@ -28,7 +28,7 @@ subtreeCrossoverPreferLeafs
     => Int      -- | Uppwer bound
     -> Float    -- | percentil of Leaf preference
     -> (GProgram op t, GProgram op t)
-    -> m (Maybe (GProgram op t, GProgram op t))
+    -> m (GProgram op t, GProgram op t)
 subtreeCrossoverPreferLeafs ub preference ps = do
     leaf <- sample $ bernoulli preference
     if leaf then subtreeCrossoverLeaf ps else subtreeCrossoverUniformNodes ps ub
@@ -37,7 +37,7 @@ subtreeCrossoverUniform
     :: (MonadRandom m)
     => (GProgram op t, GProgram op t)
     -> Int -- | Uppwer bound
-    -> m (Maybe (GProgram op t, GProgram op t))
+    -> m (GProgram op t, GProgram op t)
 subtreeCrossoverUniform ps = subtreeCrossoverUniformGen ps 0
 
 subtreeCrossoverUniformGen
@@ -45,7 +45,7 @@ subtreeCrossoverUniformGen
     => (GProgram op t, GProgram op t)
     -> Int -- | Lower bound
     -> Int -- | Uppwer bound
-    -> m (Maybe (GProgram op t, GProgram op t))
+    -> m (GProgram op t, GProgram op t)
 subtreeCrossoverUniformGen ps lb ub =
     subtreeCrossoverGen ps (sample $ uniform lb ub) arbitraryUniform
 
@@ -54,23 +54,23 @@ subtreeCrossoverGen
     => (GProgram op t, GProgram op t)
     -> m Int
     -> ([GPZipper op t] -> m (GPZipper op t))
-    -> m (Maybe (GProgram op t, GProgram op t))
+    -> m (GProgram op t, GProgram op t)
 subtreeCrossoverGen ps gen sel = do
     r <- gen
     let (r1, r2) = commonRegions r ps
     if any null [r1,r2]
-    then return Nothing
-    else (Just .) . mkProgramTuple <$> sel r1 <*> sel r2
+    then error "Empty common region"
+    else mkProgramTuple <$> sel r1 <*> sel r2
 
 subtreeCrossoverLeaf
     :: (MonadRandom m)
     => (GProgram op t, GProgram op t)
-    -> m (Maybe (GProgram op t, GProgram op t))
+    -> m (GProgram op t, GProgram op t)
 subtreeCrossoverLeaf ps = subtreeCrossoverGen ps (return 0) arbitraryUniform
 
 subtreeCrossoverUniformNodes
     :: (MonadRandom m)
     => (GProgram op t, GProgram op t)
     -> Int -- | Uppwer bound
-    -> m (Maybe (GProgram op t, GProgram op t))
+    -> m (GProgram op t, GProgram op t)
 subtreeCrossoverUniformNodes ps = subtreeCrossoverUniformGen ps 1

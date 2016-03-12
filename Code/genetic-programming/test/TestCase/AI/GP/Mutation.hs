@@ -12,7 +12,7 @@ import Text.Show (Show)
 
 import Test.Framework (Test, testGroup)
 import Test.Framework.Providers.HUnit (testCase)
-import Test.HUnit (Assertion, (@?=))
+import Test.HUnit (Assertion, (@=?))
 
 import AI.GP.Type.GProgram (GProgram(Node, Leaf))
 import AI.GP.Mutation (pointMutationGen)
@@ -57,7 +57,7 @@ testTree2 =
         )
 
 test_PointMutation_NonEmpty_CR :: Assertion
-test_PointMutation_NonEmpty_CR = Just testTree2 @?= actual
+test_PointMutation_NonEmpty_CR = testTree2 @=? actual
   where
     actual = runIdentity $ pointMutationGen
         testTree1
@@ -66,7 +66,7 @@ test_PointMutation_NonEmpty_CR = Just testTree2 @?= actual
         (Identity Minus)
 
 test_PointMutation_Empty_CR :: Assertion
-test_PointMutation_Empty_CR = Nothing @?= actual
+test_PointMutation_Empty_CR = testTree1 @=? actual
   where
     actual = runIdentity $ pointMutationGen
         testTree1

@@ -2,8 +2,6 @@
 
 module AI.GP.Selection where
 
---import Prelude ((>))
-
 import Control.Applicative ((<$>))
 import Control.Monad (Monad)
 --import Data.Bool (otherwise)
@@ -12,14 +10,24 @@ import Data.Int (Int)
 
 import qualified Data.Vector as V (maximum, replicateM)
 
+import Data.Random (MonadRandom)
+
 import AI.GP.Type.Fitnesse (Fitness, discardFitness)
 import AI.GP.Type.GProgram (GProgram)
 import AI.GP.Type.Population
     ( EvaluedPopulation
     , SelectionPopulation
---    , emptySelection
+    , getArbitraryIndividual
     , mkSelection
     )
+
+tournamentSelection
+    :: (MonadRandom m)
+    => Int -- ^ Tournament size
+    -> Int -- ^ Tournament rounds
+    -> EvaluedPopulation op t
+    -> m (SelectionPopulation op t)
+tournamentSelection size rounds = tournamentGen size rounds getArbitraryIndividual
 
 tournamentGen
     :: (Monad m)
@@ -39,7 +47,7 @@ tournamentRound
     -> m (GProgram op t)
 tournamentRound n select evaluated =
     discardFitness . V.maximum <$> V.replicateM n (select evaluated)
-
+--
 --tournamentRound
 --    :: (Monad m)
 --    => Int
@@ -48,3 +56,4 @@ tournamentRound n select evaluated =
 --tournamentRound n selector
 --    | n > 0 = let a=a in a
 --    | otherwise = return emptySelection
+
