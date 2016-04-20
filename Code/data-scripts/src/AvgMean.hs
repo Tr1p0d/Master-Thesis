@@ -45,7 +45,8 @@ rowWise :: (V.Vector a -> b) -> M.Matrix a -> [b]
 rowWise op mat = map (\rowN -> op (M.getRow rowN mat)) [1 .. M.nrows mat]
 
 printTikz :: (String, String) -> [Double] -> IO ()
-printTikz a = void . zipWithM (\g f -> putStrLn $ showTikz (g, (1-f) * 8192)) [0..]
+printTikz l s = do
+    putStrLn $ showTikz l
+    void $ zipWithM (\g f -> putStrLn $ showTikz (g, (1-f) * 8192)) [0..] s
   where
-    showGenerationF (g, Fitness{..}) = show $ (g, hits)
     showTikz (i, v) = show i ++ " " ++ show v
