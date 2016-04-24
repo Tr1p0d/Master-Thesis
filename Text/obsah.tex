@@ -164,11 +164,16 @@ $F \in U$ takovou, kterou by funkce $f_{hash}$ nezobrazila pouze na jeden
 slot.
 
 Je vidìt, ¾e pokud máme informace o univerzu mo¾ných klíèù, mù¾eme navrhnout
-ha¹ovací funkci 'na míru' tak, aby mìla lep¹í vlastnosti, ne¾ obecná 
+ha¹ovací funkci 'na míru' tak, aby mìla lep¹í vlastnosti, ne¾ obecná è¹
 ha¹ovací funkce. Tento úkol je v¹ak obtí¾ný a neexistuj pro nìj obecný
 návod jak toho docílit. Musíme se spolehnout na zku¹enosti, znalosti a v 
 neposlední øadì také na intuici. Nebo mù¾eme zvolit úplnì jiný pøístup
 jak napovídá kapitola \ref{sec:evolution_design}.
+
+\section{Konstrukèní schémata ha¹ovacích funkcí}
+
+\section{Øe¹ení kolizí pøi ha¹ování}
+\subsection{Kukaèèí ha¹ování}
 
 \chapter{Evoluèní návrh}
 \label{sec:evolution_design}
@@ -703,11 +708,35 @@ popisují tabulky \ref{tab:function_set_design} a \ref{tab:terminal_set_design}.
 
 \chapter{Experimenty}
 %%%%%%%%%%%%% EXPERIMENTS WITH VARIOUS FUNCTIONS %%%%%%%%%%%%%%%
-V této sekci provedeme experimenty v nich¾ ovìøíme, zda navr¾ené øe¹ení poskytuje dobré
-výsledky. Poté provedeme dal¹í sérii experimentù, v ních¾ budeme postupnì mìnit navr¾ené
+V této kapitole provedeme experimenty v nich¾ nejprve ovìøíme, zda navr¾ené øe¹ení poskytuje dobré
+výsledky. Poté provedeme dal¹í sérii experimentù, v ních¾ budeme postupnì mìnit parametry navr¾eného
 øe¹ení a vyhodnotíme výsledky. Mìnit budeme jak samotné parametry algoritmu genetického
-programování, tak i mno¾iny terminálních a neterminálních symbolù. Je dùle¾ité podotknout
-, ¾e v øe¹ení budeme provádìt v¾dy pouze jedinou zmìnu. PROC?
+programování, tak i mno¾iny terminálních a neterminálních symbolù. Budeme provádìt v¾dy pouze
+jednu zmìnu v ka¾dém experimentu, abychom zachovali jejich vìrohodnost a správnou korespondenci
+mezi zmìnou parametru a dùsledkem, jaký má na výsledné øe¹ení.
+
+V následující sekci budeme experimentovat s evolvovanými ha¹ovacími funkcemi, do kterých zahrneme
+Merkle-Damgardovo schéma popsané v kapitole \ref{sec:hashing}. Krátce popí¹eme zmìny v na¹em
+evoluèním algoritmu a provedeme pøíslu¹né experimenty.
+
+V poslední sekci této kapitoly uvedeme do námi navr¾eného øe¹ení Kukaèèí schéma jak bylo popsané
+v kapitole \ref{sec:hashing}. Opìt shrneme zmìny v genetickém algoritmu, provedeme a vyhodnotíme
+pøíslu¹né experimenty.
+
+Ve v¹ech experimentech budeme mìrit míru odolnosti proti kolizím, konkrétnì tedy kolik je daná ha¹ovací 
+funkce schopna naha¹ovat rùzných IP adres. Dal¹í, neménì dùle¾itou roli hraje u ha¹ovacích funkcí jejich
+rychlost. Provedeme tedy i experimenty, které odhalí rychlost s jakou jednotlivé ha¹ovací funkce provádí svou
+èinnost. 
+
+\section{Experimenty s navr¾eným øe¹ením}
+Nejprve se tedy budeme zkoumat výsledky, jaké poskytuje námi navr¾ené øe¹ení z kapitoly
+ \ref{sec:solution_design}. Námi navr¾ený algoritmus porovnáme s dvìmi variantami náhodného prohledávání.
+ Prvni varianta bude náhodné prohledávání bez pou¾ití elitismu, druhá s elitismem. Do grafu zahrneme i jednu
+ variantu èlovekem vytvoøené obecné ha¹ovací funkce, konkrétnì ha¹ovací funkci \textit{Murmurhash3}. 
+
+\section{Ha¹ování s Merkle-Damgardovou konstrukcí}
+
+\section{Kukaèèní ha¹ování}
 
 \chapter{Závìr}
 \input{conclusion}
