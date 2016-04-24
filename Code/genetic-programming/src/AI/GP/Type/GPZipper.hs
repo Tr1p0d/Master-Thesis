@@ -47,7 +47,6 @@ commonRegions
     -> ([GPZipper op t], [GPZipper op t])
 commonRegions h = bimap' (subZippers h) . bimap' toGPZipper
 
-
 withFocus :: (GProgram op t -> GProgram op t) -> GPZipper op t -> GPZipper op t
 withFocus f (Focus p c) = Focus (f p) c
 

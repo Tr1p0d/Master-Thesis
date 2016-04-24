@@ -42,10 +42,10 @@ build-type:          Simple
 cabal-version:       >=1.8
 
 
-executable linear-regression-demo
+executable symbolic-regression-demo
   -- .hs or .lhs file containing the Main module.
   main-is:
-                      src/linear-regression-demo.hs
+                      src/symbolic-regression-demo.hs
 
 
   -- Modules included in this executable, other than Main.
@@ -56,9 +56,43 @@ executable linear-regression-demo
                         base >=4.8 && < 5
                         -- haskell platform
                         , mtl ==2.2.*
+                        , primitive ==0.6.*
+                        , vector ==0.11.*
                         -- haskell platform
                         -- hackage packages
-                        , random-fu ==0.2.*
+                        , lens ==4.13.*
+                        , mwc-random ==0.13.*
+                        -- hackage packages
+                        -- local packags
+                        , genetic-programming
+                        -- local packags
+
+executable ip-hashing-octet
+  -- Directories containing source files.
+  hs-source-dirs:       src
+
+  -- .hs or .lhs file containing the Main module.
+  main-is:
+                        ip-hashing-octet.hs
+
+  -- Modules included in this executable, other than Main.
+  other-modules:
+                        Utils
+
+  -- Other library packages from which modules are imported.
+  build-depends:
+                        base >=4.8 && < 5
+                        -- haskell platform
+                        , containers ==0.5.*
+                        , mtl ==2.2.*
+                        , primitive ==0.6.*
+                        , vector ==0.11.*
+                        -- haskell platform
+                        -- hackage packages
+                        , iproute ==1.7.*
+                        , lens ==4.13.*
+                        , monad-loops ==0.4.3.*
+                        , mwc-random ==0.13.*
                         -- hackage packages
                         -- local packags
                         , genetic-programming

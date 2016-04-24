@@ -50,18 +50,7 @@ cabal-version:       >=1.10
 library
     -- Modules exported by the library.
     exposed-modules:
-                        AI.GP
-                        AI.GP.Crossover
-                        AI.GP.Init
-                        AI.GP.Mutation
-                        AI.GP.Selection
-                        AI.GP.Type.Evolution
-                        AI.GP.Type.GPEvolutionParams
-                        AI.GP.Type.Fitnesse
                         AI.GP.Type.GProgram
-                        AI.GP.Type.GPZipper
-                        AI.GP.Type.Population
-                        AI.GP.Type.PopulationType
                         AI.GP.Utils
 
                         Data.Bifunctor.Extended
@@ -75,6 +64,7 @@ library
     -- Other library packages from which modules are imported.
     build-depends:      base >=4.8 && <5
                         -- included in Haskell Platform
+                        , containers ==0.5.*
                         , mtl ==2.2.*
                         , primitive ==0.6.*
                         , transformers >= 0.4 && <=0.5
@@ -84,8 +74,6 @@ library
                         , data-default ==0.5.*
                         , lens ==4.13.*
                         , mwc-random==0.13.*
-                        , monad-loops ==0.4.*
-                        , random-fu ==0.2.*
                         , vector-algorithms ==0.7.*
                         -- hackage packages
 
@@ -95,57 +83,7 @@ library
     -- Base language which the package is written in.
     default-language:    Haskell2010
 
-    ghc-options:        -Wall
-                        -fwarn-missing-import-lists
-                        -fwarn-implicit-prelude
-                        -O2
-
-test-suite unit-test
-    other-modules:
-                        AI.GP
-                        AI.GP.Crossover
-                        AI.GP.Init
-                        AI.GP.Mutation
-                        AI.GP.Selection
-                        AI.GP.Type.Fitnesse
-                        AI.GP.Type.GProgram
-                        AI.GP.Type.GPZipper
-                        AI.GP.Type.Population
-                        AI.GP.Type.PopulationType
-                        AI.GP.Utils
-
-                        Data.Bifunctor.Extended
-
-                        TestCase
-                        TestCase.AI.GP.Init
-                        TestCase.AI.GP.Crossover
-                        TestCase.AI.GP.Mutation
-                        TestCase.AI.GP.Type.Population
-    build-depends:
-                        base >=4.8 && <5
-                        -- included in Haskell Platform
-                        , mtl ==2.2.*
-                        , transformers >= 0.4 && <=0.5
-                        , vector ==0.11.*
-                        -- included in Haskell Platform
-                        -- hackage packages
-                        , data-default ==0.5.*
-                        , lens ==4.13.*
-                        , monad-loops ==0.4.*
-                        , random-fu ==0.2.*
-                        -- hackage packages
-                        -- test suite
-                        , HUnit >= 1.2 && < 2
-                        , test-framework >= 0.8 && < 1
-                        , test-framework-hunit >= 0.2.6
-                        , test-framework-quickcheck2 >= 0.3
-                        -- test suite
-
-    -- Directories containing source files.
-    hs-source-dirs:     test, src
-    type:               exitcode-stdio-1.0
-
-    main-is:            unit-tests.hs
-
-    -- Base language which the package is written in.
-    default-language:    Haskell2010
+   -- ghc-options:        -Wall
+   --                     -fwarn-missing-import-lists
+   --                     -fwarn-implicit-prelude
+   --                     -O2

@@ -6,10 +6,7 @@
 module AI.GP.Type.Population
     ( GPPopulation
     , _getPopulation
-    , crossPopulation
     , emptySelection
-    , getArbitraryIndividual
-    , getArbitraryPair
     , getPopulation
     , mergeGeneration
     , mkBreed
@@ -19,9 +16,7 @@ module AI.GP.Type.Population
     , mkInitial
     , mkMuted
     , mkSelection
-    , mutePopulation
     , populationLength
-    , replenishPopulation
     -- Type aliases
     , BreedPopulation
     , EvaluedPopulation
@@ -54,8 +49,6 @@ import qualified Data.Vector as V
     )
 
 import Control.Lens ((^.), makeLenses)
-import Data.Random (MonadRandom, sample)
-import Data.Random.Distribution.Uniform (uniform)
 
 import AI.GP.Type.Fitnesse (Fitness)
 import AI.GP.Type.GProgram (GProgram, IndividualPair)
@@ -103,22 +96,6 @@ mkGeneration = GPPopulation
 mkGenerationZero :: GPPopulation 'Initial e -> GPPopulation 'Generation e
 mkGenerationZero (GPPopulation p) = GPPopulation p
 
-
-getArbitraryPair
-    :: (MonadRandom m)
-    => SelectionPopulation op t
-    -> m (IndividualPair op t)
-getArbitraryPair population = (,)
-    <$> arbitraryVector selector barePop
-    <*> arbitraryVector selector barePop
-  where
-    barePop = population ^. getPopulation
-    selector = sample $ uniform 0 (V.length barePop - 1)
-
-getArbitraryIndividual :: (MonadRandom m) => GPPopulation a e -> m e
-getArbitraryIndividual =
-    arbitraryUniformVector . (^. getPopulation)
-
 populationLength :: GPPopulation a e -> Int
 populationLength = length . _getPopulation
 
@@ -127,40 +104,3 @@ mergeGeneration
     -> GPPopulation b e
     -> GPPopulation 'Generation e
 mergeGeneration a b = mkGeneration $ _getPopulation a V.++ _getPopulation b
-
-mutePopulation
-    :: (MonadRandom m)
-    => BreedPopulation op t
-    -> Float -- ^ Mutation probability
-    -> (GProgram op t -> m (GProgram op t))
-    -> m (MutedPopulation op t)
-mutePopulation breed probability method =
-    mkMuted <$> mapM stdMute' (breed ^. getPopulation)
-  where
-    stdMute' = stdMute probability method
-
-crossPopulation
-    :: (MonadRandom m)
-    => SelectionPopulation op t
-    -> Int -- ^ The population size
-    -> (IndividualPair op t -> m (IndividualPair op t))
-    -> m (BreedPopulation op t)
-crossPopulation selection size cross
-    | even size = mkBreed . flatten <$> cross' (size `div` 2)
-    | otherwise = mkBreed . V.drop 1 . flatten <$> (cross' $ (size `div` 2) + 1)
-  where
-    cross' s = V.replicateM
-        s
-        (getArbitraryPair selection >>= cross)
-
-replenishPopulation
-    :: (MonadRandom m)
-    => (EvaluedPopulation op t -> m (GProgram op t))
-    -> EvaluedPopulation op t
-    -> MutedPopulation op t
-    -> m (Generation op t)
-replenishPopulation replenish evalued muted =
-    mergeGeneration muted <$> replenished
-  where
-    replenished = mkGeneration <$> V.replicateM rSize (replenish evalued)
-    rSize = populationLength evalued - populationLength muted

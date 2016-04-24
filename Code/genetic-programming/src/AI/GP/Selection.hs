@@ -8,44 +8,46 @@ import Control.Monad (Monad)
 import Data.Function ((.))
 import Data.Int (Int)
 
-import qualified Data.Vector as V (maximum, replicateM)
+import Control.Monad.Primitive (PrimMonad, PrimState)
+import qualified Data.Vector as V (Vector, maximum, replicateM)
 
-import Data.Random (MonadRandom)
+import System.Random.MWC (Gen)
 
-import AI.GP.Type.Fitnesse (Fitness, discardFitness)
-import AI.GP.Type.GProgram (GProgram)
-import AI.GP.Type.Population
-    ( EvaluedPopulation
-    , SelectionPopulation
-    , getArbitraryIndividual
-    , mkSelection
-    )
+import AI.GP.Type.Fitnesse (EvaluatedIndividual, discardFitness)
+import AI.GP.Type.GProgram (Individual)
+import AI.GP.Utils (arbitraryUniformVector)
+
 
 tournamentSelection
-    :: (MonadRandom m)
+    :: (PrimMonad m)
     => Int -- ^ Tournament size
     -> Int -- ^ Tournament rounds
-    -> EvaluedPopulation op t
-    -> m (SelectionPopulation op t)
-tournamentSelection size rounds = tournamentGen size rounds getArbitraryIndividual
+    -> Gen (PrimState m)
+    -> V.Vector (EvaluatedIndividual op t)
+    -> m (V.Vector (Individual op t))
+tournamentSelection size rounds token evaluatedPop =
+    tournamentGen size rounds selector evaluatedPop
+  where
+    selector pop = arbitraryUniformVector token pop
 
 tournamentGen
     :: (Monad m)
     => Int -- ^ Tournament size
     -> Int -- ^ Tournament rounds
-    -> (EvaluedPopulation op t -> m (Fitness (GProgram op t))) -- ^ selector
-    -> EvaluedPopulation op t
-    -> m (SelectionPopulation op t)
+    -> (V.Vector (EvaluatedIndividual op t) -> m (EvaluatedIndividual op t))
+    -> V.Vector (EvaluatedIndividual op t)
+    -> m (V.Vector (Individual op t))
 tournamentGen size rounds selector population =
-    mkSelection <$> V.replicateM rounds (tournamentRound size selector population)
+    V.replicateM rounds (tournamentRound size selector population)
 
 tournamentRound
     :: (Monad m)
     => Int
-    -> (EvaluedPopulation op t -> m (Fitness (GProgram op t))) -- ^ selector
-    -> EvaluedPopulation op t
-    -> m (GProgram op t)
+    -> (V.Vector (EvaluatedIndividual op t) -> m (EvaluatedIndividual op t))
+    -> V.Vector (EvaluatedIndividual op t)
+    -> m (Individual op t)
 tournamentRound n select evaluated =
+    -- this could be much faster when sorted
     discardFitness . V.maximum <$> V.replicateM n (select evaluated)
 --
 --tournamentRound

@@ -3,35 +3,50 @@
 
 module AI.GP.Type.GPEvolutionParams where
 
-import Prelude (Double, Float)
+import Prelude (Double)
 
 import Data.Bool (Bool)
 import Data.Int (Int)
 
-import Control.Lens (makeLenses)
+import Control.Monad.Primitive (PrimState)
+import qualified Data.Vector as V (Vector)
 
+import Control.Lens (makeLenses)
+import System.Random.MWC (Gen)
+
+import AI.GP.Type.Fitnesse (EvaluatedIndividual)
 import AI.GP.Type.GProgram (Individual, IndividualPair)
-import AI.GP.Type.Population
-    ( EvaluedPopulation
-    , SelectionPopulation
-    )
+
 
 data GPEvolutionParams m op t = GPEvolutionParams
     { _populationSize :: Int
-    , _initMethod :: m (Individual op t)
+    , _initMethod
+        :: Gen (PrimState m)
+        -> m (Individual op t)
 
     , _selectionMethod
-        :: EvaluedPopulation op t -> m (SelectionPopulation op t)
+        :: Gen (PrimState m)
+        -> V.Vector (EvaluatedIndividual op t)
+        -> m (V.Vector (Individual op t))
     , _fitness :: Individual op t -> m Double
     , _terminate :: Double -> Bool
 
     , _breedSize :: Int
-    , _crossoverMethod :: IndividualPair op t -> m (IndividualPair op t)
+    , _crossoverMethod
+        :: Gen (PrimState m)
+        -> IndividualPair op t
+        -> m (IndividualPair op t)
 
-    , _mutationProbability :: Float
-    , _mutationMethod :: Individual op t -> m (Individual op t)
+    , _mutationProbability :: Double
+    , _mutationMethod
+        :: Gen (PrimState m)
+        -> Individual op t
+        -> m (Individual op t)
 
-    , _replenishMethod :: EvaluedPopulation op t -> m (Individual op t)
+    , _replenishMethod
+        :: Gen (PrimState m)
+        -> V.Vector (EvaluatedIndividual op t)
+        -> m (V.Vector (Individual op t))
 
     , _maxGenerations :: Int
 

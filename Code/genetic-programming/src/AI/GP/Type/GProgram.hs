@@ -1,38 +1,56 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE ExistentialQuantification #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE RecordWildCards #-}
 
 module AI.GP.Type.GProgram where
 
-import Data.Eq (Eq)
-import Data.Int (Int)
-import Text.Show (Show)
+import Prelude
 
-import Control.Lens (makeLenses)
-import Data.Default (Default(def))
+import Data.Word (Word32)
+import Data.Proxy (Proxy)
+import Data.Dynamic
 
+type Forest a = [a]
 
-data GProgram op t
+data GPData
+    = forall a . GPData
+        { _operation :: Dynamic
+        , _retType :: Proxy a
+        , _height :: Word32
+        , _depth :: Word32
+        }
+
+instance Show GPData where
+    show _ = "SomeData"
+
+data GPTree
     = Node
-        { _height :: Int
-        , _nodeData :: op
-        , _lSubTree :: GProgram op t
-        , _rSubTree :: GProgram op t
+        { _data :: GPData
+        , _subForest :: Forest GPTree
         }
-    | Leaf
-        { _height :: Int
-        , _val :: t
+    deriving (Show)
+
+tree1 = Node undefined
+    [ Node undefined []
+    , Node undefined []
+    ]
+
+data GPTreeFocus
+    = Focus
+        { _focus :: GPData
+        , _context :: [(Forest GPTree, GPData, Forest GPTree)]
+        , _lSiblings :: Forest GPTree
+        , _rSiblings :: Forest GPTree
         }
-    deriving (Eq, Show)
-makeLenses ''GProgram
+    deriving (Show)
 
-instance Default (GProgram op t) where
-    def = Leaf 0 undefined
-      where
-        undefined = undefined
+focus Node{..} = Focus _data [] [] _subForest
 
-type Individual op t = GProgram op t
-type IndividualPair op t = (GProgram op t, GProgram op t)
+down (Focus d c ls (r:rs)) = Focus (_data r) ((ls,d,rs):c) [] (_subForest r)
 
-withOperation :: (op -> op) -> GProgram op t -> GProgram op t
-withOperation f (Node h o l r) = Node h (f o) l r
-withOperation _ leaf = leaf
+up (Focus d ((pls,pd,prs):ctxs) ls rs) = Focus pd ctxs [] (pls ++ mkNode:prs)
+  where
+    mkNode = Node d (reverse ls ++ rs)

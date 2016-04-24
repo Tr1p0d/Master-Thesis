@@ -2,52 +2,58 @@
 
 module AI.GP.Crossover where
 
-import Prelude (Float, error)
+import Prelude (Double, error)
 
 import Control.Applicative ((<$>), (<*>))
 import Control.Monad (Monad(return))
-import Data.Function (($), (.))
+import Data.Function (($))
 import Data.Int (Int)
 import Data.List (any, null)
-import Data.Maybe (Maybe(Just, Nothing))
+import Data.Ord (min)
 
-import AI.GP.Type.GProgram (GProgram)
+import Control.Monad.Primitive (PrimMonad, PrimState)
+
+import System.Random.MWC (Gen, uniformR)
+import System.Random.MWC.Distributions (bernoulli)
+
+import AI.GP.Type.GProgram (GProgram, _height)
 import AI.GP.Type.GPZipper
     ( GPZipper
     , commonRegions
     , mkProgramTuple
     )
 import AI.GP.Utils (arbitraryUniform)
-import Data.Random (MonadRandom, sample)
-import Data.Random.Distribution.Bernoulli (bernoulli)
-import Data.Random.Distribution.Uniform (uniform)
 
 
 subtreeCrossoverPreferLeafs
-    :: (MonadRandom m)
-    => Int      -- | Uppwer bound
-    -> Float    -- | percentil of Leaf preference
+    :: (PrimMonad m)
+    => Double -- | percentil of Leaf preference
+    -> Gen (PrimState m)
     -> (GProgram op t, GProgram op t)
     -> m (GProgram op t, GProgram op t)
-subtreeCrossoverPreferLeafs ub preference ps = do
-    leaf <- sample $ bernoulli preference
-    if leaf then subtreeCrossoverLeaf ps else subtreeCrossoverUniformNodes ps ub
+subtreeCrossoverPreferLeafs preference token progPair = do
+    leaf <- bernoulli preference token
+    if leaf
+    then subtreeCrossoverLeaf token progPair
+    else subtreeCrossoverUniformNodes token progPair
 
 subtreeCrossoverUniform
-    :: (MonadRandom m)
-    => (GProgram op t, GProgram op t)
-    -> Int -- | Uppwer bound
+    :: (PrimMonad m)
+    => Gen (PrimState m)
+    -> (GProgram op t, GProgram op t)
     -> m (GProgram op t, GProgram op t)
-subtreeCrossoverUniform ps = subtreeCrossoverUniformGen ps 0
+subtreeCrossoverUniform token progPair@(p1,p2) =
+    subtreeCrossoverUniformGen 0 (min (_height p1) (_height p2)) token progPair
 
 subtreeCrossoverUniformGen
-    :: (MonadRandom m)
-    => (GProgram op t, GProgram op t)
-    -> Int -- | Lower bound
+    :: (PrimMonad m)
+    => Int -- | Lower bound
     -> Int -- | Uppwer bound
+    -> Gen (PrimState m)
+    -> (GProgram op t, GProgram op t)
     -> m (GProgram op t, GProgram op t)
-subtreeCrossoverUniformGen ps lb ub =
-    subtreeCrossoverGen ps (sample $ uniform lb ub) arbitraryUniform
+subtreeCrossoverUniformGen lb ub token progPair =
+    subtreeCrossoverGen progPair (uniformR (lb, ub) token) (arbitraryUniform token)
 
 subtreeCrossoverGen
     :: (Monad m)
@@ -63,14 +69,17 @@ subtreeCrossoverGen ps gen sel = do
     else mkProgramTuple <$> sel r1 <*> sel r2
 
 subtreeCrossoverLeaf
-    :: (MonadRandom m)
-    => (GProgram op t, GProgram op t)
+    :: (PrimMonad m)
+    => Gen (PrimState m)
+    -> (GProgram op t, GProgram op t)
     -> m (GProgram op t, GProgram op t)
-subtreeCrossoverLeaf ps = subtreeCrossoverGen ps (return 0) arbitraryUniform
+subtreeCrossoverLeaf token progPair =
+    subtreeCrossoverGen progPair (return 0) $ arbitraryUniform token
 
 subtreeCrossoverUniformNodes
-    :: (MonadRandom m)
-    => (GProgram op t, GProgram op t)
-    -> Int -- | Uppwer bound
+    :: (PrimMonad m)
+    => Gen (PrimState m)
+    -> (GProgram op t, GProgram op t)
     -> m (GProgram op t, GProgram op t)
-subtreeCrossoverUniformNodes ps = subtreeCrossoverUniformGen ps 1
+subtreeCrossoverUniformNodes token progPair@(p1,p2) =
+    subtreeCrossoverUniformGen 1 (min (_height p1) (_height p2)) token progPair

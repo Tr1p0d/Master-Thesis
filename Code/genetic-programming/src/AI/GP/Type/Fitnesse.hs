@@ -1,4 +1,5 @@
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 module AI.GP.Type.Fitnesse where
@@ -9,8 +10,9 @@ import Control.Monad (Monad(return))
 import Data.Bool (Bool(False), otherwise)
 import Data.Eq ((==), Eq)
 import Data.Function (($))
+import Data.List ((++))
 import Data.Ord ((>), (<), Ord, Ordering(LT, EQ, GT), compare)
-import Text.Show (Show)
+import Text.Show (Show(show))
 
 import Control.Lens ((^.), makeLenses)
 import Data.Default (Default(def))
@@ -20,19 +22,21 @@ import AI.GP.Type.GProgram (Individual, GProgram)
 
 data Fitness e = Fitness
     { _getIndividual :: e
-    , _getScore :: Double
+    , _individualScore :: Double
     , _fitEnough :: Bool
     }
-    deriving (Show)
 makeLenses ''Fitness
 
+instance (Show e) => Show (Fitness e) where
+    show Fitness{..} = show _getIndividual ++ ":" ++ show _individualScore ++ "\n"
+
 instance Eq (Fitness a) where
-    a == b = (a ^. getScore) == (b ^. getScore)
+    a == b = (a ^. individualScore) == (b ^. individualScore)
 
 instance Ord (Fitness a) where
     compare a b
-       | (a ^. getScore) > (b ^. getScore) = GT
-       | (a ^. getScore) < (b ^. getScore) = LT
+       | (a ^. individualScore) > (b ^. individualScore) = GT
+       | (a ^. individualScore) < (b ^. individualScore) = LT
        | otherwise = EQ
 
 instance (Default a) => Default (Fitness a) where
