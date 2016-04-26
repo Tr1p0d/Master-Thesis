@@ -56,7 +56,7 @@ vhodné pou¾ít ha¹ovací funkci. Zjevnou výhodou tabulek s pøímým pøistupem je slo
 pro velká univerza $U$, kdy velká èást tabulky zùstane prázdná.
 
 \subsection{Ha¹ovací funkce}
-Ha¹ovací funkce je je zobrazení, mapující prvky mno¾iny $U$ na jednotlivé 
+Ha¹ovací funkce je zobrazení, mapující prvky mno¾iny $U$ na jednotlivé 
 sloty (indexy) tabulky $T$ :
 $$ f_{hash} : U \to (0,1,\ldots,m-1)$$
 za pøedpokladu, ¾e tabulka má právì $m-1$ slotù. Vyhledávací struktura 
@@ -77,19 +77,7 @@ Vzhledem k tomu, ¾e velikost tabulky je men¹í, ne¾ velikost univerza $|U|$,
 budou nastávat kolize. Kolize je pøípad kdy, dva rùzné prvky univerza
 $k_{1}, k_{2} \in U$ budou zobrazeny na stejný slot : 
 $f_{hash} (k_{1}) = f_{hash} (k_{2})$. S tímto neduhem se dá vypoøádat mnoha 
-zpùsoby, ale pro na¹e úèely postaèí zøetìzení prvkù ve slotu do listu.
-Èasová slo¾itost takové implementace je :
-\begin{itemize}
-	\item v nejhor¹ím pøípadì $\theta (n)$, kdy v¹echny prvky budou namapovány
-		na jeden slot,
-	\item v prùmìru bude $\theta (1 + \alpha)$, za pøedpokladu
-		uniformního rozlo¾ení, kdy pravdìpodobnost namapování libovolbného
-		prvku na konkrétní slot je $\frac{1}{m}$ a
-\end{itemize}
-
-$\alpha$ je takzvaný \textit{faktor zatí¾ení} definovaný vztahem $\alpha = \frac{n}{m}$.
-Èasová slo¾itost tabulky zále¾í za pøedpokladu uniformního rozlo¾ení 
-ha¹ovací funkce na \textit{faktoru zatí¾ení}. 
+zpùsoby, jak uvidíme dále v sekci \ref{sec:collisions}.
 
 \section{Kritéria kvality ha¹ovacích funkcí}
 
@@ -164,16 +152,150 @@ $F \in U$ takovou, kterou by funkce $f_{hash}$ nezobrazila pouze na jeden
 slot.
 
 Je vidìt, ¾e pokud máme informace o univerzu mo¾ných klíèù, mù¾eme navrhnout
-ha¹ovací funkci 'na míru' tak, aby mìla lep¹í vlastnosti, ne¾ obecná è¹
+ha¹ovací funkci 'na míru' tak, aby mìla lep¹í vlastnosti, ne¾ obecná
 ha¹ovací funkce. Tento úkol je v¹ak obtí¾ný a neexistuj pro nìj obecný
 návod jak toho docílit. Musíme se spolehnout na zku¹enosti, znalosti a v 
 neposlední øadì také na intuici. Nebo mù¾eme zvolit úplnì jiný pøístup
 jak napovídá kapitola \ref{sec:evolution_design}.
 
-\section{Konstrukèní schémata ha¹ovacích funkcí}
+\subsection{Merkle-Damgardovo konstrukèní schéma}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{fig/merkle_damgard}
+	\caption{Obecné Merkle-Damgardovo schéma pro $n$ blokù.}
+\end{figure}
 
 \section{Øe¹ení kolizí pøi ha¹ování}
+\label{sec:collisions}
+
+Situaci, kdy ha¹ovací funkce zobrazí dva rùzné klíèe na tentý¾ slot:
+$f_{hash} (k_{1}) = f_{hash} (k_{2})$ nazýváme ha¹ovací kolize nebo jen kolize. 
+Kolize jsou ne¾ádoucím dùsledkem pou¾ití ha¹ovacích funkcí
+a chceme se jim pokud mo¾no vyhnout, nebo» zásadním zpùsoben negativnì ovlivòují 
+èasovou slo¾itost asociativních polí, které jsou na ha¹ovacích funkcích postavené. 
+Pro dobré pochopení kolizí je nezbytné uvést míru zaplnìní ha¹ovací tabulky
+neboli takzvaný faktor zatí¾ení $\alpha$ definovaný vztahem $\alpha = \frac{n}{m}$.
+Právì èasová slo¾itost tabulky zále¾í za pøedpokladu uniformního rozlo¾ení 
+ha¹ovací funkce právì na \textit{faktoru zatí¾ení}. 
+
+Pou¾itím kvalitní ha¹ovací funkce mù¾eme riziko kolizí do jisté míry minimalizovat, ale
+s narùstajícím faktorem zatí¾ení $\alpha$ roste i riziko kolize, které dosáhne 
+urèitosti pøi $\alpha = 1$, tedy v ha¹ovací tabulce není ji¾ ¾ádný volný slot.
+V takovém pøípadì musíme kolizi vhodným zpùsobem øe¹it. Zpùsobù jak takovou sitaci
+øe¹it je mnoho. My si v této sekci uvedeme ty, které jsou pro na¹i práci podstatné.
+
+\subsection{Zøetìzené ha¹ování}
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[b]{0.49\textwidth}
+		\includegraphics[width=\textwidth]{fig/chained_hashing_insert}
+		\caption{Operace vlo¾ení nového prvku do ha¹ovací tabulky zpùsobí kolizi klíèù.}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.49\textwidth}
+		\includegraphics[width=\textwidth]{fig/chained_hashing_insert_result}
+		\caption{Kolidovaná data se zøetìzí v jednosmìrnì vázaném seznamu.}
+	\end{subfigure}
+	\caption{Demonstrace øe¹ení kolize za pou¾ití vázaného seznamu.}
+	\label{chained_hashing}
+\end{figure}
+
+Nejjednodu¹¹í a nejznámìj¹í formou øe¹ení kolizí je øetìzení dat v daném slotu. Jednotlivé 
+sloty jsou reprezentovány jednosmìrnì vázaným seznamem, jeho¾ polo¾ky tvoøí data dohromady
+s klíèem. Èasová slo¾iost takové implementace je:
+\begin{itemize}
+	\item v nejhor¹ím pøípadì $\theta (n)$, kdy v¹echny prvky budou namapovány
+	na jeden slot,
+	\item v prùmìru bude $\theta (1 + \alpha)$, za pøedpokladu
+	uniformního rozlo¾ení, kdy pravdìpodobnost namapování libovolného
+	prvku na konkrétní slot je $\frac{1}{m}$.
+\end{itemize}
+
+Èasovou slo¾itost lze vylep¹it vhodnou heuristikou, jakou mù¾e být napøíklad sledování
+èetnosti vyhledávání daných klíèù s následným vhodným pøeuspoøádáním jednosmìrnì vázaného
+seznamu. Prostorová slo¾itost této implementace také narùstá, nebo» souèástí ka¾dé polo¾ky jednosmìrnì
+vázaného seznamu \textit{ll} je i ukazatel na dal¹í prvek potøebný pro získání
+dal¹ího prvku seznamu \textit{next(ll)}. Øe¹ení kolizí zøetìzením kolidovaných 
+polo¾ek do jednosmìrnì vázaného seznamu poskytuje za pøedpokladu uniformního rozlo¾ení dobré
+výsledky a je výraznì rychlej¹í ne¾ samotný jednosmìrnì vázaný seznam. Existují v¹ak i jiné
+pøístupy, nabízející lep¹í vlastnosti.
+
 \subsection{Kukaèèí ha¹ování}
+
+Kukaèèí ha¹ování je moderní pøístup k øe¹ení ha¹ovacích kolizí, za pou¾ití dvou a více ha¹ovacích
+funkci a jedné nebo více tabulek \cite{Cuckoo_hashing}. Èastá implementace zahruje pouze jednu
+tabulku, v ní¾ má ka¾dá ha¹ovací funkce vyhrazena vlastní prostor. Uva¾ujme univerzum klíèù $U$
+a velikosti ha¹ovací tabulky $m$. Pak na pøíklad pro dvì ha¹ovací funkce 
+$h_1, h_2$, kde $h_1 : U \rightarrow \{0,\ldots,r_1-1\}$ a $h_2 : U \leftarrow \{r_1,\ldots,r_2-1\}$ musí platit
+$|\{0,\ldots,r_1-1\} \cup \{r_1,\ldots,r_2-1\}| = m$ a celkový poèet slotù ha¹ovací tabulky je $m$.
+
+Opakem je implementace, kdy ka¾dá ka¾dá ha¹ovací fukce obsluhuje dedikovanou tabulku. Zde pro
+jiné dvì funkce $h_3, h_4$ tvaru $h_3 : U \rightarrow \{0,\ldots,r_1-1\}$ a $h_4 : U \leftarrow \{0,\ldots,r_1-1\}$
+musí opìt platit $|\{0,\ldots,r_1-1\} \cup \{0,\ldots,r_1-1\}| = m$. Tedy ¾e ha¹ovací funkce musí dokonale pokrýt
+celou ha¹ovací tabulku.
+
+Název Kukaèèí ha¹ování je odvozen z chování nìkterých druhù kukaèek, kdy kukaèky vytlaèují vejce nebo své mladé
+z hnízda. Toto chování je velmi podobné operaci vkládání. I pøes to, ¾e se rozhraní operace $Insert(S,x)$ nemìní 
+, výraznì se mìní její vnitøní implementace. Operace vlo¾ení prvku do tabulky, vybere jednu z dostupných ha¹ovacích
+funkcí a pokusí se vlo¾it prvek na pøíslu¹né místo. Dojde-li ke kolizi, pùvodní prvek je vytlaèen a nahrazen prvkem novým.
+Vytlaèený prvek je znovu vlo¾en do tabulky, av¹ak za pou¾ití jiné ha¹ovací funkce. Tento postup se opakuje tak dlouho, dokud
+dochází pøi vkládání ke kolizím. Zøejmì tímto zpùsobem mù¾e docházet k cyklùm. Maximální poèet po sobì jdoucích vlo¾ení je tedy
+omezen konstantou. Celý proces blí¾e demonstruje algoritmus \ref{alg:cuckoo_hashing} a obrázek \ref{fig:cuckoo_hashing}.
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[b]{0.53\textwidth}
+		\includegraphics[width=\textwidth]{fig/cuckoo_hashing_insert}
+		\caption{Kolize je øe¹ena za pou¾ití druhé ha¹ovací funkce.}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.46\textwidth}
+		\includegraphics[width=\textwidth]{fig/cuckoo_hashing_insert_result}
+		\caption{Data v tabulkce se po nìkolikanásobném vytlaèení ustálí.}
+	\end{subfigure}
+	\caption{Demostrace øe¹ení kolize za pou¾ití kukaèèího ha¹ování.}
+	\label{fig:cuckoo_hashing}
+\end{figure}
+
+Pokud v prùbìhu operace dosa¾eno mezní hodnoty $MaxLoop$, pøedpokládáme ¾e jsme narazili na cyklus. V takovém pøípadì 
+provedeme nejprve operaci \Call{rehash}{} a poté zkusíme prvek vlo¾it opìtovným zavoláním funkce \Call{insert}{x}.
+Funkce \Call{rehash}{} zaji¹»uje, aby pøi opìtovném vlo¾ení prvku do tabulky znovu nevzniknul cyklus. Toho se dá
+dosáhnout napøíklad pou¾itím jiných ha¹ovacích funkci \cite{Cuckoo_hashing}. Není tøeba znovu vytváøet ha¹ovací tabulku,
+postaèí ha¹ovací tabulku projít a na ka¾dý prvek uplatnit nejprve operace \Call{delete}{x}, která jej z tabulky odstraní 
+a následnì jej znovu vlo¾it za pou¾ití operace \Call{insert}{x}.
+
+\begin{algorithm}
+\begin{algorithmic}
+\Function{insert}{x}
+	\Repeat
+		\State $x \leftrightarrow T_1[h_1(x)]$
+		\If {$x = \bot$} \Return \EndIf
+		\State $x \leftrightarrow T_2[h_2(x)]$
+		\If {$x = \bot$} \Return \EndIf
+	\Until{$!MaxLoop$}
+	\State \Call{rehash}{}; \Call{insert}{x}
+\EndFunction
+\end{algorithmic}
+\caption{Pseudokód popisující operaci $insert$ za pou¾ití kukaèèího ha¹ování.}
+\label{alg:cuckoo_hashing}
+\end{algorithm}
+
+Èasová slo¾itost výhledávání v tabulce za pou¾ití Kukaèèího ha¹ování je v prùmìru $\theta(1)$. Pro nás je ale
+dùle¾itìj¹í, ¾e èasová slo¾itost v nejhor¹ím pøípadì zustává také konstantní. Je v¹ak dùle¾ité zohlednit 
+následující faktory:
+\begin{itemize}
+	\item Je nutné pou¾ít takové ha¹ovací funkce, které dobøe uniformì distribuují svoje výstupy. Pokud by tento
+	pøedpoklad nebyl splnìn, mù¾e být (a pravdìpodobnì bude) èasto volána nákladná operace \Call{REHASH}{}.
+
+	\item Operace \Call{REHASH}{} nezvìt¹uje ani nezmen¹uje kapacitu ha¹ovací tabulky. Vzhledem k tomu, ¾e ka¾dý slot
+	ha¹ovací tabulky pojme právì jeden klíè, maximální faktor zatí¾ení $\alpha$ je právì roven jedné (co¾ je pøesný
+	opak chování zøetìzeného ha¹ování, kdy za pou¾ití vázaného seznamu snadno dosáhneme $\alpha \geq 1$).
+
+	\item Je dobré poèítat s tím, ¾e i za pou¾ití více ha¹ovacích funkcí se koeficientu $\alpha = 1$ pøiblí¾íme jen
+	vzdálenì. Opìtovné pokusy o vlo¾ení prvku do tabulky, která má ji¾ koeficient $\alpha \approx 1$ nevyhnutelnì
+	vyústí ve volání funkce \Call{REHASH}{}. Je tedy vhodné podrobit Kukaèèí ha¹ování nìjaké formì heuristiky, kdy
+	bude její kapacita ve vhodný okam¾ik zvìt¹ena, aby nedocházelo k opakovanému volání funkce \Call{REHASH}{}.
+\end{itemize}
 
 \chapter{Evoluèní návrh}
 \label{sec:evolution_design}
