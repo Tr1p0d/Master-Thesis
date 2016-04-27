@@ -159,11 +159,32 @@ neposlední øadì také na intuici. Nebo mù¾eme zvolit úplnì jiný pøístup
 jak napovídá kapitola \ref{sec:evolution_design}.
 
 \subsection{Merkle-Damgardovo konstrukèní schéma}
+V oblasti kryptografických ha¹ovacích funkcí se Merkle-Damgardovo schéma \cite{merkle0} jedním ze základních
+stavebních kamenù moderních kryptografických ha¹ovacích funkcí.
+Dokazují to nesèetné implementace state of the art ha¹ovacích funkcí na nìm zalo¾ené. Jako
+pøklad mù¾eme uvést algoritmy \textit{MD5} \cite{rfc1321}, \textit{SHA-1} \cite{rfc3174},
+\textit{SHA-2} \cite{rfc4634} nebo \textit{Tiger} \cite{tiger}.
 
+Jedná se o obecné schéma pro výstavbu ha¹ovacích funkcí odolných proti kolizím z jednosmìrných
+kompresních funkcí. Schéma se skládá z $n$ blokù pevné délky reprezentující vstupní zprávu.
+K nim korespondují jednosmìrné kompresní funkce. Ka¾dá kompresní má na vstupu blok vstupních dat,
+výstup pøedchozí kompresní funkce a produkuje výstup. Velikosti obou vstupu a výstupu jsou toto¾né,
+proto nazýváme funkce kompresní. Poslední èlánek v øetìzu kompresních funkcí pøedstavuje vhodné 
+zarovnání. Poslední finalizaèní komponenta je volitelná. Schéma blí¾e ilustruje obrázek 
+\ref{fig:merkle_damgard}.
+
+Bylo nezávisle ukázáno, ¾e pokud je pou¾itá vhodná 'vata'
+(angl. \textit{padding}) pro zarovnání na správnou velikost a kompresní funkce jsou odolné
+proti kolizím, pak vzniknuv¹í ha¹ovací funkce je také odolná proti kolizím \cite{damgard0}.
+
+Dodelat proc, a v jakych hasovaci funkcich se pouzivaji.
+Strucne uvest dalsi konstrukcni schemata.
+ 
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{fig/merkle_damgard}
 	\caption{Obecné Merkle-Damgardovo schéma pro $n$ blokù.}
+	\label{fig:merkle_damgard}
 \end{figure}
 
 \section{Øe¹ení kolizí pøi ha¹ování}
