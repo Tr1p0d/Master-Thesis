@@ -806,25 +806,42 @@ souèástí jejich experimentu není porovnání s algoritmem náhodného prohledávání, 
 kterému mohl jejich systém nedopatøením degradovat a který je z povahy vìci také 
 velmi robustní. Autoøi také tvrdí, ¾e evoluènì navrhují ha¹ovací funkce, co¾ 
 vzhledem k tomu, ¾e navrhují kompresní funkce Merkle-Damg\r{a}rdova schémata
-není ùplnì pravda. Tato práce se nachází na pomezí evoluèního návrhu a optimalizace.
+není ùplnì pravda. Takový pøístup se nachází na pomezí evoluèního návrhu a optimalizace.
 
-TODO DOPLNOT dobai0
+Zajímavou prací, která se vydala pøístupem kartézského genetického programování je
+\cite{dobai0}. Kartézské genetické programování je zejména vhodné pro aplikace blízké
+hardwarové vrstvì, tak¾e jeho volba se zdá velmi dobrá vzhledem k cílové aplikaèní doménì
+, kterou jsou sí»ové prvky. Nesporný pøínos práce spoèívá v pou¾ití Kukaèèího ha¹ování, které
+je pou¾ito za úèelem zvý¹ení faktoru zatí¾ení výsledné ha¹ovací tabulky a práce tak dosáhla velmi
+dobrých výsledkù. Faktor, který tato a na¹e práce sdílí je návrh doménovì specifické ha¹ovací 
+funkce, kde ha¹ovanou doménou jsou také IP adresy. Práce se v¹ak rozchází zejména ve volbì 
+fitnes funkce. Zatímco my (jak uvidíme pozdìji v této kapitole) jsme zvolili pøístup, kdy ha¹ujeme
+celý daný rozsah a mìøíme výskyt kolizi, mìøí poèet úspì¹nì naha¹ovaných adres a¾ do výskytu
+první kolize. Taková metrika je vskutku zajímavá, ale intuitivnì se naskýta úvaha, ¾e fitnes funkce
+velmi ¹patnì ohodnotí øe¹ení, která mají kolizi velmi brzo, ale pøitom mohou naha¹ovat velkou èást
+celého rozsahu. Fitnes funkce jasnì míøí na cíl naha¹ovat celý rozsah (tedy optimální øe¹ení), toho
+nicménì nedosáhla. Bude zajímavé porovnat výsledky na¹í prace s s výsledky dosa¾enými v této
+práci. Autoøi opìt pou¾ívají Merkle-Damg\r{a}rdovo schéma a práce se tudí¾ také nachází na 
+pomezí evoluèního návrhu a evoluèní optimalizace.
 
 \section{Návrh fitness funkce}
 
-V na¹em pøípadì ale nenavrhujeme obecnou ha¹ovací funkci. My navrhujeme specifickou
+V na¹í práce navrhujeme specifickou
 ha¹ovací funkci pro specifické univerzum hodnot. Proto mù¾eme pou¾ít jako kritérium
 kvality odolnost vùèi kolizím, které je nepøímým ukazatelem toho, jak dobøe funkce
-náhodnì distribuuje své výstupy.
+náhodnì distribuuje své výstupy. Evaluovanou ha¹ovací
+funkci budeme testoat nad v¹emi prvky univerza. To znamená, ¾e budeme navrhovat
+celkem ctyøi ha¹ovací funkce, pro ka¾dý vsupní dataset jednu. Kdybychom pro v¹echny ètyøi
+datasety navrhovali jednu jedinou, nedostali bychom dobré výsledky. Výsledný ha¹ovací tabulka
+by mìla 8192 slotù, ale byla by ``natrénována'' nad v¹emi adresami ze v¹ech datasetù. Navic 
+bychom se museli zabývat vhodnou volbou trénovacích dat, co¾ je obtí¾ný úkol a navíc pøídat
+kritérim, které by bralo v úvahu zobecòování. Výsledný ha¹ovací funkce by ji¾ nebyla obecná, ale
+nìkde ``na pùl cesty'' mezi obecnou a velmi specifickou ha¹ovací funkci.
 
-Jako dal¹í komponentu do na¹eho kritéria zaøadíme je¹te lavinový efekt. Ten je 
-dùle¾itým ukazatelem zejména z dùvodu dobrého zobecòování. Evaluovanou ha¹ovací
-funkci budeme testoat nad náhodnými prvky univerza. Nìkdy se mù¾e stát, ¾e i funkce
-s dobrým uniformním rozlo¾ením výstupù nebude pracovat správnì v praxi. To mù¾e být
-zpùsobeno mnoha faktory, napøíklad ¹patnou volbou evaluaèních vstupù.
-		 		 
-Výsledná hodnota fitness bude brát v úvahu, oba faktory s vìt¹ím durazem na odolnost
-vùèi kolizím.
+Neménì dùle¾itým kritériem je rychlost ha¹ovací funkce a to obzvlá¹tì v aplikacích jako jsou
+sí»ové smìrovaèe nebo jiná uplatòìní nároèná na rychlost a odezvu. Jak uvidíme pozdìji v této
+kapitole, ve¹keré námi navr¾ené funkce jsou implicitnì rychlé, proto¾e explicitnì omezíme hloubku
+abstraktních syntaktických stromù a vhodnì zvolíme mno¾inu terminálù a neterminálù. 
 
 \section{Zvolené parametry genetického programování}
 
@@ -855,12 +872,22 @@ kvalitní populaci co se rùznorodosti verlikostí a tvarù jedincù týká.
 
 Mno¾inu vstupù zkonstruujeme z konstant a vstupních promìnných. Vstupní
 promìnné vyrobíme z jednotlivých oktetù adres a budeme po¾adovat, aby ka¾dý
-vstupní program obsahoval v¹echny promìnné právì jednou, tedy aby pracoval
-s celou adresou. Jako konstanty budeme volit prvoèísla. Prvoèísla hrají 
-dùle¾itou roli pøi operaci modulo. Pokud volíme jako argument modula nìjaké
+vstupní program obsahoval v¹echny promìnné alespoò jednou, tedy aby pracoval
+s celou adresou. Jako konstanty budeme volit prvoèísla. 
+
+Prvoèísla hrají dùle¾itou roli pøi operaci modulo. Pokud volíme jako argument modula nìjaké
 násobky malých èísel jako je napøíklad èislo dvì, mù¾e se stát, ¾e funkce bude
 mít tendenci seskupovat èísla dìlitelná dvìmi. Jako konstanty budeme volit
-velká prvoèísla.
+prvoèísla z rozsahu $\langle 2, 2N \rangle$, kde $N$ je velikost datasetu. Prvoèísla
+budeme implementovat ve formì \textit{pomíjivé náhodné konstanty} (angl. \textit{ephemeral
+random constant}, zkr. \textit{ERC}), kterou budeme znaèit $\Re$. Tento pøístup nám
+zajistí vhodné chování konstany s ohledem na operátory køí¾ení a mutace a také pøi
+evaluaci. Taková konstanta pokud je vygenerována bude pøi ka¾dém ohodnocení 
+nabývat stejné hodnoty, ale v mutaci jej bude mìnit s urèitou pravdìpodobností na
+nìjaké nejbli¾¹í prvoèíslo. 
+
+TODO oktety
+TODO a0-a3
 
 Mno¾inu funkcí zvolíme z bì¾ných operací. Vyhneme se cyklùm a jiným slo¾itým
 øídícím konstrukcím, nebo» ha¹ovací funkce musí být také rychlá. Dal¹í
@@ -881,8 +908,7 @@ popisují tabulky \ref{tab:function_set_design} a \ref{tab:terminal_set_design}.
   	Aritmetické celoèíselné & $\{ +,-,*,/,mod \}$ \\
   	Aritmetické             & $\{\}$ \\
   	Booleovské				& $\{AND, OR, NOT, XOR\}$ \\
-  	Øídící                  & $\{IF-THEN-ELSE\}$ \\
-  	Bitové					& $\{<<, >>\}$ \\ 	 
+  	Bitové					& $\{ \lll, \ggg \}$ \\ 	 
   	\hline
 \end{tabular}
 \caption{Zvolená mno¾ina funkcí}
@@ -898,8 +924,8 @@ popisují tabulky \ref{tab:function_set_design} a \ref{tab:terminal_set_design}.
   	\hline			
    	Kategorie & Zástupci \\
   	\hline \hline  
-  	Promìnné       & samostatná promìnná pro ka¾dý oktet adresy \\
-  	Funkce arity 0 & $\{ \text{vygeneruj\_prvocislo} \}$ \\	 
+  	Promìnné       & $\{o_0, o_1, o_2, o_3, a_0, a_1, a_2, a_3 \}$ \\
+  	Funkce arity 0 & $\{ \Re \}$ \\	 
   	\hline
 \end{tabular}
 \caption{Zvolená mno¾ina terminálù}
@@ -1358,6 +1384,23 @@ Nejprve se tedy budeme zkoumat výsledky, jaké poskytuje námi navr¾ené øe¹ení z k
 \end{figure}
 %%%%%%%%%%%%% IPHASH BOXPLOT %%%%%%%%%%%%%%%
 
+\begin{table}[!ht]
+\centering
+\begin{tabular}{l|c|c|c|c}
+	Ha¹ovací funkce & Dataset 1 & Dataset 2 & Dataset 3 & Dataset 4 \\
+	\hline
+	FarmHash          			 & 5227 & 5199 & 5203 & 5158 \\
+	MurmurHash3    			  & 5190 & 5190 & 5206 & 5206 \\
+	CityHash            			& 5180 & 5156 & 5171 & 5155 \\
+	\hline
+	IPHash               			& 5301 & 5305 & 5274 & 5278 \\
+	Náhodné prohledávání & 5276 & 5281 & 5277 & 5281 \\
+	\hline
+\end{tabular}
+\caption{Shrnutí výsledkù evolvovaných i obecných ha¹ovacích funkcí napøíè v¹emi datasety.}
+\label{tab:IPHash_conclusion}
+\end{table}
+
 \begin{figure}[!ht]
 \centering
 \begin{tikzpicture}
@@ -1375,7 +1418,6 @@ Nejprve se tedy budeme zkoumat výsledky, jaké poskytuje námi navr¾ené øe¹ení z k
 	, zticklabels={5280,5290,5300,5310,5320}
 	]
 	\addplot3[surf] coordinates {
-		%8            16         32           64           128          256          512          1024  
 		    %8            16         32           64           128          256          512          1024  
 		    (1,2,5288.5) (2,2,5289) (3,2,5291)   (4,2,5294)	  (5,2,5297)   (6,2,5295)   (7,2,5293.5) (8,2,5296.5)
 		    
