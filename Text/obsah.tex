@@ -158,32 +158,41 @@ návod jak toho docílit. Musíme se spolehnout na zku¹enosti, znalosti a v
 neposlední øadì také na intuici. Nebo mù¾eme zvolit úplnì jiný pøístup
 jak napovídá kapitola \ref{sec:evolution_design}.
 
-\subsection{Merkle-Damgardovo konstrukèní schéma}
-V oblasti kryptografických ha¹ovacích funkcí se Merkle-Damgardovo schéma \cite{merkle0} jedním ze základních
+\subsection{Merkle-Damg\r{a}rdovo konstrukèní schéma}
+V oblasti kryptografických ha¹ovacích funkcí se Merkle-Damg\r{a}rdovo schéma \cite{merkle0} jedním ze základních
 stavebních kamenù moderních kryptografických ha¹ovacích funkcí.
 Dokazují to nesèetné implementace state of the art ha¹ovacích funkcí na nìm zalo¾ené. Jako
 pøklad mù¾eme uvést algoritmy \textit{MD5} \cite{rfc1321}, \textit{SHA-1} \cite{rfc3174},
 \textit{SHA-2} \cite{rfc4634} nebo \textit{Tiger} \cite{tiger}.
 
-Jedná se o obecné schéma pro výstavbu ha¹ovacích funkcí odolných proti kolizím z jednosmìrných
-kompresních funkcí. Schéma se skládá z $n$ blokù pevné délky reprezentující vstupní zprávu.
-K nim korespondují jednosmìrné kompresní funkce. Ka¾dá kompresní má na vstupu blok vstupních dat,
+Jedná se o obecné schéma pro výstavbu ha¹ovacích funkcí odolných proti kolizím z jednosmìrnì
+kompresní funkce. Schéma se skládá z $n$ blokù pevné délky reprezentující vstupní zprávu.
+K nim korespondují jednosmìrné kompresní funkce. Ka¾dá kompresní funkce má na vstupu blok vstupních dat,
 výstup pøedchozí kompresní funkce a produkuje výstup. Velikosti obou vstupu a výstupu jsou toto¾né,
 proto nazýváme funkce kompresní. Poslední èlánek v øetìzu kompresních funkcí pøedstavuje vhodné 
-zarovnání. Poslední finalizaèní komponenta je volitelná. Schéma blí¾e ilustruje obrázek 
+zarovnání. Nìkdy se také pou¾ívá volitelna finalizaèní komponenta. Schéma blí¾e ilustruje obrázek 
 \ref{fig:merkle_damgard}.
 
 Bylo nezávisle ukázáno, ¾e pokud je pou¾itá vhodná 'vata'
 (angl. \textit{padding}) pro zarovnání na správnou velikost a kompresní funkce jsou odolné
 proti kolizím, pak vzniknuv¹í ha¹ovací funkce je také odolná proti kolizím \cite{damgard0}.
 
-Dodelat proc, a v jakych hasovaci funkcich se pouzivaji.
-Strucne uvest dalsi konstrukcni schemata.
+Dùvodem, proè se zde zabýváme kryptografickým schématem je, ¾e jej pou¾ívají i mnohé nekryptografické
+ha¹ovací funkce. I pøes to, ¾e tyto funkce nejsou kryptograficky bezpeèné (co¾ ani není úèelem zavedení
+Merkle-Damg\r{a}rdova shématu), pou¾ití kryptografického schématu dodá do ha¹ovací funkce dodateènou 
+náhodnost. Pou¾itím schématu docílíme v evoluèním algoritmu znaèného zmen¹ení prohledávaného prostoru
+a tedy lep¹í a rychlej¹í konvergence algoritmu viz. dále kapitola \ref{sec:evolution_design}.
+
+Kromì Merkle-Damg\r{a}rdova schémata, exitují i jiná konstrukèní schémata, napøíklad Merkleho strom 
+\cite{merkle1}, èasto pou¾ívaný v \textit{P2P} sítích,
+struktura \textit{HAIFA} \cite{haifa} pou¾itá v rodinì kryptografických ha¹ovacích funkcí \textit{BLAKE}
+nebo funkce \textit{Sponge} \cite{sponge}. Tìmito se zde v¹ak zabývat nebudeme.
+
  
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{fig/merkle_damgard}
-	\caption{Obecné Merkle-Damgardovo schéma pro $n$ blokù.}
+	\caption{Obecné Merkle-Damg\r{a}rdovo schéma pro $n$ blokù.}
 	\label{fig:merkle_damgard}
 \end{figure}
 
@@ -317,6 +326,14 @@ následující faktory:
 	vyústí ve volání funkce \Call{REHASH}{}. Je tedy vhodné podrobit Kukaèèí ha¹ování nìjaké formì heuristiky, kdy
 	bude její kapacita ve vhodný okam¾ik zvìt¹ena, aby nedocházelo k opakovanému volání funkce \Call{REHASH}{}.
 \end{itemize}
+
+\section{Analýza existujících øe¹ení}
+Cílem této sekce je podat pøehled o existujících state of the art obecných ha¹ovacích funkcích, proto¾e nìkterými z tìchto
+funkcí budeme porovnávat námi navr¾ené ha¹ovací funkce. Také budeme analyzovat, z jakých elementárních operací se 
+dané ha¹ovací funkce skládají, co¾ nám poslou¾í pøedev¹ím pro návrh mno¾iny funkcí dále viz. kapitola  
+\ref{sec:solution_design}. 
+
+\textit{MurmurHash2} \cite{murmurhash2}, \textit{MurmurHash3} \cite{murmurhash3} \textit{FarmHash} \cite{farmhash}, \textit{CityHash} \cite{cityhash_slides}
 
 \chapter{Evoluèní návrh}
 \label{sec:evolution_design}
@@ -677,25 +694,34 @@ evaluovat nìkolikrát (mnohokrát), mù¾e se i toto øe¹ení jevit jako vhodné.
 spoèítání hodnoty uzlu za vstupu hodnot jeho následníkù. Kostru algoritmu bude jistì
 tvoøit prùchod \textit{postorder}. Evaluace jednotlivých hodnot v¹ak nemusí být za v¹ech 
 okolností triviální, mù¾e napøíklad nastat pøípad, kdy bude program dìlit nulou nebo
-se sna¾it seèíst hodnoty rùzných typù (napø. \texttt{Bool} a \texttt{Int}). Proto
-se po prvcích mno¾iny $F$ vy¾adují dvì uzávìrové vlastnosti. 
+se sna¾it seèíst hodnoty rùzných typù (napø. \texttt{Bool} a \texttt{Int}). Pøi reprodukci
+jedincù zde nará¾íme na podobné problémy jako napøíklad v teorii typù. Typovost se v
+pøípadì genetického programování øe¹í dvìma základnímy zpùsoby:
 
 \begin{enumerate}
-	\item \textit{typová konzistence} a
-	\item \textit{bezpeènost pøi evaluaci}.
+	\item \textit{typová unifikace}, kdy ve¹keré uzly i listy stromu budou tého¾ typu,
+	\item \textit{silná typovost}, kdy souèástí ka¾dého uzlu i listu stromu bude uveden
+	explicitnì jeho typ.
 \end{enumerate}
 
-Typová bezpeènost je nutná zejména kvùli operátoru køí¾ení, proto¾e ten nebere typy 
-v potaz. Musíme tedy poèítat s tím, ¾e jakýkoli podstrom mù¾e být zavì¹en jako argument
+Typová bezpeènost je nutná zejména kvùli operátoru køí¾ení a mutace. V prvním pøípadì
+musíme tedy poèítat s tím, ¾e jakýkoli podstrom mù¾e být zavì¹en jako argument
 libovolné funkci z mno¾ny $F$ a výsledný program pøesto musí být interpretovatelný.
 Jinými slovy navratový typ libovolné funkce z mno¾iny $F$ musí být stejný jako
 typ libovolného vstupního argumentu jakékoli dostupné funkce. Toho mù¾eme dosáhnout
-napøíklad jednodu¹e tím, ¾e v¹echny funkce z mno¾iny $F$ budou definovány na jedním
+napøíklad jednodu¹e tím, ¾e v¹echny funkce z mno¾iny $F$ budou definovány nad jedním
 oborem hodnot toto¾ného typu. Èasto to v¹ak není mo¾né, proto se musíme nìkdy uchílit
-napøíklad k implicitním typovým konverzím, nebo k otypování funkcí a typovì bezpeèné
-operaci køí¾ení.
+napøíklad k implicitním typovým konverzím.
 
-Dal¹í vlastností, kterou je nutné splnit je, abychom se vypoøádali s mo¾nými
+Druhou mo¾ností je pou¾ití silnì typovaných stromù. Tento zpùsob je obecnìj¹í, nebo»
+nám umo¾òuje pou¾ít naprosto libovolnou mno¾inu funkcí $F$. Je v¹ak také výraznì
+implementaènì slo¾itìj¹í. Ve¹keré reprodukèní operace zde musí provádìt explicitní
+typovou kontrolu a èastokrát dlouho procházet strom, ne¾ naleznou uzel vhodný ke 
+køí¾ení èi mutaci. To má dopad samozøejmì hlavnì na èasovou slo¾itost, která je 
+vy¹¹í ne¾ v pøípadì typové unifikace.
+
+Spoleènou vlastností, kterou je nutné splnit jak v pøípadì silné typovosti, tak v pøípadì
+typové unifiace je, abychom se vypoøádali s mo¾nými
 nedefinovanými hodnotami, které jsou typické pro vstupy nìkterých parciálních funkcí
 jako je dìlení, kde hodnota je nedefinovaná pokud je dìlitel roven nule.
 S parciálními funkcemi se mù¾eme vypoøádat tím, ¾e je explicitnì roz¹íøíme na funkce
@@ -726,29 +752,63 @@ by byla nedostupná i pro specializované poèítaèe, uva¾ujeme-li, ¾e by takový
 stroj mìl dìlat i nìco jiného, ne¾ uchovávat tak ohromnou tabulku. Musíme se
 tedy uchílit k návrhu ha¹ovací funkce.
 
+Pracujeme nad ctyømi datasety, kde ka¾dý dataset obsahuje právì 8192 rùzných 
+IP adres. Pro ka¾dý dataset bude nutno navrhnout zvlá¹tní ha¹ovací funkci a tu
+na dané vstupy natrénovat. Nenavrhujeme obecnìj¹í ha¹ovací funkci, která by dobøe
+pracovala nad libovolnou podmno¾inou celého univerza IP adres, ale velmi
+specifické funkce, které budou dobøe pracovat právì nad zvoleným datasetem.
+Proto¾e celý ha¹ovaný prostor je pøedem znám, sna¾íme se najít takové ha¹ovací
+funkce, které pojmou co nejvíce z dané podmno¾iny. State of the art øe¹ení je v
+tomto pøípadì taková ha¹ovací funkce, která pojme celý podprostor, její 
+faktor zatí¾ení bude roven právì jedné ($\alpha = 1$). Taková øe¹ení v¹ak
+bude tì¾ké najít. Pro na¹e úèely postaèí, nalezneme-li takové, které budou
+pracovat lépe, ne¾ obecné ha¹ovací funkce, vytvoøené èlovìkem. Je zde samozøejmì
+mo¾nost pou¾ít metody perfektního ha¹ovaní \cite{perfect_hashing}, ale to nemusí
+být ve v¹ech pøípadech napøíklad z dùvodù pou¾ití na specializovaném hardware
+dostupná mo¾nost. Zabývat se jí tedy nebudeme.
+
+
 \section{Princip}
 Ha¹ovací funkce budeme navrhovat evoluènímy algoritmy, konkrétnì za pou¾ití 
 genetického programování. Zvoleno bylo genetické programování, proto¾e 
-jako jedince populace vyu¾ívá programy. 
-
-Z kapitoly \ref{sec:evolution_design}  víme, ¾e pro ohodnocení kvality jedincù
-populace musíme nejprve programy spustit nad nìjakým vstupem. Na¹im vstupem
-budou náhodnì vybrané \texttt{IP} adresy z celého rozsahu. Náhodnost je dùle¾itá,
-abychom se vyhli funkcím, které ¹patnì zobecòují, viz pøíklad v kapitole 
-\ref{sec:hashing}.
-Jednotlivé jedince budeme nad tímto vstupem interpretovat a hodnotit
-dle odolnosti vùèí kolizím a lavinového efektu.
+jako jedince populace abstraktní syntaktické stromy. Jenotlivé syntaktické 
+stromy budeme interpretovat nad zadanými vstupy. Ohodnocení konkrétního jedince
+bude spoèívat v naha¹ování jednoho celé subsetu. Na výstupu budeme mìøit, kolik 
+rùzných klíèù dokázala ha¹ovach tabulku obsáhnout klíèù.
 
 \section{Pøinos práce}
+Evoluèní návrh ha¹ovacích funkcí byl se ukázalo jako zajímavé téma v posledním 
+desetiletí \cite{dobai0,NCHF_auto_design,grammar_evolution,safdari}.
+Naprostá vìt¹ina prací se se zamìrovala na návrh obecných ha¹ovacích
+funkcí. Byly pou¾ity jak evoulèní návrh tak evoluèní optimalizace. Jedna z prací
+podobná té na¹í je \cite{safdari}. Je podobná ve smyslu cíle a pou¾ité techniky,
+av¹ak autor zde pou¾il evoluèní optimalizaci namísto návrhu. Autor zde optimalizuje
+parametry $a,b$ následující ha¹ovací funkce:
+$$h_{a,b}(k) = ((ak + b) \; mod \; p) \; mod \; N$$
+kde $p$ je nìjaké prvoèíslo a $N - 1$ je nejvìt¹í index slotu ha¹ovací tabulky.
+``Výsledky jsou slibné, ale pou¾itá metodika je sporná'' \cite{NCHF_auto_design}.
+Proto¾e mno¾ina klíèù je obsahuje celá èisla a je volena náhodnì, náskýta se otázka,
+proè vùbec evolvovat ha¹ovací funkci, kdy¾ mohou být pou¾ity její prvky k indexování
+napøímo. Druhá vìc je, ¾e autor pou¾íva jako primární metriku fitness funkce odolnost
+vùèi kolizím, která je silnì závislá na vstupní mno¾inì. Funkce tedy nemusí dobøe 
+zobecòovat.
 
-V pøedchozí pracích zabývajícími se evoluèním návrhem ha¹ovacích funkcí 
-\cite{grammar_evolution, safdari, NCHF_auto_design} bylo cílem navrhnout obecné
-ha¹ovací funkce. V prvních dvou pøípadech se autoøi vydali cestou odolnosti vùèi
-kolizím a v posledním pøípadì se kvalita øe¹ení posuzovala podle lavinového efektu.
-Samotný lavinový efekt ha¹ovací funkce nezabezpeèí, ¾e funkce bude dobøe aproximovat
-uniformní rozlo¾ení výstupu. Na druhé stranì, pøi návrhu obecné funkce se na 
-odolnost proti kolizím coby kritérium kvality ha¹ovacích funkcí nedá spoléhat, nebo»
-neznáme pøedem univerzum klíèù.
+Vhodnìj¹í metrikou pro návrh obecných ha¹ovacích funkcí je lavinový efekt, který 
+není závislý na vstupu. Tohoto faktu vyu¾ili autoøi dal¹í podobné práce \cite{NCHF_auto_design}
+zabývající se návrhem ha¹ovacích funckí. Tato práce je pravdìpodobnì nejblí¾e té 
+na¹í s rozdílem, ¾e my nenavrhujeme obecné ha¹ovací funkce. Autoøi stejnì jako my,
+zvolili genetické programování jako evoluèní platformu a volili i podobné parametry.
+Jako základ pro svoji fitnes funkci zvolili lavinový efekt, který není
+závislý na vstupu. Funkce navr¾ené jejích systémem otestovali na rùzných vstupních tøídách
+a dosáhli slibných výsledkù. Tvrdí, ¾e jeji algoritmus je velice robustní, proto¾e zmìny
+klíèových parametrù mají jen velmi nízký nebo ¾ádný dopad na výsledné funkce. Bohu¾el
+souèástí jejich experimentu není porovnání s algoritmem náhodného prohledávání, ke 
+kterému mohl jejich systém nedopatøením degradovat a který je z povahy vìci také 
+velmi robustní. Autoøi také tvrdí, ¾e evoluènì navrhují ha¹ovací funkce, co¾ 
+vzhledem k tomu, ¾e navrhují kompresní funkce Merkle-Damg\r{a}rdova schémata
+není ùplnì pravda. Tato práce se nachází na pomezí evoluèního návrhu a optimalizace.
+
+TODO DOPLNOT dobai0
 
 \section{Návrh fitness funkce}
 
@@ -859,7 +919,7 @@ jednu zmìnu v ka¾dém experimentu, abychom zachovali jejich vìrohodnost a správno
 mezi zmìnou parametru a dùsledkem, jaký má na výsledné øe¹ení.
 
 V následující sekci budeme experimentovat s evolvovanými ha¹ovacími funkcemi, do kterých zahrneme
-Merkle-Damgardovo schéma popsané v kapitole \ref{sec:hashing}. Krátce popí¹eme zmìny v na¹em
+Merkle-Damg\r{a}rdovo schéma popsané v kapitole \ref{sec:hashing}. Krátce popí¹eme zmìny v na¹em
 evoluèním algoritmu a provedeme pøíslu¹né experimenty.
 
 V poslední sekci této kapitoly uvedeme do námi navr¾eného øe¹ení Kukaèèí schéma jak bylo popsané
@@ -877,9 +937,465 @@ Nejprve se tedy budeme zkoumat výsledky, jaké poskytuje námi navr¾ené øe¹ení z k
  Prvni varianta bude náhodné prohledávání bez pou¾ití elitismu, druhá s elitismem. Do grafu zahrneme i jednu
  variantu èlovekem vytvoøené obecné ha¹ovací funkce, konkrétnì ha¹ovací funkci \textit{Murmurhash3}. 
 
-\section{Ha¹ování s Merkle-Damgardovou konstrukcí}
+%%%%%%%%%%%%% IPHASH AVG Population SET #1 %%%%%%%%%%%%%%%
+\begin{figure*}[!ht]
+	\centering
+	\begin{tikzpicture}
+	\begin{axis}[ %
+	, name=plot1
+	, height=8cm
+	, width=0.50\textwidth
+	, grid=major
+	, xlabel=Generation
+	, ymin=5180
+	, ymax=5320
+	, ylabel=Successfully hashed
+	, legend style=
+	{ at={(1.0, 0.3)}
+		, anchor=east
+	}
+	]
+	\addplot[color=black, dashdotted, thick, mark=none] table {graph/IPHash/Set1/ElitistRandomRun_1.dat};
+	\addlegendentry{Elitist Random Search}
+	
+	\addplot[color=blue, dotted, very thick, mark=none] table {graph/IPHash/Set1/RandomRun_1.dat};
+	\addlegendentry{Random Search}
+	
+	\addplot[color=green, solid, thick, mark=none] coordinates {(0,5190) (194, 5190)};
+	\addlegendentry{MurmurHash3}
+	
+	\addplot[color=red, mark=none, dashed, thick] table {graph/IPHash/Set1/IPHashMedian_1.dat}; 
+	\addlegendentry{Proposed IPHash}
+	
+	\end{axis}
+	
+	\begin{axis}[ %
+	, name=plot2
+	, at=(plot1.right of south east)
+	, anchor=left of south west
+	, ymin=5180
+	, ymax=5320
+	, height=8cm
+	, width=0.50\textwidth
+	, grid=major
+	, xlabel=Generation
+	%%	, ylabel=Successfully hashed
+	, yticklabels={,,}
+	%%	, legend pos=outer north east
+	, legend style=
+	{ at={(1.0, 0.3)}
+		, anchor=east
+	}
+	]
+	\addplot[color=red, mark=none, dashed,thick] table {graph/IPHash/Set1/IPHashMedian_1.dat}; 
+	\addlegendentry{Proposed IPHash}
+	\addplot[color=red, mark=none, dotted] table {graph/IPHash/Set1/IPHashReliab1_1.dat}; 
+	%\addlegendentry{Proposed IPHash RR1}
+	\addplot[color=red, mark=none, dotted] table {graph/IPHash/Set1/IPHashReliab3_1.dat}; 
+	\addlegendentry{Diversity of runs}
+	\end{axis}
+	\end{tikzpicture}
+	\caption{Evolvované ha¹ovací funkce a jejich fitnes hodnota nad data setem èíslo 1.}
+	\label{fig:basicComparison}
+\end{figure*}
+%%%%%%%%%%%%% IPHASH AVG Population SET #1 %%%%%%%%%%%%%%%
+%%%%%%%%%%%%% IPHASH AVG Population SET #2 %%%%%%%%%%%%%%%
+\begin{figure*}[!ht]
+	\centering
+	\begin{tikzpicture}
+	\begin{axis}[ %
+	, name=plot1
+	, height=8cm
+	, width=0.50\textwidth
+	, grid=major
+	, xlabel=Generation
+	, ymin=5180
+	, ymax=5320
+	, ylabel=Successfully hashed
+	, legend style=
+	{ at={(1.0, 0.3)}
+		, anchor=east
+	}
+	]
+	\addplot[color=black, dashdotted, thick, mark=none] table {graph/IPHash/Set2/ElitistRandomRun_2.dat};
+	\addlegendentry{Elitist Random Search}
+	
+	\addplot[color=blue, dotted, very thick, mark=none] table {graph/IPHash/Set2/RandomRun_2.dat};
+	\addlegendentry{Random Search}
+	
+	\addplot[color=green, solid, thick, mark=none] coordinates {(0,5190) (194, 5190)};
+	\addlegendentry{MurmurHash3}
+	
+	\addplot[color=red, mark=none, dashed, thick] table {graph/IPHash/Set2/IPHashMedian_2.dat}; 
+	\addlegendentry{Proposed IPHash}
+	
+	\end{axis}
+	
+	\begin{axis}[ %
+	, name=plot2
+	, at=(plot1.right of south east)
+	, anchor=left of south west
+	, ymin=5180
+	, ymax=5320
+	, height=8cm
+	, width=0.50\textwidth
+	, grid=major
+	, xlabel=Generation
+	%%	, ylabel=Successfully hashed
+	, yticklabels={,,}
+	%%	, legend pos=outer north east
+	, legend style=
+	{ at={(1.0, 0.3)}
+		, anchor=east
+	}
+	]
+	\addplot[color=red, mark=none, dashed,thick] table {graph/IPHash/Set2/IPHashMedian_2.dat}; 
+	\addlegendentry{Proposed IPHash}
+	\addplot[color=red, mark=none, dotted] table {graph/IPHash/Set2/IPHash1stQ_2.dat}; 
+	%\addlegendentry{Proposed IPHash RR1}
+	\addplot[color=red, mark=none, dotted] table {graph/IPHash/Set2/IPHash3rdQ_2.dat}; 
+	\addlegendentry{Diversity of runs}
+	\end{axis}
+	\end{tikzpicture}
+	\caption{Evolvované ha¹ovací funkce a jejich fitnes hodnota nad data setem èíslo 2.}
+	\label{fig:basicComparison}
+\end{figure*}
+%%%%%%%%%%%%% IPHASH AVG Population SET #2 %%%%%%%%%%%%%%%
+%%%%%%%%%%%%% IPHASH AVG Population SET #3 %%%%%%%%%%%%%%%
+\begin{figure*}[!ht]
+	\centering
+	\begin{tikzpicture}
+	\begin{axis}[ %
+	, name=plot1
+	, height=8cm
+	, width=0.50\textwidth
+	, grid=major
+	, xlabel=Generation
+	, ymin=5180
+	, ymax=5320
+	, ylabel=Successfully hashed
+	, legend style=
+	{ at={(1.0, 0.3)}
+		, anchor=east
+	}
+	]
+	\addplot[color=black, dashdotted, thick, mark=none] table {graph/IPHash/Set3/ElitistRandomRun_3.dat};
+	\addlegendentry{Elitist Random Search}
+	
+	\addplot[color=blue, dotted, very thick, mark=none] table {graph/IPHash/Set3/RandomRun_3.dat};
+	\addlegendentry{Random Search}
+	
+	\addplot[color=green, solid, thick, mark=none] coordinates {(0,5206) (194, 5206)};
+	\addlegendentry{MurmurHash3}
+	
+	\addplot[color=red, mark=none, dashed, thick] table {graph/IPHash/Set3/IPHashMedian_3.dat}; 
+	\addlegendentry{Proposed IPHash}
+	
+	\end{axis}
+	
+	\begin{axis}[ %
+	, name=plot2
+	, at=(plot1.right of south east)
+	, anchor=left of south west
+	, ymin=5180
+	, ymax=5320
+	, height=8cm
+	, width=0.50\textwidth
+	, grid=major
+	, xlabel=Generation
+	%%	, ylabel=Successfully hashed
+	, yticklabels={,,}
+	%%	, legend pos=outer north east
+	, legend style=
+	{ at={(1.0, 0.3)}
+		, anchor=east
+	}
+	]
+	\addplot[color=red, mark=none, dashed,thick] table {graph/IPHash/Set3/IPHashMedian_3.dat}; 
+	\addlegendentry{Proposed IPHash}
+	\addplot[color=red, mark=none, dotted] table {graph/IPHash/Set3/IPHash1stQ_3.dat}; 
+	%\addlegendentry{Proposed IPHash RR1}
+	\addplot[color=red, mark=none, dotted] table {graph/IPHash/Set3/IPHash3rdQ_3.dat}; 
+	\addlegendentry{Diversity of runs}
+	\end{axis}
+	\end{tikzpicture}
+	\caption{Evolvované ha¹ovací funkce a jejich fitnes hodnota nad data setem èíslo 3.}
+	\label{fig:basicComparison}
+\end{figure*}
+%%%%%%%%%%%%% IPHASH AVG Population SET #3 %%%%%%%%%%%%%%%
+%%%%%%%%%%%%% IPHASH AVG Population SET #4 %%%%%%%%%%%%%%%
+\begin{figure*}[!ht]
+	\centering
+	\begin{tikzpicture}
+	\begin{axis}[ %
+	, name=plot1
+	, height=8cm
+	, width=0.50\textwidth
+	, grid=major
+	, xlabel=Generation
+	, ymin=5180
+	, ymax=5320
+	, ylabel=Successfully hashed
+	, legend style=
+	{ at={(1.0, 0.3)}
+		, anchor=east
+	}
+	]
+	\addplot[color=black, dashdotted, thick, mark=none] table {graph/IPHash/Set4/ElitistRandomSearch_4.dat};
+	\addlegendentry{Elitist Random Search}
+	
+	\addplot[color=blue, dotted, very thick, mark=none] table {graph/IPHash/Set4/RandomSearch_4.dat};
+	\addlegendentry{Random Search}
+	
+	\addplot[color=green, solid, thick, mark=none] coordinates {(0,5206) (194, 5206)};
+	\addlegendentry{MurmurHash3}
+	
+	\addplot[color=red, mark=none, dashed, thick] table {graph/IPHash/Set4/IPHashMedian_4.dat}; 
+	\addlegendentry{Proposed IPHash}
+	
+	\end{axis}
+	
+	\begin{axis}[ %
+	, name=plot2
+	, at=(plot1.right of south east)
+	, anchor=left of south west
+	, ymin=5180
+	, ymax=5320
+	, height=8cm
+	, width=0.50\textwidth
+	, grid=major
+	, xlabel=Generation
+	%%	, ylabel=Successfully hashed
+	, yticklabels={,,}
+	%%	, legend pos=outer north east
+	, legend style=
+	{ at={(1.0, 0.3)}
+		, anchor=east
+	}
+	]
+	\addplot[color=red, mark=none, dashed,thick] table {graph/IPHash/Set4/IPHashMedian_4.dat}; 
+	\addlegendentry{Proposed IPHash}
+	\addplot[color=red, mark=none, dotted] table {graph/IPHash/Set4/IPHash1stQ_4.dat}; 
+	%\addlegendentry{Proposed IPHash RR1}
+	\addplot[color=red, mark=none, dotted] table {graph/IPHash/Set4/IPHash3rdQ_4.dat}; 
+	\addlegendentry{Diversity of runs}
+	\end{axis}
+	\end{tikzpicture}
+	\caption{Evolvované ha¹ovací funkce a jejich fitnes hodnota nad data setem èíslo 4.}
+	\label{fig:basicComparison}
+\end{figure*}
+%%%%%%%%%%%%% IPHASH AVG Population SET #4 %%%%%%%%%%%%%%%
 
-\section{Kukaèèní ha¹ování}
+%%%%%%%%%%%%% IPHASH BOXPLOT %%%%%%%%%%%%%%%
+\begin{figure}[!h]
+	\centering
+	\begin{tikzpicture}
+	\begin{axis}
+	[ boxplot/draw direction=y
+	, name=plot1
+	, xtick={1,2,3}
+	, xticklabels={, ,}
+	, ymin=5200
+	, ymax=5360
+	]
+	\addplot+[
+	boxplot prepared={
+		lower whisker=5250,
+		lower quartile=5266,
+		median=5276,
+		upper quartile=5286,
+		upper whisker=5311,
+	},
+	] coordinates {}; % RS
+	
+	\addplot+[
+	boxplot prepared={
+		lower whisker=5242,
+		lower quartile=5265,
+		median=5274,
+		upper quartile=5286,
+		upper whisker=5319,
+	},
+	] coordinates {}; % ERS
+	
+	\addplot+[
+	boxplot prepared={
+		lower whisker=5279,
+		lower quartile=5292,
+		median=5301,
+		upper quartile=5315,
+		upper whisker=5352,
+	},
+	] coordinates {}; % IPHash
+	\end{axis}		
+
+	\begin{axis}
+	[ boxplot/draw direction=y
+	, name=plot2
+	, at=(plot1.right of south east)
+	, xtick={1,2,3}
+	, xticklabels={,,}
+	, ymin=5200
+	, ymax=5360
+	, yticklabels={,,}
+	]		
+	\addplot+[
+		boxplot prepared={
+		lower whisker=5255,
+		lower quartile=5270,
+		median=5281,
+		upper quartile=5290,
+		upper whisker=5331,
+	},
+	] coordinates {}; % RS
+		
+	\addplot+[
+	boxplot prepared={
+		lower whisker=5251,
+		lower quartile=5270,
+		median=5279,
+		upper quartile=5285,
+		upper whisker=5328,
+	},
+	] coordinates {}; % ERS
+		
+	\addplot+[
+	boxplot prepared={
+		lower whisker=5286,
+		lower quartile=5298,
+		median=5305,
+		upper quartile=5319,
+		upper whisker=5352,
+	},
+	] coordinates {}; % IPHash
+	\end{axis}		
+
+	\begin{axis}
+	[ boxplot/draw direction=y
+	, name=plot3
+	, anchor=north west
+	, at=(plot1.below south west)
+	, xtick={1,2,3}
+	, xticklabels={RS, ERS, IPHash}
+	, ymin=5200
+	, ymax=5360
+	]		
+	\addplot+[
+	boxplot prepared={
+		lower whisker=5246,
+		lower quartile=5268,
+		median=5277,
+		upper quartile=5290,
+		upper whisker=5302,
+	},
+	] coordinates {}; % RS
+	
+	\addplot+[
+	boxplot prepared={
+		lower whisker=5237,
+		lower quartile=5263,
+		median=5275,
+		upper quartile=5289,
+		upper whisker=5318,
+	},
+	] coordinates {}; % ERS
+	
+	\addplot+[
+	boxplot prepared={
+		lower whisker=5242,
+		lower quartile=5261,
+		median=5274,
+		upper quartile=5287,
+		upper whisker=5342,
+	},
+	] coordinates {}; % IPHash
+	\end{axis}		
+
+	\begin{axis}
+	[ boxplot/draw direction=y
+	, name=plot4
+	, anchor=north west
+	, at=(plot1.below south east)
+	, xtick={1,2,3}
+	, xticklabels={RS, ERS, IPHash}
+	, yticklabels={,,}
+	, ymin=5200
+	, ymax=5360
+	]		
+	\addplot+[
+	boxplot prepared={
+		lower whisker=5251,
+		lower quartile=5269,
+		median=5281,
+		upper quartile=5285,
+		upper whisker=5310,
+	},
+	] coordinates {}; % RS
+	
+	\addplot+[
+	boxplot prepared={
+		lower whisker=5251,
+		lower quartile=5268,
+		median=5276,
+		upper quartile=5290,
+		upper whisker=5323,
+	},
+	] coordinates {}; % ERS
+	
+	\addplot+[
+	boxplot prepared={
+		lower whisker=5252,
+		lower quartile=5264,
+		median=5278,
+		upper quartile=5285,
+		upper whisker=5298,
+	},
+	] coordinates {}; % IPHash
+	\end{axis}		
+
+	\end{tikzpicture}
+	\caption{Nejlep¹í jedinci boxplot nad setem 2.}
+\end{figure}
+%%%%%%%%%%%%% IPHASH BOXPLOT %%%%%%%%%%%%%%%
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}
+	\begin{axis}[ 
+	, grid=major
+	, width=0.9\linewidth
+	, legend pos=outer north east
+	, xlabel={Population size}
+	, xtick={1,2,3,4,5,6,7,8}
+	, xticklabels={8,16,32,64,128,256,512}
+	, ylabel={Initial depth}
+	, ytick={2,3,4,5,6} 
+	, zlabel={Successfully hashed}
+	, ztick={5280,5290,5300,5310,5320}
+	, zticklabels={5280,5290,5300,5310,5320}
+	]
+	\addplot3[surf] coordinates {
+		%8            16         32           64           128          256          512          1024  
+		    %8            16         32           64           128          256          512          1024  
+		    (1,2,5288.5) (2,2,5289) (3,2,5291)   (4,2,5294)	  (5,2,5297)   (6,2,5295)   (7,2,5293.5) (8,2,5296.5)
+		    
+		    (1,3,5292.9) (2,3,5301) (3,3,5300.5) (4,3,5314)   (5,3,5312.5) (6,3,5310.5) (7,3,5306)   (8,3,5307)
+		    
+		    (1,4,5299.5) (2,4,5306) (3,4,5305)   (4,4,5308.5) (5,4,5311.5) (6,4,5312)   (7,4,5306.5) (8,4,5309.5)
+		    
+		    (1,5,5299)   (2,5,5300) (3,5,5307)   (4,5,5313.5) (5,5,5302.5) (6,5,5311)   (7,5,5312)   (8,5,5307)
+		    
+		    (1,6,5293.5) (2,6,5302) (3,6,5304)   (4,6,5295.5) (5,6,5307)   (6,6,5304)   (7,6,5302)   (8,6,5307) 
+		};
+	\end{axis}
+\end{tikzpicture}
+\caption{Number of successfully hashed addresses in relation to population size and initial depth.}
+\label{fig:basicPopulationDepth}
+\end{figure}
+
+\section{Ha¹ování s Merkle-Damg\r{a}rdovou konstrukcí}
+
+\section{Kukaèèí ha¹ování}
 
 \chapter{Závìr}
 \input{conclusion}
