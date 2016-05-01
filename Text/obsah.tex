@@ -886,29 +886,43 @@ evaluaci. Taková konstanta pokud je vygenerována bude pøi ka¾dém ohodnocení
 nabývat stejné hodnoty, ale v mutaci jej bude mìnit s urèitou pravdìpodobností na
 nìjaké nejbli¾¹í prvoèíslo. 
 
-TODO oktety
-TODO a0-a3
+Ka¾dá IP adresa má délku 32 bitù a skládá se ze ètyø osmibitových oktetù. Oktety zahrneme
+do na¹í mno¾iny terminálních symbolù ka¾dý zvlá¹» a oznaèíme je $o_0 \ldots o_4$ jemnìj¹í 
+dìlení (napøíklad 4, 2 nebo 1 bit) nebudeme uva¾ovat, proto¾e pou¾ijeme rotace (viz. dále),
+které budou schopny vybrat jednotlivé bity z oktetu.
+
+Budeme-li uva¾ovat Merkle-Damg\r{a}rdovo schéma, musíme reprezentovat v na¹í
+mno¾inì terminálù mezivýsledky kompresní funkce. I kdy¾ se jedná obecnì o iterativní
+schéma pracující nad libovolnou délkou vstupu, my si vzhledem k pøedem pevnì 
+dané délce 32 bitù vystaèíme se ctyømi kompresními jednotkami, jejich¾ mezivýsledky
+budeme znaèit $a_0, a_1, a_2$ (pozn.v pøípadì $a_3 $ se jedná o výstup). 
 
 Mno¾inu funkcí zvolíme z bì¾ných operací. Vyhneme se cyklùm a jiným slo¾itým
-øídícím konstrukcím, nebo» ha¹ovací funkce musí být také rychlá. Dal¹í
-nevítanou skupinou operací jsou operace v plovoucí øádové èárce. My se tedy
-spokojíme s dìlením beze zbytku. Výèet pou¾itých operaci a terminálù
+øídícím konstrukcím, nebo» ty by vzhledem ke stochastické povaze algoritmu mohly
+vyústit ve velmi pomalé ha¹ovací funkce. Dal¹í nevítanou skupinou operací jsou operace
+v plovoucí øádové èárce, které na procesorech s komplexní instrukèní sadou vy¾adují
+mnoho taktù procesoru aøí implementaci v hardware zase zabírají velké místo na èipu.
+Nosnou èást mno¾iny funkcí budou tvoøit aritmetické operace. Konkrétnì do ní zahrneme
+násobení ($*$), sèítání ($+$), odèítání ($-$) a operaci modulo ($mod$). V pøípadì dìlení
+se spokojíme s dìlením beze zbytku ($/$). Pou¾ívat budeme také booleovské operace,
+kam zahrneme logické souèet ($OR$), logický souèin ($AND$) a negaci ($NOT$), která 
+je dùle¾itá zejmána proto, proto¾e umo¾òuje vytvoøit úplnou bázi a logické funkce mohou
+tedy zkonstruovat libovolnou logickou funkci. Poslední skupinu budou tvoøit funkce bitové.
+Zde zahrneme pravou ($\ggg$) a levou ($\lll$) rotaci. Které jsou dùle¾ité pro výbìr 
+jednotlivých bitù ze vstupních argumentù. Výèet pou¾itých funkcí a terminálù
 popisují tabulky \ref{tab:function_set_design} a \ref{tab:terminal_set_design}.
-
 
 %%%%%%%%%%%%% FUNCTION AND TERMINAL SETS %%%%%%%%%%%%%%%
 \begin{table}
 \begin{center}
-\begin{tabular}{ |c|c| }
+\begin{tabular}{ |l|c| }
 	\hline
-	\multicolumn{2}{|c|}{Mno¾ina zvolených funkcí} \\
-  	\hline			
    	Kategorie & Zástupci \\
-  	\hline \hline  
-  	Aritmetické celoèíselné & $\{ +,-,*,/,mod \}$ \\
-  	Aritmetické             & $\{\}$ \\
-  	Booleovské				& $\{AND, OR, NOT, XOR\}$ \\
-  	Bitové					& $\{ \lll, \ggg \}$ \\ 	 
+  	\hline
+  	Aritmetické celoèíselné  & $\{ +,-,*,/,mo	d \}$ \\
+  	Aritmetické                     & $\{\}$ \\
+  	Booleovské				      & $\{AND, OR, NOT\}$ \\
+  	Bitové					          & $\{ \lll, \ggg \}$ \\ 	 
   	\hline
 \end{tabular}
 \caption{Zvolená mno¾ina funkcí}
@@ -918,13 +932,11 @@ popisují tabulky \ref{tab:function_set_design} a \ref{tab:terminal_set_design}.
 
 \begin{table}
 \begin{center}
-\begin{tabular}{ |c|c| }
+\begin{tabular}{ |l|c| }
 	\hline
-	\multicolumn{2}{|c|}{Mno¾ina zvolených terminálù} \\
-  	\hline			
    	Kategorie & Zástupci \\
-  	\hline \hline  
-  	Promìnné       & $\{o_0, o_1, o_2, o_3, a_0, a_1, a_2, a_3 \}$ \\
+  	\hline
+  	Promìnné       & $\{o_0, o_1, o_2, o_3, a_0, a_1, a_2\}$ \\
   	Funkce arity 0 & $\{ \Re \}$ \\	 
   	\hline
 \end{tabular}
@@ -934,8 +946,47 @@ popisují tabulky \ref{tab:function_set_design} a \ref{tab:terminal_set_design}.
 \end{table}
 %%%%%%%%%%%%% FUNCTION AND TERMINAL SETS %%%%%%%%%%%%%%%
 
+\section{Evoluèní návrh ha¹ovacích funkcí}
+V této sekci pøedstavíme princip metody a konkrétní podobu navr¾eného øe¹ení pro pøímý evoluèní 
+návrh ha¹ovacích funkcí. Pøímý proto, proto¾e zde nebudeme uva¾ovat zádné schéma ani koncept
+jeho¾ èásti bychom evolvovali. Ha¹ovací funkce zde budou reprezentovat pøímo abstraktní syntaktické
+stromy, s kterými pracuje algoritmus genetického programování. Funkce navr¾ené touto metodou 
+budeme oznaèovat \textit{IPHash}. Ka¾dý jedinec bude pracovat se v¹emi oktety IP adresy.
+Merkle-Damg\r{a}rdovo schéma zde nepou¾íváme, tak¾e do mno¾iny terminálù není tøeba zahrnovat
+¾ádné symboly reprezentující mezivýsledky. Dále do mno¾iny zahrneme konstantu  $\Re$. Operátor
+køá¾ení zvolíme v podstromové variantì a operátor mutace takté¾. Hloubku jednotlivých jedincù omezíme
+na hodnotu ¹est a to ze dvou dùvodu. Jednak proto¾e oèekáváme od na¹ich ha¹ovacích funkcí aby byly
+rychlé a také proto, ¾e algoritmus genetického programování je pamì»ovì nároèný a s rostoucí hloubkou
+stromù roste exponenciálnì pamì»ová nároènost, co¾ klade neúnosné nároky na výpoèetní zaøízení 
+(servery \textit{edesign1} \ldots \textit{edesign4}). Parametry základní variantu této metody shrnuje 
+tabulka \ref{tab:IPHash_params}.
+
+\section{Optimalizace za pou¾ití Merkle-Damg\r{a}rdova schématu}
+
+Dále se budeme zabývat evoluèním návrhem kompresních funkcí pro Merkle-Damg\r{a}rdovo schéma.
+Budeme zkoumat dva rùzné pøístupy. V prvním pøípadì budeme evolvovat jednu jedinou kompresní 
+pøi konstrukci Merkle-Damg\r{a}rdova schématu tak jak bylo popsáno v kapitole \ref{sec:hashing}.
+V druhém pøipadì budeme namísto jedné kompresní funkce evolvovat hned ctyøi, pro ka¾dý oktet
+ha¹ovací funkce jednu jak je ukázáno na obrázku \ref{fig:merkle_damgard_2}. Tento pøístup nám
+umo¾ní dekomponovat prohledávací prostor a dosáhnout tak lep¹ích výsledkù díky navr¾ení
+kompresních funkcí na míru konkrétnímu oktetu IP adresy. 
+
+Druhý bude vy¾adovat zásadní zmìnu v reprezentaci jedincù. Ka¾dý jedinec se bude skládat ze ctyø 
+rùzných abstraktních syntaktickách stromù reprezentující jednotlivé kompresní funkce. Genetické operátory
+mutace a zejména køí¾ení pracují v ka¾dém procesu reprodukce pouze nad jedním abstraktním
+syntaktickým stromem. Proto¾e naráz pracujeme se ètyømi stromy zvedme poèet evaluací ctyønásobnì na
+400 000 evaluací, abychom dosáhli ekvivalentní situace v porovnání s ostatními metodami. V procesu
+reprodukce jsou abstraktní syntaktické stromy vybírány náhodnì. 
+
+U obou variant do tabulky terminálních symbolù musíme zavést pøíslu¹né symboly reprezentující
+konkrétní mezivýsledky $a_0, a_1, a_2$. Ostatní parametry se oproti metodì v pøedchozí sekci neli¹í.
+
+TODO include altered MD picture. 
+
+\section{Evoluèní návrh za pou¾ití kukaèèího ha¹ování}
 
 \chapter{Experimenty}
+
 %%%%%%%%%%%%% EXPERIMENTS WITH VARIOUS FUNCTIONS %%%%%%%%%%%%%%%
 V této kapitole provedeme experimenty v nich¾ nejprve ovìøíme, zda navr¾ené øe¹ení poskytuje dobré
 výsledky. Poté provedeme dal¹í sérii experimentù, v ních¾ budeme postupnì mìnit parametry navr¾eného
