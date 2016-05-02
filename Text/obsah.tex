@@ -969,7 +969,15 @@ pøi konstrukci Merkle-Damg\r{a}rdova schématu tak jak bylo popsáno v kapitole \r
 V druhém pøipadì budeme namísto jedné kompresní funkce evolvovat hned ctyøi, pro ka¾dý oktet
 ha¹ovací funkce jednu jak je ukázáno na obrázku \ref{fig:merkle_damgard_2}. Tento pøístup nám
 umo¾ní dekomponovat prohledávací prostor a dosáhnout tak lep¹ích výsledkù díky navr¾ení
-kompresních funkcí na míru konkrétnímu oktetu IP adresy. 
+kompresních funkcí na míru konkrétnímu oktetu IP adresy. Merkle-Damg\r{a}rdovo schéma je obecnì
+iterativní schéma pøijímat vstup o libovolné velikosti. My vyu¾ijeme v obou pøípadech faktu, ¾e délku
+vstupu pøedem známe. Omezíme se tedy pouze na ctyøi kompresní funkce, pro ka¾dý oktet vstupu jednu.
+A proto¾e je velikost vstupu násobek osmi, nemusíme poslední oktet doplòovat o ohranièující vatu. Dále
+náme nezále¾í na kryptografické bezpeènosti, mù¾eme tedy vzpostit poslední kompresní komponentu
+pro délkové ohranièení. Ani dobrovolnou finalizaèní komponentu nevyu¾ijeme. Výsledná ha¹ovací funkce
+bude tvaru
+$$f_{Merkle-Damgard} : IV \times X \to \{0,1,2 \ldots 8192\}$$,
+kde $IV$ je nìjaké celé èíslo a $X$ je vstupní IP adresa.
 
 Druhý bude vy¾adovat zásadní zmìnu v reprezentaci jedincù. Ka¾dý jedinec se bude skládat ze ctyø 
 rùzných abstraktních syntaktickách stromù reprezentující jednotlivé kompresní funkce. Genetické operátory
