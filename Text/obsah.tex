@@ -1023,11 +1023,11 @@ reprodukce jsou abstraktní syntaktické stromy vybírány náhodnì.
 
 \begin{figure}[!ht]
 \begin{subfigure}[b]{0.49\textwidth}
-	\includegraphics[width=\textwidth]{fig/merkle_damgard_design1}
+%	\includegraphics[width=\textwidth]{fig/merkle_damgard_design1}
 	\caption{První pøípad, který budeme studovat. Schéma pou¾ívá zøetìzení jediné kompresní funkce.}
 \end{subfigure}
 \begin{subfigure}[b]{0.49\textwidth}
-	\includegraphics[width=\textwidth]{fig/merkle_damgard_design2}
+%	\includegraphics[width=\textwidth]{fig/merkle_damgard_design2}
 	\caption{Druhý pøípad, který budeme studovat. Schéma pou¾ívá zøetìzení nìkolika rùzných kompresních funkcí.}
 \end{subfigure}
 	\caption{Porovnání dvou navr¾ených øe¹ení pou¾ívající Merkle-Damg\r{a}rdovo schéma.}
@@ -1403,7 +1403,8 @@ rovná hodnotì 150 naha¹ovaných funkcí. Nejménì je to naopak v pøípadì funkce \te
 kde se rozdíl zmen¹il na 71 naha¹ovaných adres.
  
 Nyní se budeme podrobnìji zabývat rozptylem nejlep¹ího nalezeného øe¹ení (ekvivalent
-hodnoty poslední generace algoritmu), které  nalezne náhodné prohledávání a IPHash. 
+hodnoty poslední generace algoritmu), které  nalezne náhodné prohledávání a IPHash v porovnání s
+algoritmem náhodného prohledávání.
 
 %%%%%%%%%%%%% IPHASH BOXPLOT %%%%%%%%%%%%%%%
 \begin{figure}[!h]
@@ -1413,7 +1414,7 @@ hodnoty poslední generace algoritmu), které  nalezne náhodné prohledávání a IPHa
 	[ boxplot/draw direction=y
 	, name=plot1
 	, xtick={1,2,3}
-	, xticklabels={, ,}
+	, xticklabels={RS, IPHash, Náhodné prohledávání}
 	, ymin=5200
 	, ymax=5360
 	]
@@ -1429,16 +1430,6 @@ hodnoty poslední generace algoritmu), které  nalezne náhodné prohledávání a IPHa
 	
 	\addplot+[
 	boxplot prepared={
-		lower whisker=5242,
-		lower quartile=5265,
-		median=5274,
-		upper quartile=5286,
-		upper whisker=5319,
-	},
-	] coordinates {}; % ERS
-	
-	\addplot+[
-	boxplot prepared={
 		lower whisker=5279,
 		lower quartile=5292,
 		median=5301,
@@ -1446,6 +1437,16 @@ hodnoty poslední generace algoritmu), které  nalezne náhodné prohledávání a IPHa
 		upper whisker=5352,
 	},
 	] coordinates {}; % IPHash
+	
+	\addplot+[
+	boxplot prepared={
+		lower whisker=5242,
+		lower quartile=5265,
+		median=5274,
+		upper quartile=5286,
+		upper whisker=5319,
+	},
+	] coordinates {}; % ERS
 	\end{axis}		
 
 	\begin{axis}
@@ -1453,12 +1454,12 @@ hodnoty poslední generace algoritmu), které  nalezne náhodné prohledávání a IPHa
 	, name=plot2
 	, at=(plot1.right of south east)
 	, xtick={1,2,3}
-	, xticklabels={,,}
+	, xticklabels={RS, IPHash, Náhodné prohledávání}
 	, ymin=5200
 	, ymax=5360
 	, yticklabels={,,}
 	]		
-	\addplot+[
+	\addplot+[color=blue,
 		boxplot prepared={
 		lower whisker=5255,
 		lower quartile=5270,
@@ -1467,6 +1468,16 @@ hodnoty poslední generace algoritmu), které  nalezne náhodné prohledávání a IPHa
 		upper whisker=5331,
 	},
 	] coordinates {}; % RS
+	
+	\addplot+[color=red,
+		boxplot prepared={
+			lower whisker=5286,
+			lower quartile=5298,
+			median=5305,
+			upper quartile=5319,
+			upper whisker=5352,
+		},
+		] coordinates {}; % IPHash
 		
 	\addplot+[
 	boxplot prepared={
@@ -1477,25 +1488,31 @@ hodnoty poslední generace algoritmu), které  nalezne náhodné prohledávání a IPHa
 		upper whisker=5328,
 	},
 	] coordinates {}; % ERS
-		
-	\addplot+[
-	boxplot prepared={
-		lower whisker=5286,
-		lower quartile=5298,
-		median=5305,
-		upper quartile=5319,
-		upper whisker=5352,
-	},
-	] coordinates {}; % IPHash
 	\end{axis}		
+	\end{tikzpicture}
+	\caption{Porovnání výsledkù algirutmu IPHash a náhodného porovnání krabicovým diagramem pro datasety jedna a dvì.}
+	\label{fig:basic_boxplot_1}
+\end{figure}
 
+Na dvou krabicových diagramech grafech na obrázku \ref{fig:basic_boxplot_1}, vidíme porovnání
+algoritmù v nad datasety jedna dvì. Nad tìmito datasety si algoritmus vedl velmi dobøe, a to potvrzují
+i krabicové diagramy. V celém rozsahu rozptylu námi navr¾eného øe¹ení dostáváme lep¹í výsledky, ne¾ u
+algoritmu náhodného prohledávání a to v obou pøípadech. Nejlep¹í øe¹ení nalezené algoritmem náhodného
+prohledávání je jen nepatrnì vý¹e, ne¾ horní hranice rozptylu algoritmu IPHash. Nejhor¹í øe¹ení nalezené
+algoritmem IPHash je v pøípadì prvního datasetu lep¹í ne¾ medián algoritmu náhodného prohledávání a
+v pøípadì druhého datasetu dokonce lep¹í, ne¾ nejlep¹í øe¹ení rozptylu náhodného prohledávání. Co se týèe
+nejlep¹ího øe¹ení algoritmu IPHash, tak to znaènì pøevu¹uje i to nejlep¹í øe¹ení nalezené algoritmem
+náhodného prohledávání. Je tedy patrné, ¾e ve v¹ech pøípadech algoritmus IPHash dobøe konvergoval v daném
+stavovém prostoru popsaném fitnes funkcí a zvolenou reprezentací jedincù.
+
+\begin{figure}[!h]
+\centering
+\begin{tikzpicture}
 	\begin{axis}
 	[ boxplot/draw direction=y
-	, name=plot3
-	, anchor=north west
-	, at=(plot1.below south west)
+	, name=plot3	
 	, xtick={1,2,3}
-	, xticklabels={RS, ERS, IPHash}
+	, xticklabels={RS, IPHash, Náhodné prohledávání}
 	, ymin=5200
 	, ymax=5360
 	]		
@@ -1511,16 +1528,6 @@ hodnoty poslední generace algoritmu), které  nalezne náhodné prohledávání a IPHa
 	
 	\addplot+[
 	boxplot prepared={
-		lower whisker=5237,
-		lower quartile=5263,
-		median=5275,
-		upper quartile=5289,
-		upper whisker=5318,
-	},
-	] coordinates {}; % ERS
-	
-	\addplot+[
-	boxplot prepared={
 		lower whisker=5242,
 		lower quartile=5261,
 		median=5274,
@@ -1528,15 +1535,24 @@ hodnoty poslední generace algoritmu), které  nalezne náhodné prohledávání a IPHa
 		upper whisker=5342,
 	},
 	] coordinates {}; % IPHash
+	
+	\addplot+[
+	boxplot prepared={
+		lower whisker=5237,
+		lower quartile=5263,
+		median=5275,
+		upper quartile=5289,
+		upper whisker=5318,
+	},
+	] coordinates {}; % ERS
 	\end{axis}		
 
 	\begin{axis}
 	[ boxplot/draw direction=y
 	, name=plot4
-	, anchor=north west
-	, at=(plot1.below south east)
+	, at=(plot3.right of south east)
 	, xtick={1,2,3}
-	, xticklabels={RS, ERS, IPHash}
+	, xticklabels={RS, IPHash, Náhodné prohledávání}
 	, yticklabels={,,}
 	, ymin=5200
 	, ymax=5360
@@ -1553,16 +1569,6 @@ hodnoty poslední generace algoritmu), které  nalezne náhodné prohledávání a IPHa
 	
 	\addplot+[
 	boxplot prepared={
-		lower whisker=5251,
-		lower quartile=5268,
-		median=5276,
-		upper quartile=5290,
-		upper whisker=5323,
-	},
-	] coordinates {}; % ERS
-	
-	\addplot+[
-	boxplot prepared={
 		lower whisker=5252,
 		lower quartile=5264,
 		median=5278,
@@ -1570,13 +1576,41 @@ hodnoty poslední generace algoritmu), které  nalezne náhodné prohledávání a IPHa
 		upper whisker=5298,
 	},
 	] coordinates {}; % IPHash
+	
+	\addplot+[
+	boxplot prepared={
+		lower whisker=5251,
+		lower quartile=5268,
+		median=5276,
+		upper quartile=5290,
+		upper whisker=5323,
+	},
+	] coordinates {}; % ERS
 	\end{axis}		
 
 	\end{tikzpicture}
-	\caption{Nejlep¹í jedinci boxplot nad setem 2.}
+	\caption{Porovnání výsledkù algirutmu IPHash a náhodného porovnání krabicovým diagramem pro datasety tøi a ètyøi.}
+	\label{fig:basic_boxplot_2}
 \end{figure}
 %%%%%%%%%%%%% IPHASH BOXPLOT %%%%%%%%%%%%%%%
 
+V kontrastu s výsledky nad prvními dvìma datasety jsou výsledky nad druhými dvìma datasety. V obou pøípadech
+si námi navr¾ené øe¹ení nevedlo v prùmìru lépe, ne¾ algorimus náhodného prohledávání. Je vidìt, ¾e nejlep¹í
+nalezená øe¹ení mají obdobný rozptyl. Nad datasetem èíslo tøi je rozptyl velmi podobný, tìsnì ve prospìch 
+náhodného prohledávání. Medián lze pova¾ovat za toto¾ný. Nejlep¹í nalezené øe¹ení v¹ak jasnì mluví ve prospìch
+algoritmu IPHash, kde je rozdíl více ne¾ dvacet úspì¹nì naha¹ovaných adres. V pøípadì datasetu èíslo ctyøi náhodné
+prohledávání jasnì pøedèilo námi navr¾ený algoritmus. I pøes to, ¾e je mediánová hodnota náhodného prohledávání
+nepatrnì men¹í, je zanedbatelná a lze ji pova¾ovat za nepøesnost mìøení. Horní i spodní hranice rozptylu náhodného
+prohledávání je polo¾ena vý¹e ne¾ v pøípadì algoritmu IPHash. Celkem lze pozorovat, ¾e ani jeden algoritmus 
+nena¹el øe¹ení, které by mohlo konkurovat nejlep¹ím výslekùm dosa¾eným v nad pøede¹lými datasety. I pøes to
+nejlep¹í nalezené øe¹ení jednoznaènì mluví ve prospìch algoritmu náhodného prohledávání.
+
+Nejlep¹ích výsledkù bylo dosa¾eno nad prvními dvìma datasety, kde v obou pøípadech si nejlépe vedl námi navr¾ený
+algoritmus. U tøetího datasetu se výsledky zhor¹ili v porovnání s pøedchozími a to u obou algoritmù. Oba si byly 
+rovnocéné, ale nejlep¹í øe¹ení nalezl algoritmus IPHash. V pøípadì posledního datasetu jsou výsledky podobné jako
+v pøípadì datasetu tøi. Nejlep¹í øe¹ení nalezlo náhodné prohledávání, ale i zde mù¾eme pozorovat zhoø¹ení. 
+
+%%%%%%%%%%%%% IPHASH Population depth %%%%%%%%%%%%%%%
 \begin{figure}[!ht]
 \centering
 \begin{tikzpicture}
@@ -1610,6 +1644,7 @@ hodnoty poslední generace algoritmu), které  nalezne náhodné prohledávání a IPHa
 \caption{Number of successfully hashed addresses in relation to population size and initial depth.}
 \label{fig:basicPopulationDepth1}
 \end{figure}
+%%%%%%%%%%%%% IPHASH Population depth %%%%%%%%%%%%%%%
 
 \begin{table}[h]
 	\centering
