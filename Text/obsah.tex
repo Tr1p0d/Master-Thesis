@@ -961,6 +961,41 @@ stromù roste exponenciálnì pamì»ová nároènost, co¾ klade neúnosné nároky na výpo
 (servery \textit{edesign1} \ldots \textit{edesign4}). Parametry základní variantu této metody shrnuje 
 tabulka \ref{tab:IPHash_params}.
 
+\begin{table}[h]
+	\centering
+	\caption{Kompletní shrnutí parametrù genetického programování pro experimenty spjaté s touto sekcí.}
+	\begin{tabular}{lc} \\ \hline
+		Parametr & Hodnota \\ \hline
+		Poèet populací v bìhu & 1 \\
+		Velikost populace & 512 \\
+		Reprezentace jedince & jeden abstraktní syntaktický strom \\ \hline
+		Maximální poèet ohodnocení & 100000 \\
+		Maximální hloubka & 6 \\
+		Mno¾ina funkcí & $\{*, +, \wedge, \ggg\}$ \\
+		Mno¾ina symbolù & $\{o_{0} .. o_{3}, \Re \}$ \\
+		\hline 
+		Inicializaèní metoda & Ramped half-and-half \\
+		Poèáteèní maximální hloubka & 6 \\
+		Poèáteèní maximální hloubka & 2 \\
+		\hline
+		Selekce & Turnajová \\
+		Velikost turnaje & 7 \\
+		\hline
+		Køí¾ení & Podstromové \\
+		Èetnost selekce koøene & 0.0 \\
+		Èetnost selekce listu & 0.1 \\ 
+		Èetnost selekce uzlù & 0.9 \\
+		\hline 
+		Mutace & Podstromová \\
+		Èetnost & 0.1 \\
+		\hline
+		Elitismus & Ano \\
+		Èetnost & 0.05 \\
+		\hline
+	\end{tabular}
+	\label{tab:IPHash_params}
+\end{table}
+
 \section{Optimalizace za pou¾ití Merkle-Damg\r{a}rdova schématu}
 
 Dále se budeme zabývat evoluèním návrhem kompresních funkcí pro Merkle-Damg\r{a}rdovo schéma.
@@ -986,10 +1021,20 @@ syntaktickým stromem. Proto¾e naráz pracujeme se ètyømi stromy zvedme poèet eval
 400 000 evaluací, abychom dosáhli ekvivalentní situace v porovnání s ostatními metodami. V procesu
 reprodukce jsou abstraktní syntaktické stromy vybírány náhodnì. 
 
+\begin{figure}[!ht]
+\begin{subfigure}[b]{0.49\textwidth}
+	\includegraphics[width=\textwidth]{fig/merkle_damgard_design1}
+	\caption{První pøípad, který budeme studovat. Schéma pou¾ívá zøetìzení jediné kompresní funkce.}
+\end{subfigure}
+\begin{subfigure}[b]{0.49\textwidth}
+	\includegraphics[width=\textwidth]{fig/merkle_damgard_design2}
+	\caption{Druhý pøípad, který budeme studovat. Schéma pou¾ívá zøetìzení nìkolika rùzných kompresních funkcí.}
+\end{subfigure}
+	\caption{Porovnání dvou navr¾ených øe¹ení pou¾ívající Merkle-Damg\r{a}rdovo schéma.}
+\end{figure}
+
 U obou variant do tabulky terminálních symbolù musíme zavést pøíslu¹né symboly reprezentující
 konkrétní mezivýsledky $a_0, a_1, a_2$. Ostatní parametry se oproti metodì v pøedchozí sekci neli¹í.
-
-TODO include altered MD picture. 
 
 \section{Evoluèní návrh za pou¾ití kukaèèího ha¹ování}
 
@@ -1018,9 +1063,14 @@ rychlost. Provedeme tedy i experimenty, které odhalí rychlost s jakou jednotlivé
 
 \section{Experimenty s navr¾eným øe¹ením}
 Nejprve se tedy budeme zkoumat výsledky, jaké poskytuje námi navr¾ené øe¹ení z kapitoly
- \ref{sec:solution_design}. Námi navr¾ený algoritmus porovnáme s dvìmi variantami náhodného prohledávání.
- Prvni varianta bude náhodné prohledávání bez pou¾ití elitismu, druhá s elitismem. Do grafu zahrneme i jednu
- variantu èlovekem vytvoøené obecné ha¹ovací funkce, konkrétnì ha¹ovací funkci \textit{Murmurhash3}. 
+ \ref{sec:solution_design}. Námi navr¾ený algoritmus porovnáme se dvìma variantami náhodného prohledávání.
+ První varianta bude náhodné prohledávání bez pou¾ití elitismu, druhá s elitismem. Do grafu zahrneme i jednu
+ variantu èlovekem vytvoøené obecné ha¹ovací funkce, konkrétnì ha¹ovací funkci \textit{Murmurhash3} pøedstavenou
+ v sekci \ref{sec:evolution_design}. Bìhy námí navr¾eného øe¹ení jsme promítli do grafù, kde ka¾dému
+ datasetu odpovída jeden graf. Na levé stranì grafu mù¾eme vidìt prùbìhy námi navr¾eného systémù a oba
+ algoritmy náhodného prohledávání. Ka¾dá køivka je výsledkem mediánu z padesátí nezávislých bìhù. Na levé
+ stranì mù¾eme pozotovat medián systémù IPHash a u nìj je¹tì interval spolehlivosti. Interval spolehlivosti
+ je zaznaèen dvìma ohranièujícímy køivkami, kde spodní zaèní první a horní tøetí kvartil.
 
 %%%%%%%%%%%%% IPHASH AVG Population SET #1 %%%%%%%%%%%%%%%
 \begin{figure*}[!ht]
@@ -1081,9 +1131,20 @@ Nejprve se tedy budeme zkoumat výsledky, jaké poskytuje námi navr¾ené øe¹ení z k
 	\end{axis}
 	\end{tikzpicture}
 	\caption{Evolvované ha¹ovací funkce a jejich fitnes hodnota nad data setem èíslo 1.}
-	\label{fig:basicComparison}
+	\label{fig:basicComparison1}
 \end{figure*}
 %%%%%%%%%%%%% IPHASH AVG Population SET #1 %%%%%%%%%%%%%%%
+
+Na obrázku \ref{fig:basicComparison1} mù¾eme vidìt vidìt porovnání bìhù a jejich výsledkù v¹ech algoritmù.
+Je patrné, ¾e nad prvním datasetem, navr¾ené øe¹ení jasnì dominuje nad zbývajícímy algoritmy. IPHash
+naha¹oval o 25 IP adres více ne¾ druhý nejùspì¹nìj¹í algoritmus náhodného prohledávání. Nejhùøe si vedl
+èlovìkem vytvoøený algoritmus \textit{MurmurHash3}, který naha¹oval o celých 111 IP adres ménì. 
+
+Z intervalu spolehlivost mù¾eme usoudit, ¾e námi navr¾ený algoritmus skuteènì funguje dobøe a rozptyly jeho
+øe¹ení nejsou pøíli¹ signifikantní. Nalezené øe¹ení není tedy dílem èísté náhody. Z grafu mù¾eme vyèíst, ¾e 
+algoritmus v prních nìkolika generacích rapidnì konverguje a s postupným pøíbýváním generací se jeho 
+konvergence zpomaluje. Toto je typickou vlastností algoritmu genetického programování \cite{GPTutorial}.
+
 %%%%%%%%%%%%% IPHASH AVG Population SET #2 %%%%%%%%%%%%%%%
 \begin{figure*}[!ht]
 	\centering
@@ -1095,7 +1156,7 @@ Nejprve se tedy budeme zkoumat výsledky, jaké poskytuje námi navr¾ené øe¹ení z k
 	, grid=major
 	, xlabel=Generation
 	, ymin=5180
-	, ymax=5320
+	, ymax=5330
 	, ylabel=Successfully hashed
 	, legend style=
 	{ at={(1.0, 0.3)}
@@ -1121,7 +1182,7 @@ Nejprve se tedy budeme zkoumat výsledky, jaké poskytuje námi navr¾ené øe¹ení z k
 	, at=(plot1.right of south east)
 	, anchor=left of south west
 	, ymin=5180
-	, ymax=5320
+	, ymax=5330
 	, height=8cm
 	, width=0.50\textwidth
 	, grid=major
@@ -1143,9 +1204,17 @@ Nejprve se tedy budeme zkoumat výsledky, jaké poskytuje námi navr¾ené øe¹ení z k
 	\end{axis}
 	\end{tikzpicture}
 	\caption{Evolvované ha¹ovací funkce a jejich fitnes hodnota nad data setem èíslo 2.}
-	\label{fig:basicComparison}
+	\label{fig:basicComparison2}
 \end{figure*}
 %%%%%%%%%%%%% IPHASH AVG Population SET #2 %%%%%%%%%%%%%%%
+
+V pøípadì druhého datasetu jsou dosa¾ené výsledky (\ref{fig:basicComparison2}) je¹tì lep¹í. IPHash dosáhl vy¹¹ího mediánu
+a opìt výraznì pøevý¹il jak náhodné prohledávání, tak \textit{MurmurHash3}. Naha¹oval o 24
+IP adres více ne¾ náhodné prohledávání a o 115 IP adres více, ne¾ \textit{MurmurHash3}. 
+Interval spolehlivosti je s výjimkou posledních nìkolika generací více sevøený kolem køivky
+IPHash, co¾ znaèí spolehlivý algoritmus. Stejnì jako v pøedchozím pøípadì, algoritmus rapidnì
+konverguje v prvních nìkolika generacích. Poté jeho nástup ustává.
+
 %%%%%%%%%%%%% IPHASH AVG Population SET #3 %%%%%%%%%%%%%%%
 \begin{figure*}[!ht]
 	\centering
@@ -1205,9 +1274,26 @@ Nejprve se tedy budeme zkoumat výsledky, jaké poskytuje námi navr¾ené øe¹ení z k
 	\end{axis}
 	\end{tikzpicture}
 	\caption{Evolvované ha¹ovací funkce a jejich fitnes hodnota nad data setem èíslo 3.}
-	\label{fig:basicComparison}
+	\label{fig:basicComparison3}
 \end{figure*}
 %%%%%%%%%%%%% IPHASH AVG Population SET #3 %%%%%%%%%%%%%%%
+
+Zajímavá situace nastala v pøípadì tøetího datasetu \ref{fig:basicComparison3}. Na první pohled je patrné,
+¾e oba iteraèní algoritmy zde øe¹ení s obdobnou hodnotou fitnes. Dále je vidìt,
+¾e mediánová hodnota fitnes se nám znatelnì a to o více ne¾ dvacet naha¹ovaných 
+adres v pøípadì algoritmu IPHash. Výsledná øe¹ení náhodného prohledávání na¹la
+øe¹ení s obdobnou hodnotou fitnes jako v pøedchozím pøípadì. Naopak se zvý¹ila 
+hodnota u algoritmu \textit{MurmurHash3}, a to o celýh 15 naha¹ovaných adres.
+
+Z intervalu spolehlivosti mù¾eme vyèíst, mnohem vìt¹í rozptyl ne¾ v pøedchozích
+pøípadech. IPHash algoritmus produkuje mnohem vìt¹í diverzitu v nalezených øe¹eních.
+Tento fakt ve spojení s obdobnou hodnotou fitnes funkce jako má náhodné prohledávání
+znaèí, ¾e stavový prostor tak jak modelován tøetím datasetem je vhodný spí¹e pro 
+algoritmus náhodného prohledávání, ne¾ pro evoluèní algoritmus. Evoluèní algoritmus
+se v prostoru dostupných øe¹ení ``nemá èeho chytit''. Proto ¹patnì konverguje a jeho
+prùbìh pøipomíná náhodné prohledávání. Na poèátku algoritmus konverguje velmi rychle
+velmi rychle v¹ak ztrácí ve¹kerý progres a témìø úplnì staguje.
+
 %%%%%%%%%%%%% IPHASH AVG Population SET #4 %%%%%%%%%%%%%%%
 \begin{figure*}[!ht]
 	\centering
@@ -1267,9 +1353,57 @@ Nejprve se tedy budeme zkoumat výsledky, jaké poskytuje námi navr¾ené øe¹ení z k
 	\end{axis}
 	\end{tikzpicture}
 	\caption{Evolvované ha¹ovací funkce a jejich fitnes hodnota nad data setem èíslo 4.}
-	\label{fig:basicComparison}
+	\label{fig:basicComparison4}
 \end{figure*}
 %%%%%%%%%%%%% IPHASH AVG Population SET #4 %%%%%%%%%%%%%%%
+
+Zdá se, ¾e stejnì jako v pøedchozím pøípadì, se IPHash chová i nad posledním datasetem ètyøi (\ref{fig:basicComparison4}).
+Mediánová hodnota je opìt ni¾¹í ne¾ v pøípadì náhodného prohledávání. Je v¹ak vy¹¹í, ne¾ v pøípadì
+\textit{MurmurHash3}. Stavový prostor, zda se, má opìt náhodnou charakteristiku a algoritmus spatnì
+koverguje. Rozptyl je opìt vìt¹í ne¾ v prvních dvou pøípadech. Algoritmus rychle konverguje v prvních
+nìkolika generacích. Brzy v¹ak pøejde ve stagnaci.
+
+Døíve, ne¾ se pustíme dále je vhodné se zamyslet na doposud dosa¾enými výsledky algoritmem náhodného
+prohledávání. Teoreticky algoritmus náhodného prohledávání je takový, který náhodnì vybírá body
+daného stavového prostoru. Souèástí ka¾dého evoluèního algoritmu je v¹ak také reprezentace problému,
+která modeluje stavový prostor. V na¹em pøípadì bylo náhodné proheldávání velmi silnì ovlivnìno 
+reprezentací jedncù jako abstraktních syntaktických stromù a pou¾itými terminálními a funkèními symboly.
+Lze tedy stále mluvit o algoritmu náhodného prohledávání, mìjme v¹ak na pamìti, ¾e výsledky jím
+dosa¾enou jsou velkou mìrou zpùsobené právì námi vhodnì zvolenou reprezentací.
+
+Jedna ze zajímavých vlastostí spoleènou pro v¹echny grafy je fakt, ¾e v iniciálních populacích obou
+iteraèních algoritmù jsme nalezli øe¹ení, která pøevy¹ovala èlovìkem vytvoøené ha¹ovací funkce. Toto
+je velmi zajímavý poznatek. Dùvodem je, ¾e velikost populace jsme zvolili pomìrnì velkou. I pøes to
+v¹ak z toho plyne, ¾e po nìkolika málo pokusech s náhodným generováním abstraktních syntaktických 
+stromù mù¾eme nalézt øe¹ení, která pøevy¹ují ta èlovìkem vytvoøená.
+
+\begin{table}[!ht]
+	\centering
+	\begin{tabular}{l|c|c|c|c}
+		Ha¹ovací funkce & Dataset 1 & Dataset 2 & Dataset 3 & Dataset 4 \\
+		\hline
+		FarmHash             & 5227 & 5199 & 5203 & 5158 \\
+		MurmurHash3    		 & 5190 & 5190 & 5206 & 5206 \\
+		CityHash             & 5180 & 5156 & 5171 & 5155 \\
+		\hline
+		IPHash               & 5301 & 5305 & 5274 & 5278 \\
+		Náhodné prohledávání & 5276 & 5281 & 5277 & 5281 \\
+		\hline
+	\end{tabular}
+	\caption{Shrnutí výsledkù evolvovaných i obecných ha¹ovacích funkcí napøíè v¹emi datasety.}
+	\label{tab:IPHash_conclusion}
+\end{table}
+
+Ve shrnující tabulkce \ref{tab:IPHash_conclusion} mùzeme vidìt výsledky algoritmu náhodného prohledávání
+a algoritmu IPHash v kontrastu s èlovìkem vytvoøenými ha¹ovacími funkcemi z kapitoly \ref{sec:hashing}.
+Nad prvními dvìma má nejlep¹í mediánovou hodnotu fitnes IPHash. Nad druhými dvìma naopak náhodné prohledávání.
+Èlovìkem vytvoøené algoritmy ani v jednom pøípadì napøekonaly IPHash. Naopak IPHash nad obecnými ha¹ovacími
+funkcemi jasnì dominuje. Rozdíl je nejvíce znát v v pøípadì funkce \textit{CityHash} nad datasetem dva, kde se rozdíl
+rovná hodnotì 150 naha¹ovaných funkcí. Nejménì je to naopak v pøípadì funkce \textit{FarmHash} nad datasetem tøi,
+kde se rozdíl zmen¹il na 71 naha¹ovaných adres.
+ 
+Nyní se budeme podrobnìji zabývat rozptylem nejlep¹ího nalezeného øe¹ení (ekvivalent
+hodnoty poslední generace algoritmu), které  nalezne náhodné prohledávání a IPHash. 
 
 %%%%%%%%%%%%% IPHASH BOXPLOT %%%%%%%%%%%%%%%
 \begin{figure}[!h]
@@ -1443,23 +1577,6 @@ Nejprve se tedy budeme zkoumat výsledky, jaké poskytuje námi navr¾ené øe¹ení z k
 \end{figure}
 %%%%%%%%%%%%% IPHASH BOXPLOT %%%%%%%%%%%%%%%
 
-\begin{table}[!ht]
-\centering
-\begin{tabular}{l|c|c|c|c}
-	Ha¹ovací funkce & Dataset 1 & Dataset 2 & Dataset 3 & Dataset 4 \\
-	\hline
-	FarmHash          			 & 5227 & 5199 & 5203 & 5158 \\
-	MurmurHash3    			  & 5190 & 5190 & 5206 & 5206 \\
-	CityHash            			& 5180 & 5156 & 5171 & 5155 \\
-	\hline
-	IPHash               			& 5301 & 5305 & 5274 & 5278 \\
-	Náhodné prohledávání & 5276 & 5281 & 5277 & 5281 \\
-	\hline
-\end{tabular}
-\caption{Shrnutí výsledkù evolvovaných i obecných ha¹ovacích funkcí napøíè v¹emi datasety.}
-\label{tab:IPHash_conclusion}
-\end{table}
-
 \begin{figure}[!ht]
 \centering
 \begin{tikzpicture}
@@ -1491,8 +1608,26 @@ Nejprve se tedy budeme zkoumat výsledky, jaké poskytuje námi navr¾ené øe¹ení z k
 	\end{axis}
 \end{tikzpicture}
 \caption{Number of successfully hashed addresses in relation to population size and initial depth.}
-\label{fig:basicPopulationDepth}
+\label{fig:basicPopulationDepth1}
 \end{figure}
+
+\begin{table}[h]
+	\centering
+	\caption{Vliv rùzných voleb and terminálních a neterminálních mno¾in na výslednou hodnotu fitnes. Experimenty jsou provedeny
+		napøíè v¹emi datasety.}
+	\begin{tabular}{cccccc} \\ \hline
+		Terminal set & Function set & Dataset 1 & Dataset 2 & Dataset 3 & Dataset 4 \\ \hline
+		$\{o_{0} .. o_{3}, \Re \}$ & $\{*, +, \wedge, \ggg\}$ & 5307 & 5305 & 5274 & 5278 \\
+		$\{o_{0} .. o_{3}\}$ & $\{*, +, \wedge, \ggg\}$ & 5291 & 5269 & 5273 &  \\
+		$\{o_{0} .. o_{3}, \Re \}$ & $\{*, +, \wedge, \neg, \ggg\}$ & 5300 &  & 5274 & \\
+		$\{o_{0} .. o_{3}, \Re \}$ & $\{*, \wedge, \ggg\}$ & 5306 & 5274 & 5270 & \\
+		$\{o_{0} .. o_{3}, \Re \}$ & $\{+, \wedge, \ggg\}$ & 5290 & 5270 &  & \\
+		$\{o_{0} .. o_{3}, \Re \}$ & $\{*, +, \wedge\}$ & 5298 & & & \\
+		$\{o_{0} .. o_{3}, \Re \}$ & $\{+, \wedge\}$ & 5065 & & 5018 & \\
+		\hline
+	\end{tabular}
+	\label{tab:basicRunAlternatives1}
+\end{table}
 
 \section{Ha¹ování s Merkle-Damg\r{a}rdovou konstrukcí}
 
