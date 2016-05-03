@@ -1,0 +1,105 @@
+\documentclass[11pt]{beamer}
+\usetheme{default}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+
+\author{Marek Kidoň}
+\title{Evolutionary design of domain specific non-cryptographic hash functions}
+
+\subtitle{}
+
+\logo{}
+
+\institute{Brno University of Technology}
+
+\date{\today}
+
+\subject{}
+
+\setbeamercovered{transparent}
+
+\setbeamertemplate{navigation symbols}{}
+
+\setbeamerfont{page number in head/foot}{size=\large}
+\setbeamertemplate{footline}[frame number]
+
+\begin{document}
+	\begin{frame}[plain]
+		\titlepage
+		 \addtocounter{framenumber}{-1}
+	\end{frame}
+	\begin{frame}
+		\frametitle{Hash function [1/2]}
+		\begin{block}{Introduction} 
+		\begin{itemize}[<+->]
+			\item Function of form $f_{hash} : U \to S$ for virtually any  key universe $U$ and $S = \{ 0,1,2 \ldots n \}$.
+			\item $|U| \gg |S|$.
+			\item One of the most important applications are hash tables and cryptography.
+			\item State of the art implementations: \textit{lookup3}, \textit{Murmurhash3}, \textit{CityHash}, \textit{FarmHash}
+		\end{itemize}
+		\end{block}
+    %\addtocounter{framenumber}{-1}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Hash function [2/2]}
+		\begin{block}{Idea} 
+			\begin{itemize}[<+->]
+				\item Domain specific vs. generic hash functions. \\
+				\item Idea : ``Tailor suiting'' hash function to a specific domain $\rightarrowtail$ better performance. 
+			\end{itemize}
+		\end{block}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Evolution Design}
+		\begin{block}{An unconventional approach}
+			\begin{itemize}[<+->]
+				\item Vast variety of problems can be view as state space search problem.
+				\item Inspired by the process of species reproduction.
+				\item It is typically implemented as an iterative algorithm (evolutionary algorithm).
+			\end{itemize}
+		\end{block}
+		\begin{block}{Evolution algorithm}
+			\begin{itemize}[<+->]
+				\item Uses a \textit{population} to represent a set of feasible solutions called \textit{individual}.
+				\item New generation is bred by selecting \textit{fit} individuals using a \textit{fitness function} 
+					and applying \textit{genetic operators}.
+			\end{itemize}  
+		\end{block}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Problem specification}
+		\begin{itemize}[<+->]
+				\item The target domain are \textit{Internet Protocol} (IP) version 4 addresses.
+				\item Four different IP datasets are specified.
+				\item Evolutionary design a hash function for each subset such that it outperforms
+					human-created solutions.
+		\end{itemize}
+	\end{frame}
+	\begin{frame}{Solution design}
+			\begin{itemize} [<+->]
+				\item \textit{Genetic programming} evolutionary algorithm
+				\item Individuals are represented as \textit{abstract syntax trees}.
+				\item Nodes are commonly used hashing operators such as the multiplication ($*$), addtition ($+$) or rotation ($\lll$).
+				\item Leafs are IP address octets ($o_0, o_1, o_2, o_3$) and randomly selected prime numbers ($\Re$).
+				\item Fitness function is defined as a ratio of number of IP addresses in the given dataset to the number of IP addresses
+					individual managed to hash without a collision.
+			\end{itemize}
+	\end{frame}
+	\begin{frame}{Results}
+		
+	\end{frame}
+	\begin{frame}{Conclusion}
+		content...
+	\end{frame}
+	\begin{frame}{References}
+		
+	\end{frame}
+\end{document}
