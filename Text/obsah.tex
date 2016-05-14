@@ -331,9 +331,72 @@ následující faktory:
 Cílem této sekce je podat pøehled o existujících state of the art obecných ha¹ovacích funkcích, proto¾e nìkterými z tìchto
 funkcí budeme porovnávat námi navr¾ené ha¹ovací funkce. Také budeme analyzovat, z jakých elementárních operací se 
 dané ha¹ovací funkce skládají, co¾ nám poslou¾í pøedev¹ím pro návrh mno¾iny funkcí dále viz. kapitola  
-\ref{sec:solution_design}. 
+\ref{sec:solution_design}. Nejprve se zamìøíme na krátký popis vybraných ha¹ovacích funkcí a poté na samotný rozbor.
 
-\textit{MurmurHash2} \cite{murmurhash2}, \textit{MurmurHash3} \cite{murmurhash3} \textit{FarmHash} \cite{farmhash}, \textit{CityHash} \cite{cityhash_slides}
+\begin{itemize}
+	\item \textit{MurmurHash2} \cite{murmurhash2} je druhou funkcí z rodiny ha¹ovacích funkcí \textit{Murmur} vytvoøenou
+		Austinem Appleby v roce 2008. Tato funkce se tì¹í velké oblibì mezi ha¹ovacími experty. V prùbìhu let se v¹ak 
+		ukázalo, ¾e trpí záva¾nou bezpeènostní chybou zahlcení ha¹ovací funkce (angl. \textit{Hash-Flooding}), kdy správnou
+		volbou ha¹ovaných klíèù dojde ke klastrování výstupù na jeden slot. Tato chyba má za následek extrémní zpomalení 
+		ha¹ovací tabulky vystavìné nad touto funkcí a odepøení slu¾by (angl. Denial-of-Service) celé aplikace. 
+		
+		Tato ha¹ovací funkce je pou¾ita v mnohých \textit{open-source} projektech, mezi nì¾ patøí i Apache Hadoop. 
+		
+	\item \textit{MurmurHash3} \cite{murmurhash3} je ji¾ tøetím pokraèovatelem funkcí z rodiny \textit{Murmur}. Dle
+		autora se v nové generaci jedná o rychlej¹í a robustnìj¹í funkci. Je postavena na stejném základu a nese si 
+		s sebou jednoduchost a dobré výkon stejnì jako pøedchozí verze. Bohu¾el stále trpí vý¹e zmínìnou bezpeènostní
+		chybou.
+	
+	\item \textit{CityHash} \cite{cityhash_slides}
+	\item \textit{FarmHash} \cite{farmhash}
+	\item \textit{lookup3} []
+	\item \textit{SuperFastHash} []
+	\item \textit{SpookyHash} []
+\end{itemize}
+
+Zamìøme se nyní na to, které elementární operace jsou vyu¾ívání v tìchto ha¹ovacích funkcích. Tato informace nám pomù¾e se
+zorientovat v problematice návrhu a umo¾ní nám dobøe zvolit funkce i terminály v námi navr¾ených ha¹ovacích funkcí. Nìkteré
+ha¹ovací funkce pracují nejen s elementárními ha¹ovacími funkcemi, ale i s jejich vysokoúrovnovými kombinacemi. Tyto
+takzvané \textit{mixovací komponenty} nebudeme chápat jako samostatné operace, ale rozlo¾íme je v na¹í analýze na
+elementární operace. Pro lep¹í orientaci v problematice poslou¾í pøehledová tabulka \ref{tab:generic_hashes_analysis}.
+Rozbor byl provádìn z referenèních implementací, které jsou v¹echny kromì funkce \textit{FarmHash} obsa¾eny v balíku
+\textit{SMHasher} []. Oficiální referenèní implementace funkce \textit{FarmHash} je mo¾né získat z repozitáøe na
+stránce \textit{Github} \footnote{https://github.com/google/farmhash/blob/master/src/farmhash.cc}. Implementace ha¹ovacích
+funkcí obsahují opravdu ¹iroké spektrum operátorù. Nás budou zajímat pouze ty, které jsou pou¾ity pro samotnou tvorbu
+výstupu. Nesmí nás tedy zmást napøíklad pou¾ití logického souètu nebo souèinu v øidících konstrukcích nebo operace
+sèítání a odèítání pou¾íté pro krokování vstupu po blocích urèité velikosti. 
+
+Ve zdrojových kódech referenèních implementací jednotlivých ha¹ovacích funkcí mù¾eme vidìt nìkteré opakující se vzory.
+V¾dy je pou¾ita jedna nebo více aritmetických operací. V na¹em výbìru se v¾dy jedná o sèítání ($+$) , násobení  ($*$) nebo
+jejich spoleènou kombinaci. Dal¹í nedílnou souèástí dobré ha¹ovací funkce je volba posunu nebo rotace. Vìt¹ína vybraných
+funkcí spoléhá na rotace, men¹ina poté na posuny. Najdou se i takové implementace, které pou¾ívají obì dvì, ale za
+primární operaci lze pova¾ovat jen rotaci. Posuny jsou v takovém pøípadì pou¾ity jako souèást vysokoúrovòové 
+\textit{mixovací komponenty}.
+
+\begin{table}[!ht]
+	\centering
+	\begin{tabular}{lccccccccccc}
+		\hline
+		Operace            & $*$ & $/$ & $+$ & $-$ & Posuny & Rotace & AND & OR & XOR & $\neg$ & Konstanty \\
+		\hline
+		MurmurHash2   & \checkmark & & & & \checkmark & & & & \checkmark & & \checkmark \\
+		MurmurHash3   & \checkmark & & \checkmark & &  & \checkmark & & & \checkmark & & \checkmark \\
+		lookup3              & & & \checkmark & \checkmark & & \checkmark & & & \checkmark & & \checkmark \\
+		FarmHash         & \checkmark & & \checkmark & & \checkmark & \checkmark & \checkmark & & \checkmark & & \checkmark  \\
+		CityHash          & \checkmark & & \checkmark & & \checkmark & \checkmark & & & \checkmark & & \checkmark \\
+		SpookyHash     & & & \checkmark & & & \checkmark & & & \checkmark & & \\
+		SuperFastHash & & & \checkmark & & \checkmark & & & & \checkmark & & \\
+		\hline		
+	\end{tabular}
+	\label{tab:generic_hashes_analysis}
+	\caption{Analýza existujících ha¹ovacích funkcí z pohledu pou¾itých elementarních operací.}
+\end{table}
+
+Dal¹í skupinu èasto pou¾ívaných operací tvoøí operace logické a bitové. Zde v drtivé vìt¹ínì narazíme na operaci XOR. Zøídka
+pou¾ívanou operací je logický souèin (AND). Naopak nikdy nejsou pou¾ity operace logického souètu (OR) a jednièkového
+doplòku ($\neg$). Poslední skupninou jsou konstanty. Ty jsou pou¾ity pro pøivedení dodateèné náhodnosti do ha¹ovací funkce.
+Èasto se jedná o prvoèísla, která svými specifickými vlastnostmi netrpí na shlukování výstupu. Setkáme se v¹ak i s jinými 
+konstantami, jako napøíklad konstanta \texttt{0xdeadbeef} pou¾itá v pøípadì funkce \textit{lookup3}.
 
 \chapter{Evoluèní návrh}
 \label{sec:evolution_design}
@@ -1651,22 +1714,646 @@ v pøípadì datasetu tøi. Nejlep¹í øe¹ení nalezlo náhodné prohledávání, ale i zde 
 	\caption{Vliv rùzných voleb and terminálních a neterminálních mno¾in na výslednou hodnotu fitnes. Experimenty jsou provedeny
 		napøíè v¹emi datasety.}
 	\begin{tabular}{cccccc} \\ \hline
-		Terminal set & Function set & Dataset 1 & Dataset 2 & Dataset 3 & Dataset 4 \\ \hline
-		$\{o_{0} .. o_{3}, \Re \}$ & $\{*, +, \wedge, \ggg\}$ & 5307 & 5305 & 5274 & 5278 \\
-		$\{o_{0} .. o_{3}\}$ & $\{*, +, \wedge, \ggg\}$ & 5291 & 5269 & 5273 &  \\
-		$\{o_{0} .. o_{3}, \Re \}$ & $\{*, +, \wedge, \neg, \ggg\}$ & 5300 &  & 5274 & \\
-		$\{o_{0} .. o_{3}, \Re \}$ & $\{*, \wedge, \ggg\}$ & 5306 & 5274 & 5270 & \\
-		$\{o_{0} .. o_{3}, \Re \}$ & $\{+, \wedge, \ggg\}$ & 5290 & 5270 &  & \\
-		$\{o_{0} .. o_{3}, \Re \}$ & $\{*, +, \wedge\}$ & 5298 & & & \\
-		$\{o_{0} .. o_{3}, \Re \}$ & $\{+, \wedge\}$ & 5065 & & 5018 & \\
+		Terminální mno¾ína & Funkèní mno¾ina & Dataset 1 & Dataset 2 & Dataset 3 & Dataset 4 \\ \hline
+		$\{o_{0} .. o_{3}, \Re \}$ & $\{*, +, \wedge, \ggg\}$         & 5307 & 5305     & 5274 & 5278 \\
+		$\{o_{0} .. o_{3}\}$ & $\{*, +, \wedge, \ggg\}$                  & 5291 & 5269    & 5273 & 5270  \\
+		$\{o_{0} .. o_{3}, \Re \}$ & $\{*, +, \wedge, \neg, \ggg\}$ & 5300 & 5274.5 & 5271 &  5269.5 \\
+		$\{o_{0} .. o_{3}, \Re \}$ & $\{*, \wedge, \ggg\}$              & 5306 & 5274.5 & 5270 & 5276 \\
+		$\{o_{0} .. o_{3}, \Re \}$ & $\{+, \wedge, \ggg\}$ 			   & 5290 & 5270    & 5269  & 5268 \\
+		$\{o_{0} .. o_{3}, \Re \}$ & $\{*, +, \wedge\}$                   & 5298 & 5269    & 5272 & 5270 \\
+		$\{o_{0} .. o_{3}, \Re \}$ & $\{+, \wedge\}$                      & 5065 & 4962     & 5018 & 4992 \\
 		\hline
 	\end{tabular}
 	\label{tab:basicRunAlternatives1}
 \end{table}
 
+\begin{table}
+	\begin{tabular}{lccc}
+		Funkce & Èas [sekundy]  & Zrychlení (IPHash 1) & Zrychlení (IPHash 2) \\ \hline
+		MurmurHash3   &  2.08922 & -7.67 &  -7.54 \\
+		MurmurHash2   & 1.84374 & -6.77 & -6.65 \\
+		lookup3             & 0.279259 & -1.02 & 1.00 \\
+		SpookyHash      & 2.58015 & -9.47  & -9.31 \\
+		SuperFastHash & 2.24299 & -8.23 & -8.1 \\ \hline
+		IPHash 1           & 0.272321 & - & - \\
+		IPHash 2           & 0.276854 & - & - \\
+	\end{tabular}	
+	\label{tab:speedcomparison}
+	\caption{Výsledky testu rychlosti vybraných ha¹ovacích funkcí a jejich porovnání s funkcemi nalezenými algoritmem IPHash.}
+\end{table}
+
+\newpage
 \section{Ha¹ování s Merkle-Damg\r{a}rdovou konstrukcí}
 
+%%%%%%%%%%%%% MD AVG Population SET #1 %%%%%%%%%%%%%%%
+\begin{figure*}[!ht]
+	\centering
+	\begin{tikzpicture}
+	\begin{axis}[ %
+	, name=plot1
+	, height=8cm
+	, width=0.50\textwidth
+	, grid=major
+	, xlabel=Generation
+	, ymin=5200
+	, ymax=5350
+	, ylabel=Successfully hashed
+	, legend style=
+	{ at={(1.0, 0.3)}
+		, anchor=east
+	}
+	]
+	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set1/MDMedian.dat};
+	\addlegendentry{MDHashHash}
+%	\addplot[color=black,  dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set1/MDRSMedian.dat};
+%	\addlegendentry{MDHash Random Search}
+	\end{axis}
+	
+	\begin{axis}[ %
+	, name=plot2
+	, at=(plot1.right of south east)
+	, anchor=left of south west
+	, ymin=5200
+	, ymax=5350
+	, height=8cm
+	, width=0.50\textwidth
+	, grid=major
+	, xlabel=Generation
+	%%	, ylabel=Successfully hashed
+	, yticklabels={,,}
+	%%	, legend pos=outer north east
+	, legend style=
+	{ at={(1.0, 0.3)}
+		, anchor=east
+	}
+	]
+	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set1/MDMedian.dat};
+	\addlegendentry{MDHash}
+	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set1/MDFstQ.dat};
+	\addlegendentry{MDHash fstq}
+	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set1/MDThrdQ.dat};
+	\addlegendentry{MDHash thrdq}
+	\end{axis}
+	\end{tikzpicture}
+	\caption{MD a jejich fitnes hodnota nad data setem èíslo 1.}
+	\label{fig:cuckooComparison1}
+\end{figure*}
+%%%%%%%%%%%%% MD AVG Population SET #1 %%%%%%%%%%%%%%%
+%%%%%%%%%%%%% MD AVG Population SET #2 %%%%%%%%%%%%%%%
+\begin{figure*}[!ht]
+	\centering
+	\begin{tikzpicture}
+	\begin{axis}[ %
+	, name=plot1
+	, height=8cm
+	, width=0.50\textwidth
+	, grid=major
+	, xlabel=Generation
+	, ymin=5200
+	, ymax=5350
+	, ylabel=Successfully hashed
+	, legend style=
+	{ at={(1.0, 0.3)}
+		, anchor=east
+	}
+	]
+	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set2/MDMedian.dat};
+	\addlegendentry{MDHashHash}
+	\addplot[color=black,  dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set2/MDRSMedian.dat};
+	\addlegendentry{MDHash Random Search}
+	\end{axis}
+	
+	\begin{axis}[ %
+	, name=plot2
+	, at=(plot1.right of south east)
+	, anchor=left of south west
+	, ymin=5200
+	, ymax=5350
+	, height=8cm
+	, width=0.50\textwidth
+	, grid=major
+	, xlabel=Generation
+	%%	, ylabel=Successfully hashed
+	, yticklabels={,,}
+	%%	, legend pos=outer north east
+	, legend style=
+	{ at={(1.0, 0.3)}
+		, anchor=east
+	}
+	]
+	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set2/MDMedian.dat};
+	\addlegendentry{MDHash}
+	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set2/MDFstQ.dat};
+	\addlegendentry{MDHash fstq}
+	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set2/MDThrdQ.dat};
+	\addlegendentry{MDHash thrdq}
+	\end{axis}
+	\end{tikzpicture}
+	\caption{MD a jejich fitnes hodnota nad data setem èíslo 2.}
+	\label{fig:cuckooComparison1}
+\end{figure*}
+%%%%%%%%%%%%% MD AVG Population SET #2 %%%%%%%%%%%%%%%
+%%%%%%%%%%%%% MD AVG Population SET #3 %%%%%%%%%%%%%%%
+\begin{figure*}[!ht]
+	\centering
+	\begin{tikzpicture}
+	\begin{axis}[ %
+	, name=plot1
+	, height=8cm
+	, width=0.50\textwidth
+	, grid=major
+	, xlabel=Generation
+	, ymin=5200
+	, ymax=5350
+	, ylabel=Successfully hashed
+	, legend style=
+	{ at={(1.0, 0.3)}
+		, anchor=east
+	}
+	]
+	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set3/MDMedian.dat};
+	\addlegendentry{MDHashHash}
+	\addplot[color=black,  dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set3/MDRSMedian.dat};
+	\addlegendentry{MDHash Random Search}
+	\end{axis}
+	
+	\begin{axis}[ %
+	, name=plot2
+	, at=(plot1.right of south east)
+	, anchor=left of south west
+	, ymin=5200
+	, ymax=5350
+	, height=8cm
+	, width=0.50\textwidth
+	, grid=major
+	, xlabel=Generation
+	%%	, ylabel=Successfully hashed
+	, yticklabels={,,}
+	%%	, legend pos=outer north east
+	, legend style=
+	{ at={(1.0, 0.3)}
+		, anchor=east
+	}
+	]
+	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set3/MDMedian.dat};
+	\addlegendentry{MDHash}
+	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set3/MDFstQ.dat};
+	\addlegendentry{MDHash fstq}
+	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set3/MDThrdQ.dat};
+	\addlegendentry{MDHash thrdq}
+	\end{axis}
+	\end{tikzpicture}
+	\caption{MD a jejich fitnes hodnota nad data setem èíslo 3.}
+	\label{fig:cuckooComparison1}
+\end{figure*}
+%%%%%%%%%%%%% MD AVG Population SET #3 %%%%%%%%%%%%%%%
+%%%%%%%%%%%%% MD AVG Population SET #4 %%%%%%%%%%%%%%%
+\begin{figure*}[!ht]
+	\centering
+	\begin{tikzpicture}
+	\begin{axis}[ %
+	, name=plot1
+	, height=8cm
+	, width=0.50\textwidth
+	, grid=major
+	, xlabel=Generation
+	, ymin=5200
+	, ymax=5350
+	, ylabel=Successfully hashed
+	, legend style=
+	{ at={(1.0, 0.3)}
+		, anchor=east
+	}
+	]
+	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set4/MDMedian.dat};
+	\addlegendentry{MDHashHash}
+	\addplot[color=black,  dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set4/MDRSMedian.dat};
+	\addlegendentry{MDHash Random Search}
+	\end{axis}
+	
+	\begin{axis}[ %
+	, name=plot2
+	, at=(plot1.right of south east)
+	, anchor=left of south west
+	, ymin=5200
+	, ymax=5350
+	, height=8cm
+	, width=0.50\textwidth
+	, grid=major
+	, xlabel=Generation
+	%%	, ylabel=Successfully hashed
+	, yticklabels={,,}
+	%%	, legend pos=outer north east
+	, legend style=
+	{ at={(1.0, 0.3)}
+		, anchor=east
+	}
+	]
+	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set4/MDMedian.dat};
+	\addlegendentry{MDHash}
+	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set4/MDFstQ.dat};
+	\addlegendentry{MDHash fstq}
+	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set4/MDThrdQ.dat};
+	\addlegendentry{MDHash thrdq}
+	\end{axis}
+	\end{tikzpicture}
+	\caption{MD a jejich fitnes hodnota nad data setem èíslo 4.}
+	\label{fig:cuckooComparison1}
+\end{figure*}
+%%%%%%%%%%%%% MD AVG Population SET #4 %%%%%%%%%%%%%%%
+
+\newpage
 \section{Kukaèèí ha¹ování}
+
+%%%%%%%%%%%%% CUCKOO AVG Population SET #1 %%%%%%%%%%%%%%%
+\begin{figure*}[!ht]
+	\centering
+	\begin{tikzpicture}
+	\begin{axis}[ %
+	, name=plot1
+	, height=8cm
+	, width=0.50\textwidth
+	, grid=major
+	, xlabel=Generation
+	, ymin=6700
+	, ymax=6900
+	, ylabel=Successfully hashed
+	, legend style=
+	{ at={(1.0, 0.3)}
+		, anchor=east
+	}
+	]
+	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set1/CuckooMedian.dat};
+	\addlegendentry{CuckooHash}
+	\addplot[color=black, dashdotted, thick, mark=none] table {graph/Cuckoo/Set1/CuckooRSMedian.dat};
+	\addlegendentry{Cuckoo Random Search}
+	\end{axis}
+	
+	\begin{axis}[ %
+	, name=plot2
+	, at=(plot1.right of south east)
+	, anchor=left of south west
+	, ymin=6700
+	, ymax=6900
+	, height=8cm
+	, width=0.50\textwidth
+	, grid=major
+	, xlabel=Generation
+	%%	, ylabel=Successfully hashed
+	, yticklabels={,,}
+	%%	, legend pos=outer north east
+	, legend style=
+	{ at={(1.0, 0.3)}
+		, anchor=east
+	}
+	]
+	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set1/CuckooMedian.dat};
+	\addlegendentry{CuckooHash}
+	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set1/CuckooFstQ.dat};
+	\addlegendentry{CuckooHash fstq}
+	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set1/CuckooThrdQ.dat};
+	\addlegendentry{CuckooHash thrdq}
+	\end{axis}
+	\end{tikzpicture}
+	\caption{Kukacka a jejich fitnes hodnota nad data setem èíslo 1.}
+	\label{fig:cuckooComparison1}
+\end{figure*}
+%%%%%%%%%%%%% CUCKOO AVG Population SET #1 %%%%%%%%%%%%%%%
+%%%%%%%%%%%%% CUCKOO AVG Population SET #2 %%%%%%%%%%%%%%%
+\begin{figure*}[!ht]
+	\centering
+	\begin{tikzpicture}
+	\begin{axis}[ %
+	, name=plot1
+	, height=8cm
+	, width=0.50\textwidth
+	, grid=major
+	, xlabel=Generation
+	, ymin=6700
+	, ymax=6900
+	, ylabel=Successfully hashed
+	, legend style=
+	{ at={(1.0, 0.3)}
+		, anchor=east
+	}
+	]
+	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set2/CuckooMedian.dat};
+	\addlegendentry{CuckooHash}
+	\addplot[color=black, dashdotted, thick, mark=none] table {graph/Cuckoo/Set2/CuckooRSMedian.dat};
+	\addlegendentry{Cuckoo Random Search}
+	\end{axis}
+	
+	\begin{axis}[ %
+	, name=plot2
+	, at=(plot1.right of south east)
+	, anchor=left of south west
+	, ymin=6700
+	, ymax=6900
+	, height=8cm
+	, width=0.50\textwidth
+	, grid=major
+	, xlabel=Generation
+	%%	, ylabel=Successfully hashed
+	, yticklabels={,,}
+	%%	, legend pos=outer north east
+	, legend style=
+	{ at={(1.0, 0.3)}
+		, anchor=east
+	}
+	]
+	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set2/CuckooMedian.dat};
+	\addlegendentry{CuckooHash}
+	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set2/CuckooFstQ.dat};
+	\addlegendentry{CuckooHash fstq}
+	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set2/CuckooThrdQ.dat};
+	\addlegendentry{CuckooHash thrdq}
+	\end{axis}
+	\end{tikzpicture}
+	\caption{Kukacka a jejich fitnes hodnota nad data setem èíslo 2.}
+	\label{fig:cuckooComparison2}
+\end{figure*}
+
+%%%%%%%%%%%%% CUCKOO AVG Population SET #2 %%%%%%%%%%%%%%%
+%%%%%%%%%%%%% CUCKOO AVG Population SET #3 %%%%%%%%%%%%%%%
+\begin{figure*}[!ht]
+	\centering
+	\begin{tikzpicture}
+	\begin{axis}[ %
+	, name=plot1
+	, height=8cm
+	, width=0.50\textwidth
+	, grid=major
+	, xlabel=Generation
+	, ymin=6600
+	, ymax=6900
+	, ylabel=Successfully hashed
+	, legend style=
+	{ at={(1.0, 0.3)}
+		, anchor=east
+	}
+	]
+	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set3/CuckooMedian.dat};
+	\addlegendentry{CuckooHash}
+	\addplot[color=black, dashdotted, thick, mark=none] table {graph/Cuckoo/Set3/CuckooRSMedian.dat};
+	\addlegendentry{Cuckoo Random Search}
+	\end{axis}
+	
+	\begin{axis}[ %
+	, name=plot2
+	, at=(plot1.right of south east)
+	, anchor=left of south west
+	, ymin=6600
+	, ymax=6900
+	, height=8cm
+	, width=0.50\textwidth
+	, grid=major
+	, xlabel=Generation
+	%%	, ylabel=Successfully hashed
+	, yticklabels={,,}
+	%%	, legend pos=outer north east
+	, legend style=
+	{ at={(1.0, 0.3)}
+		, anchor=east
+	}
+	]
+	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set3/CuckooMedian.dat};
+	\addlegendentry{CuckooHash}
+	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set3/CuckooFstQ.dat};
+	\addlegendentry{CuckooHash fstq}
+	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set3/CuckooThrdQ.dat};
+	\addlegendentry{CuckooHash thrdq}
+	\end{axis}
+	\end{tikzpicture}
+	\caption{Kukacka a jejich fitnes hodnota nad data setem èíslo 3.}
+	\label{fig:cuckooComparison3}
+\end{figure*}
+%%%%%%%%%%%%% CUCKOO AVG Population SET #3 %%%%%%%%%%%%%%%
+%%%%%%%%%%%%% CUCKOO AVG Population SET #4 %%%%%%%%%%%%%%%
+\begin{figure*}[!ht]
+	\centering
+	\begin{tikzpicture}
+	\begin{axis}[ %
+	, name=plot1
+	, height=8cm
+	, width=0.50\textwidth
+	, grid=major
+	, xlabel=Generation
+	, ymin=6600
+	, ymax=6900
+	, ylabel=Successfully hashed
+	, legend style=
+	{ at={(1.0, 0.3)}
+		, anchor=east
+	}
+	]
+	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set4/CuckooMedian.dat};
+	\addlegendentry{CuckooHash}
+	\addplot[color=black, dashdotted, thick, mark=none] table {graph/Cuckoo/Set4/CuckooRSMedian.dat};
+	\addlegendentry{Cuckoo Random Search}
+	\end{axis}
+	
+	\begin{axis}[ %
+	, name=plot4
+	, at=(plot1.right of south east)
+	, anchor=left of south west
+	, ymin=6600
+	, ymax=6900
+	, height=8cm
+	, width=0.50\textwidth
+	, grid=major
+	, xlabel=Generation
+	%%	, ylabel=Successfully hashed
+	, yticklabels={,,}
+	%%	, legend pos=outer north east
+	, legend style=
+	{ at={(1.0, 0.3)}
+		, anchor=east
+	}
+	]
+	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set4/CuckooMedian.dat};
+	\addlegendentry{CuckooHash}
+	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set4/CuckooFstQ.dat};
+	\addlegendentry{CuckooHash fstq}
+	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set4/CuckooThrdQ.dat};
+	\addlegendentry{CuckooHash thrdq}
+	\end{axis}
+	\end{tikzpicture}
+	\caption{Kukacka a jejich fitnes hodnota nad data setem èíslo 4.}
+	\label{fig:cuckooComparison4}
+\end{figure*}
+%%%%%%%%%%%%% CUCKOO AVG Population SET #4 %%%%%%%%%%%%%%%
+
+\begin{figure}[!h]
+	\centering
+	\begin{tikzpicture}
+	\begin{axis}
+	[ boxplot/draw direction=y
+	, name=plot1	
+	, xtick={1,2,3}
+	, xticklabels={IPHash, MDHash, CuckooHash}
+	%	, ymin=5200
+	%	, ymax=5360
+	]
+	\addplot+[
+	boxplot prepared={
+		lower whisker=5279,
+		lower quartile=5292,
+		median=5301,
+		upper quartile=5315,
+		upper whisker=5352,
+	},
+	] coordinates {}; % IPHash SET1
+	
+	\addplot+[
+	boxplot prepared={
+		lower whisker=5268,
+		lower quartile=5282,
+		median=5291,
+		upper quartile=5301,
+		upper whisker=5321,
+	},
+	] coordinates {}; % MD SET1
+				
+	\addplot+[
+	boxplot prepared={
+		lower whisker=6853,
+		lower quartile=6861.91,
+		median=6871,
+		upper quartile=6877.16,
+		upper whisker=6906,
+	},
+	] coordinates {}; % CUCKOO SET1
+	\end{axis}
+	
+\begin{axis}
+[ boxplot/draw direction=y
+, name=plot2
+, at=(plot1.right of south east)
+, xtick={1,2,3}
+, xticklabels={IPHash, MDHash, CuckooHash}
+, yticklabels={,,}
+%	, ymin=5200
+%	, ymax=5360
+]
+	\addplot+[color=red,
+	boxplot prepared={
+		lower whisker=5286,
+		lower quartile=5298,
+		median=5305,
+		upper quartile=5319,
+		upper whisker=5352,
+	},
+	] coordinates {}; % IPHash
+
+\addplot+[
+boxplot prepared={
+	lower whisker=5270,
+	lower quartile=5288,
+	median=5293,
+	upper quartile=5298,
+	upper whisker=5349,
+},
+] coordinates {}; % MD SET2
+
+\addplot+[
+boxplot prepared={
+	lower whisker=6843,
+	lower quartile=6858,
+	median=6868,
+	upper quartile=6878.25,
+	upper whisker=6908,
+},
+] coordinates {}; % CUCKOO SET2
+\end{axis}	
+
+\begin{axis}
+[ boxplot/draw direction=y
+, name=plot3
+, anchor=north west
+, at=(plot1.below south west)
+, xtick={1,2,3}
+, xticklabels={IPHash, MDHash, CuckooHash}
+% , yticklabels={,,}
+%	, ymin=5200
+%	, ymax=5360
+]
+	\addplot+[
+	boxplot prepared={
+		lower whisker=5242,
+		lower quartile=5261,
+		median=5274,
+		upper quartile=5287,
+		upper whisker=5342,
+	},
+] coordinates {}; % IPHash SET3
+
+\addplot+[
+boxplot prepared={
+	lower whisker=5262,
+	lower quartile=5284,
+	median=5288,
+	upper quartile=5298,
+	upper whisker=5318,
+},
+] coordinates {}; % MD SET3
+
+\addplot+[
+boxplot prepared={
+	lower whisker=6838,
+	lower quartile=6858,
+	median=6865.5,
+	upper quartile=6877,
+	upper whisker=6902,
+},
+] coordinates {}; % CUCKOO SET3
+\end{axis}
+
+\begin{axis}
+[ boxplot/draw direction=y
+, name=plot4
+, anchor=north west
+, at=(plot2.below south west)
+, xtick={1,2,3}
+, xticklabels={IPHash, MDHash, CuckooHash}
+, yticklabels={,,}
+%	, ymin=5200
+%	, ymax=5360
+]
+\addplot+[
+boxplot prepared={
+		lower whisker=5252,
+		lower quartile=5264,
+		median=5278,
+		upper quartile=5285,
+		upper whisker=5298,
+},
+] coordinates {}; % IPHash SET4
+
+\addplot+[
+boxplot prepared={
+	lower whisker=5257,
+	lower quartile=5283,
+	median=5291,
+	upper quartile=5299,
+	upper whisker=5324,
+},
+] coordinates {}; % MD SET4
+
+\addplot+[
+boxplot prepared={
+	lower whisker=6817,
+	lower quartile=6866,
+	median=6872.5,
+	upper quartile=6879,
+	upper whisker=6905,
+},
+] coordinates {}; % CUCKOO SET4
+\end{axis}				
+	\end{tikzpicture}
+	\caption{Cuckoo}
+	\label{fig:conclusion_boxplot_2}
+\end{figure}
+%%%%%%%%%%%%% CUCKOO BOXPLOT %%%%%%%%%%%%%%%
 
 \chapter{Závìr}
 \input{conclusion}
