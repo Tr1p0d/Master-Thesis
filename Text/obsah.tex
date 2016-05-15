@@ -347,12 +347,36 @@ dané ha¹ovací funkce skládají, co¾ nám poslou¾í pøedev¹ím pro návrh mno¾iny funk
 		s sebou jednoduchost a dobré výkon stejnì jako pøedchozí verze. Bohu¾el stále trpí vý¹e zmínìnou bezpeènostní
 		chybou.
 	
-	\item \textit{CityHash} \cite{cityhash_slides}
-	\item \textit{FarmHash} \cite{farmhash}
-	\item \textit{lookup3} []
-	\item \textit{SuperFastHash} []
-	\item \textit{SpookyHash} []
+	\item \textit{CityHash} \cite{cityhash_slides} je rodina ha¹ovacích funkcí, primárnì urèená pro ha¹ování øetìzcù. 
+		Vznikla ve spoleènosti Google (Geoff Pike a  Jyrki Alakuijala, 2011) a je silnì optimalizována pro pou¾ití na
+		hardwaru, který se nachýzí v datacentrech
+		spoleènosti Google. Je inspirována funkcemi z rodiny \textit{Murmur}. Funkce vná¹í do problematiky
+		netradièní pøístup spoèívající v pou¾ití více ne¾ jedné aritmetické operace ve vìt¹inì krokù. O funkci je známo,
+		¾e trpí stejnou zranitelností jako pøedchozí dvì funkce, jimi¾ se inspirovala.
+	
+	\item I pøes svùj nesporný pøínos byla funkce \textit{CityHash} ji¾ o tøi roky pozdìji nahrazena novou rodinou
+		ha¹ovacích funkcí \textit{FarmHash} \cite{farmhash} \cite{Simone2014}. Opìt za ní stojí spoleènost Google. Její primární aplikací
+		jsou opìt datacentra spoleènosti Google, ale tentokrát byl kladen dùraz také na rychlost a pøedev¹ím
+		u¾ivatelskou vstøícnost a snadnou pou¾itelnost na pøenosných zaøízeních jako jsou mobilní telefony a podobnì.
+	
+	\item V pøípadì funkce \textit{lookup3} \cite{NCHF_auto_design} se jedná o velmi známou a kvalitní funkci, vytvoøenou Robertem Jenkinsem
+		ji¾ v roce 2006. Jedná se o o state-of-the art ha¹ovací funkci, co¾ dokazují aplikace v produktech firem
+		Google, Oracle nebo Dreamworks. Ha¹ovací funkce se rovnì¾ objevila v nìkterých implementacích \textit{open-source}
+		projektù mezi nì¾ patøí \textit{PostgreSQL}, \textit{Linux}, \textit{Perl} nebo \textit{Ruby}.
+	
+	\item \textit{SuperFastHash} \cite{Hsieh2004-2008}. Jedná se o populární ha¹ovací funkci, kterou vytvoøil Paul Hsieh (2004 - 2008). Dle autora je pou¾ita
+		v projektu \textit{WebKit}, dùle¾ité souèásti webových prohlí¾eèù Safari a Google Chrome. Funkce byla také souèástí
+		nìkterých verzí bývalého produktu \textit{Flash Player} firmy \textit{Macromedia}. Pøi vývoji byl kladen
+		dùraz na vysokou míru lavinového efektu a rychlost. 
+		
+	\item \textit{SpookyHash} \cite{Jenkins2012} je dal¹í funkce vytvoøená Robertem Jenkinse mv roce 2011. Její doménou by mìla být dle autora
+		rychlost a vyniká v lavinovém efektu. 
 \end{itemize}
+
+Vý¹e zmínìné ha¹ovací funkce lze pova¾ovat za state-of-the art ha¹ovací funkce. Jsou vytvoøeny nejvìt¹ímy odborníky v daném
+oboru s praxí pøesahující nìkdy i desítky let. Vìt¹ina z nich je pou¾ita v projektech velkého významu, a» u¾ se jedná o
+projekty s otevøeným zdrojovým kódem èi o uzavøené projekty. Námi navr¾ené ha¹ovací funkce budeme chtít s tìmito
+funkcemi srovnat a ukázat tak, relevantnost (èi nerelevantnost) na¹ich výsledkù.
 
 Zamìøme se nyní na to, které elementární operace jsou vyu¾ívání v tìchto ha¹ovacích funkcích. Tato informace nám pomù¾e se
 zorientovat v problematice návrhu a umo¾ní nám dobøe zvolit funkce i terminály v námi navr¾ených ha¹ovacích funkcí. Nìkteré
@@ -1086,11 +1110,11 @@ reprodukce jsou abstraktní syntaktické stromy vybírány náhodnì.
 
 \begin{figure}[!ht]
 \begin{subfigure}[b]{0.49\textwidth}
-%	\includegraphics[width=\textwidth]{fig/merkle_damgard_design1}
+	\includegraphics[width=\textwidth]{fig/merkle_damgard_design1}
 	\caption{První pøípad, který budeme studovat. Schéma pou¾ívá zøetìzení jediné kompresní funkce.}
 \end{subfigure}
 \begin{subfigure}[b]{0.49\textwidth}
-%	\includegraphics[width=\textwidth]{fig/merkle_damgard_design2}
+	\includegraphics[width=\textwidth]{fig/merkle_damgard_design2}
 	\caption{Druhý pøípad, který budeme studovat. Schéma pou¾ívá zøetìzení nìkolika rùzných kompresních funkcí.}
 \end{subfigure}
 	\caption{Porovnání dvou navr¾ených øe¹ení pou¾ívající Merkle-Damg\r{a}rdovo schéma.}
@@ -1100,6 +1124,36 @@ U obou variant do tabulky terminálních symbolù musíme zavést pøíslu¹né symboly r
 konkrétní mezivýsledky $a_0, a_1, a_2$. Ostatní parametry se oproti metodì v pøedchozí sekci neli¹í.
 
 \section{Evoluèní návrh za pou¾ití kukaèèího ha¹ování}
+
+V poslední sérii experimentù se budeme zabývat návrhem ha¹ovacích funkcí pro Kukaèèí ha¹ování.
+Kukaèèí ha¹ování bylo popsáno v kapitole \ref{sec:hashing}, nás v¹ak bude zajímat pouze jeho
+zjednodu¹ená podoba. Provedeme stejný základní set experimentù jako v pøedchozích dvou pøípadech
+a vyhodnotíme výsledky.
+
+Vzhledem k tomu, ¾e zde pracujeme ji¾ pøímo s návrhem ha¹ovací tabulky, kdy pou¾íváme metodu pro
+øe¹ení kolizí, oèekáváme výraznì lep¹í výsledky, ne¾ v pøedchozích pøípadech. Musíme v¹ak pamatovat
+na to, ¾e na¹e ha¹ovací funkce musejí být rychlé. Aèkoliv Kukaèèí ha¹ování pracuje nad v¹emi
+operacemi v konstantním èase a to i v nejhor¹ím pøípadì, mù¾e být výsledná tabulka pomalá. Takový
+stav mù¾e nastat v pøípadì, ¾e jsou jednotlivé klíèe èasto vytlaèovány (viz. funkce \Call{INSERT()}
+algoritmu \ref{alg:cuckoo_hashing}) nebo není mo¾né vlo¾it klíè do tabulky vùbec a je nutné
+volat \Call{REHASH()}. 
+
+Funkci \Call{REHASH} nebudeme v na¹em návrhu vùbec uva¾ovat, proto¾e její funkce spoèíva v nalezení
+nových ha¹ovacích funkcí a znovu vytvoøení ha¹ovací tabulky. Tato operace je jedna velice èasovì
+nároèná, co¾ by zpomalovalo výslednou ha¹ovací tabulku a navíc bychom museli zajistit vhodné nalezení
+nových ha¹ovacích funkcí, co¾ lze øe¹it napøíklad genetickým algoritmem, který v¹ak u¾ nesmí být
+souèástí výsledku.
+
+Druhým faktorem mající významný dopad na ryhlost je poèet iterace vnìj¹í smyèky v operaci
+\Call{INSERT()}. S vzrùstajícím poètem iterací roste také poèet volání ha¹ovacích funkcí, které
+i pøes to, ¾e jsou inherentnì rychlé mohou ha¹ovací tabulku zpomalit.
+
+Nyní pøejdìme k samotnému návrhu experimentù a parametrù pro genetické programování. Mno¾inu termínálních
+symbolù ponecháme stejno jako v pøedchozích pøípadech, stejnì tak i mno¾inu funkcí a ostatní parametry
+genetického programování. Jedinou zmìnou bude reprezentace jedince. Ten bude tentokrát reprezentován
+dvìma abstraktními syntaktickými stromy. Ka¾dý strom bude reprezentovat jednu ha¹ovací funkci, ka¾dé
+ha¹ovací funkci bude pøidìlena jedna polovina ha¹ovací tabulky. Poèet generací ponecháme na 100000,
+nebo» touto volbou fitness funkce zásadnì zmen¹íme prohledávací prostor.
 
 \chapter{Experimenty}
 
@@ -1729,6 +1783,7 @@ v pøípadì datasetu tøi. Nejlep¹í øe¹ení nalezlo náhodné prohledávání, ale i zde 
 
 \begin{table}
 	\begin{tabular}{lccc}
+		\hline
 		Funkce & Èas [sekundy]  & Zrychlení (IPHash 1) & Zrychlení (IPHash 2) \\ \hline
 		MurmurHash3   &  2.08922 & -7.67 &  -7.54 \\
 		MurmurHash2   & 1.84374 & -6.77 & -6.65 \\
@@ -1737,6 +1792,7 @@ v pøípadì datasetu tøi. Nejlep¹í øe¹ení nalezlo náhodné prohledávání, ale i zde 
 		SuperFastHash & 2.24299 & -8.23 & -8.1 \\ \hline
 		IPHash 1           & 0.272321 & - & - \\
 		IPHash 2           & 0.276854 & - & - \\
+		\hline
 	\end{tabular}	
 	\label{tab:speedcomparison}
 	\caption{Výsledky testu rychlosti vybraných ha¹ovacích funkcí a jejich porovnání s funkcemi nalezenými algoritmem IPHash.}
