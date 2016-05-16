@@ -1763,40 +1763,124 @@ v pøípadì datasetu tøi. Nejlep¹í øe¹ení nalezlo náhodné prohledávání, ale i zde 
 \end{figure}
 %%%%%%%%%%%%% IPHASH Population depth %%%%%%%%%%%%%%%
 
+Zkusme si nyní ovìøit na¹i volbu volbu funkèních a terminálních symbolù. To mù¾eme provést pøídáním, èi odebraním 
+pouze jednoho neterminálu v ka¾dém kroku a sledováním výsledkù kvality navr¾ených ha¹ovacích funkcí. Pøídáním èi
+odebráním více ne¾ jednoho terminálu v jednom kroku, bychom nebyly schopni interpretovat dosa¾ené výsledky. V 
+následující sérii experimentù budeme s oèekávaným úbytkem hodnoty fitness odebírat funkèní a terminální symboly.
+Pøi pøídání nìkterého funkèního nebo terminálního symbolu budeme naopak oèekávat ký¾ený nárùst hodnoty fitnes 
+signalizující lep¹í øe¹ení Výsledky experimentù mù¾eme vidìt v tabulce \ref{tab:basicRunAlternatives1}.
+
 \begin{table}[h]
 	\centering
 	\caption{Vliv rùzných voleb and terminálních a neterminálních mno¾in na výslednou hodnotu fitnes. Experimenty jsou provedeny
 		napøíè v¹emi datasety.}
-	\begin{tabular}{cccccc} \\ \hline
-		Terminální mno¾ína & Funkèní mno¾ina & Dataset 1 & Dataset 2 & Dataset 3 & Dataset 4 \\ \hline
-		$\{o_{0} .. o_{3}, \Re \}$ & $\{*, +, \wedge, \ggg\}$         & 5307 & 5305     & 5274 & 5278 \\
-		$\{o_{0} .. o_{3}\}$ & $\{*, +, \wedge, \ggg\}$                  & 5291 & 5269    & 5273 & 5270  \\
-		$\{o_{0} .. o_{3}, \Re \}$ & $\{*, +, \wedge, \neg, \ggg\}$ & 5300 & 5274.5 & 5271 &  5269.5 \\
-		$\{o_{0} .. o_{3}, \Re \}$ & $\{*, \wedge, \ggg\}$              & 5306 & 5274.5 & 5270 & 5276 \\
-		$\{o_{0} .. o_{3}, \Re \}$ & $\{+, \wedge, \ggg\}$ 			   & 5290 & 5270    & 5269  & 5268 \\
-		$\{o_{0} .. o_{3}, \Re \}$ & $\{*, +, \wedge\}$                   & 5298 & 5269    & 5272 & 5270 \\
-		$\{o_{0} .. o_{3}, \Re \}$ & $\{+, \wedge\}$                      & 5065 & 4962     & 5018 & 4992 \\
+	\begin{tabular}{lcccccc} \\ \hline
+		   & & & \multicolumn{4}{c}{Dataset} \\
+		   & Terminální mno¾ína & Funkèní mno¾ina & 1 & 2 & 3 & 4 \\ \hline
+		1. & $\{o_{0} .. o_{3}, \Re \}$ & $\{*, +, \wedge, \ggg\}$         & 5307 & 5305     & 5274 & 5278 \\
+		2. & $\{o_{0} .. o_{3}\}$ & $\{*, +, \wedge, \ggg\}$                  & 5291 & 5269    & 5273 & 5270  \\
+		3. & $\{o_{0} .. o_{3}, \Re \}$ & $\{*, +, \wedge, \neg, \ggg\}$ & 5300 & 5274.5 & 5271 &  5269.5 \\
+		4. & $\{o_{0} .. o_{3}, \Re \}$ & $\{*, \wedge, \ggg\}$              & 5306 & 5274.5 & 5270 & 5276 \\
+		5. & $\{o_{0} .. o_{3}, \Re \}$ & $\{+, \wedge, \ggg\}$ 			   & 5290 & 5270    & 5269  & 5268 \\
+		6. & $\{o_{0} .. o_{3}, \Re \}$ & $\{*, +, \wedge\}$                   & 5298 & 5269    & 5272 & 5270 \\
+		7. & $\{o_{0} .. o_{3}, \Re \}$ & $\{+, \wedge\}$                      & 5065 & 4962     & 5018 & 4992 \\
 		\hline
 	\end{tabular}
 	\label{tab:basicRunAlternatives1}
 \end{table}
 
-\begin{table}
+Na prvním øádku tabulky mù¾eme vidìt mediánový prùmìr hodnoty fitness z 50 nezávislých bìhù. Toto pùvodní
+navr¾ené øe¹ení a budeme jej pro tuto chvíli pova¾ovat za referenèní a budeme zkoumat, zda bychom jinou
+volbou terminální a neterminální mno¾iny nedosáhli lep¹ích výsledkù. 
+
+Nejprve z mno¾iny terminálù odebereme náhodnou konstantu $\Re$ reprezentovanou prvoèíslem (øádek 2. v tabulce
+\ref{tab:basicRunAlternatives1}).
+Vìt¹ina state-of-the-art
+ha¹ovacích funkcí si pomáhá právì nìjakou formou náhodné konstanty pro zlep¹ení svých výstupù, její odebrání by tedy
+mìlo mít negativní vliv na hodnotu fitness. Na prvních dvou
+datasetech je vidìt znatelný pokles v hodnotì fitness a to o 16 adres v prvním pøípadì a o celých 36 adres
+v pøípadì druhém. Na datasetech tøi a ètyøi je v¹ak pokles ménì patrný a dal by se pova¾ovat za nevýznamný.
+
+Nepøíli¹ èasto vidìným operátorem ve obecných ha¹ovacích funkcích je operátor jednièkového doplòku ($\neg$).
+Tento operátor
+spolu s operátorem XOR tvoøí uplnou bázi logických spojek a jsou tedy schopné vytvoøit libovolnou ha¹ovací funkci.
+I pøes to, ¾e se jedná o nepøíli¹ oblíbený operátor, oèekáváli bychom vzestup hodnoty fitness.
+Opeak je v¹ak pravdou. Pøidáním tohoto operátoru (øádek 3.) nejen¾e hodnota fitness nevzroste, ale naopak klesne. Na datasetu
+jedna, tøi a ètøi není pokles pøíji¹ znatelný, ale na datasetu dvì se jedná o více ne¾ 30 adres. Tento neoèekávaný jev
+mù¾eme pøípsat omezené hloubce navrhovaných funkcí. Jedná se o unární operátor a samotný nic nepoèítá. Mo¾na pøi 
+zvìt¹ení maximální hloubky stromu by algoritmus skuteènì spoleènì s funkcí XOR vytvoøil nìjakou u¾iteènou funkci a
+zvý¹il tím hodnotu fitness.
+
+Základ v¹ech state-of-the-art ha¹ovacích funkcí tvoøí nìjaká aritmetická operace. Èasto
+se jedná o násobení $(*)$, sèítání $(+)$ nebo jejich spoleèné pou¾ití. My jsme v referenèním experimentu zvolili pou¾ití 
+obou, av¹ak odebrání pouze jedné z nich by nemìlo mít dramatický vliv na výslednou hodnotu fitness. Odebrání
+sèítání (øádek 4.) se nezdá mít vliv na výsledné hodnoty fitness s vyjímkou datasetu dvì. Výsledky tohoto
+experimentu se zdají být v souladu s oèekáváním. Duální experiment pøi kterém sèítání ponecháme, ale odebereme
+násobení ji¾ výsledky v souladu s oèekáváním nepøinesl (øádek 5.). Nad v¹emi datasety registrujeme pokles v hodnotì
+fitness, nejmarkatnìj¹í je v¹ak nad datasetem jedna a dvì.
+
+Dal¹ím základním stavebním kamenem, který sdílí kvalitní ha¹ovací funkce jsou posuny ($\gg , \ll$) nebo rotace
+($\ggg , \lll$). Tyto elementární prvky jsou v na¹em pøípadì nutné k posouvání význanmných bitù ve vstupních IP
+adresách. Oèekáváme tedy citelný pokles pøi odebrýní rotací (øádek 6.) z na¹í mno¾iny neterminálù. Aèkoli je pokles
+znatelný, rozhodnì není tak markantní jak jsme oèekávali. Nejznatelnìj¹í ubytek hodnoty fitness je nad datasetem dvì,
+zanedbatelný je naopak nad datasetem èíslo tøi.
+
+V posledním pøípadì (øádek 7.) odeberem jak násobení tak rotace. Tyto dvì operace mìli prozatím nejvìt¹í negativní
+vliv na hodnotu fitness. Pøi odebrání obou bychom mìli pozorovat markantní propad. Výsledky tohoto experimentu 
+hovoøí jasnì pro pøedpoklad. Úbytek je opravdu významný nad v¹emi ètyømi datasety o nìkolik set úspì¹nì naha¹ovaných adres.
+
+V kapitole o návrhu øe¹ení je øeèeno, ¾e v¹echny námi evolvované ha¹ovací funkce jsou inherentnì velmi rychlé. Toto
+tvrzení si ovìøíme v následující èásti této sekce. Rychlost ha¹ovacích funkcí navr¾ených algoritmem IPHash zùstává
+velmi vysoká díky omezení hloubky stromu. Toto omezení má za následek omezený poèet pou¾itých ha¹ovacích operátorù v
+dané ha¹ovací funkci, které spotøebovávají drahocený výpoèetní výkon. V experimentu porovnáme dvì vybrané námi navr¾ené
+ha¹ovací funkce se state-of-the-art ha¹ovacími funkcemi navr¾enými èlovìkem. Ve¹keré implementace obecných ha¹ovací funkcí
+jsou pøevzaty z ji¾ døíve zmínìného balíku \textit{SMHasher} []. 
+
+Ve¹keré zdrojové texty souèástí tohoto experimentu,
+jsou kompilovány pøekladaèem \texttt{gcc} verze 5.2.0. Bylo pou¾ito \texttt{C++} ve verzi 11, nebo» poskytuje velmi
+pøesnou knihovnu pro mìøení èasu \texttt{std::chrono}, která byla pou¾ita pro mìøení èasových intervalù. Dále byly
+povoleny optimalizace na tøetí úrovni (pøepínaè \texttt{-O3}). Experimenty byly provádìny nad pevnì danou mno¾inou
+ha¹ovaných adres o mocnosti sto. Ka¾dou ha¹ovací funkcí naha¹ujeme tuto mno¾inu milionkrát, abychom dostateènì 
+vytí¾ili danou ha¹ovací funkci a nepohybovali se tak na mezi pøesnosti pou¾itého mìøièe èasu. Provedeme 50 nezávislých
+mìøení z nich¾ vypoèítáme pøùmìr. Výsledky mù¾eme vidìt v tabulce \ref{tab:speedcomparison}. Kromì samotného èasu
+uvádíme relativní zrychlení vùèi dvìma ha¹ovacím funkcím nalezeným algoritmem IPHash.
+
+\begin{table}[!ht]
+	\centering
 	\begin{tabular}{lccc}
 		\hline
-		Funkce & Èas [sekundy]  & Zrychlení (IPHash 1) & Zrychlení (IPHash 2) \\ \hline
-		MurmurHash3   &  2.08922 & -7.67 &  -7.54 \\
-		MurmurHash2   & 1.84374 & -6.77 & -6.65 \\
-		lookup3             & 0.279259 & -1.02 & 1.00 \\
-		SpookyHash      & 2.58015 & -9.47  & -9.31 \\
-		SuperFastHash & 2.24299 & -8.23 & -8.1 \\ \hline
-		IPHash 1           & 0.272321 & - & - \\
-		IPHash 2           & 0.276854 & - & - \\
+		Funkce & Èas [sekundy]  & Zrychlení (IPHash 1) & Zrychlení (IPHash 2) \\ 
+		\hline
+		MurmurHash3   & 2.08922  & -7.67 & -7.54 \\
+		MurmurHash2   & 1.84374  & -6.77 & -6.65 \\
+		lookup3       & 0.279259 & -1.02 &  1.00 \\
+		SpookyHash    & 2.58015  & -9.47 & -9.31 \\
+		SuperFastHash & 2.24299  & -8.23 & -8.1  \\ 
+		\hline
+		IPHash 1      & 0.272321 & - & - \\
+		IPHash 2      & 0.276854 & - & - \\
 		\hline
 	\end{tabular}	
 	\label{tab:speedcomparison}
 	\caption{Výsledky testu rychlosti vybraných ha¹ovacích funkcí a jejich porovnání s funkcemi nalezenými algoritmem IPHash.}
 \end{table}
+
+Nejprve je dùle¾ité podoknout, ¾e výsledky se mohou (a budou) li¹it pøi pou¾ití jiného pøekladaèe, èi pøi spu¹tìní na jiné
+architektuøe. Pøedpoklad o inherentní rychlosti námi navr¾ených funkcí se na první pohled potvrzuje. Pøi bli¾¹ím pohledu v¹ak
+mù¾eme vidìt nìkteré zajímavé výsledky. Jedním z nich je napøíklad výkon funkce lookup3 a funkce SpookyHash. SpookyHash lze
+pova¾ovat za nástupce funkce lookup3. Obì funkce mají stejného autora a ha¹ovací funkce SpookyHash vznikla právì s dùrazem
+na rychlost. O to zajímavìj¹í je výstup na¹eho experimentu v tom smyslu, ¾e ha¹ovací funkce lookup3 je témìø desetkrát
+rychlej¹í ne¾ ha¹ovací funkce SpookyHash. Jednou z pomalej¹ích funkcí, navzdory svému názvu, je i SuperFastHash, aèkoli v
+implementaci není pou¾ita funkce násobení, která je obvykle jednou z tìch ``dra¾¹ích'' ha¹ovacích operací. 
+
+Jedinou ha¹ovací funkcí, která dává podobné výsledky, jako funkce algoritmu IPHash je lookup3. Tato funkce ve své
+implementaci neobsahuje ¾ádné speciální direktivy pro pou¾ití pokroèilých instrukèních sad. Je vidìt, ¾e zde opravdu
+velmi zále¾í na optimalizacích, které kompilátor aplikuje. Toto tvrzení podporují i výsledky (nejsou zde uvedené), pøi
+pou¾ití jiných úrovní optimalizace (pøepínaèe \texttt{-O1} a \texttt{-O2}), nebo její úplné vypnutí. Námi navr¾ené ha¹ovací
+funkce zùstavají stále pìt a¾ desetkrát rychlej¹í, ne¾ obecné ha¹ovací funkce. 
+
+Dal¹ím zajímavým kritériem pro mìøení výkonnosti, mù¾e být poèet instrukcí jednotlivých ha¹ovacích funkcí. Výsledky tohoto
+experimentu jsou k náhlednutí jako souèást práce na konference Excel@FIT a která je pøílo¾ena v Appendixu blabla. 
 
 \newpage
 \section{Ha¹ování s Merkle-Damg\r{a}rdovou konstrukcí}
@@ -2238,6 +2322,8 @@ v pøípadì datasetu tøi. Nejlep¹í øe¹ení nalezlo náhodné prohledávání, ale i zde 
 	\label{fig:cuckooComparison4}
 \end{figure*}
 %%%%%%%%%%%%% CUCKOO AVG Population SET #4 %%%%%%%%%%%%%%%
+
+\section{Shrnutí výsledkù}
 
 \begin{figure}[!h]
 	\centering
