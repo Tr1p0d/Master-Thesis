@@ -1,0 +1,40 @@
+%=========================================================================
+% Introduction of Marek Kidon's thesis
+
+\externaldocument{obsah}
+
+Tato práce se zabývá evolučním návrhem hašovacích funkcí. Hašovací 
+funkce jsou již dobře zavedenou a neodmyslitelnou součástí moderního
+počítačového světa. Jejich uplatnění je šíroké, nicméně nejčastěji se s
+nimi setkáváme v kryptografii (kryptografickými hašovacími funkcemi se
+však v této práci zabývat nebudeme) a hašovacích tabulkách. Hašovací
+tabulky jsou významné a hojně využívané vyhledávací datové struktury, 
+které při vhodném zvolení hašovací funkce pracuje velmi rychle a 
+efektivně. Tradiční návrh vhodné hašovací funkce pro zadanou aplikační 
+doménu není triviální úkol. Pomoci si však můžeme i méně tradičními 
+metodami návrhu. Jednou z nich je i návrh založený na evolčních 
+algoritmech neboli evoluční návrh. Inspirací pro evoluční návrh je jev 
+biologické evoluce. Evoluční algoritmy obecně pracují nad populací 
+kandidátních řešení, kde každé kandidátní řešení je právě jeden jedinec. 
+Pro vytvoření nové populace jedinců se používají 
+biologií inspirované operátory. Myšlenka spočívá v postupném prohledávání 
+prostoru možných řešení dokud nenalezneme takové, které svými vlastnosti 
+bude převyšovat námi stanovený práh, kde jeden krok iteračního 
+prohledávacího algoritmu je právě jedna generace.
+
+V kapitole 2 se budeme blíže zabývat hašováním. Neprve si zavedeme 
+nezbytné pojmy a v návaznosti si popíšeme, jak fungují hašovací tabulky a 
+jak je důležité vhodně zvolit hašovací funkci, popřípadě jaký dopad na 
+výkonnost hašovací tabulky má nevhodně zvolená hašovací funkce.
+
+Kapitola 3 bude zaměřena na evoluční návrh. Popíšeme si, jakou roli hraje
+evoluční návrh v kontextu počítání podle přírody (natural computing).
+Uvedeme a vysvětlíme si práci obecného evolučního algoritmu a zmíníme
+si jednotlivá odvětví, která spadají pod evoluční algoritmy. 
+
+Následující kapitola 4 bude věnována návrhu řešení. V úvodu této kapitoly 
+si vysvětlíme, proč je vhodné navrhovat hašovací funkce evolučně. Uvedeme 
+zvolenou metodu evolučního návrhu a popíšeme si její parametry. Součástí 
+bude také popis fitness funkce, tedy to co budeme považovat za důležité a 
+podle čeho se budeme rozhodovat při hledání našeho požadovaného řešení.
+%=========================================================================
