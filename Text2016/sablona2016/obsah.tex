@@ -188,7 +188,6 @@ Kromě Merkle-Damg\r{a}rdova schémata, exitují i jiná konstrukční schémata
 struktura \textit{HAIFA} \cite{haifa} použitá v rodině kryptografických hašovacích funkcí \textit{BLAKE}
 nebo funkce \textit{Sponge} \cite{sponge}. Těmito se zde však zabývat nebudeme.
 
- 
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{fig/merkle_damgard}
@@ -254,7 +253,7 @@ přístupy, nabízející lepší vlastnosti.
 \subsection{Kukaččí hašování}
 
 Kukaččí hašování je moderní přístup k řešení hašovacích kolizí, za použití dvou a více hašovacích
-funkci a jedné nebo více tabulek \cite{Cuckoo_hashing}. Častá implementace zahruje pouze jednu
+funkci a dvou nebo více tabulek \cite{Cuckoo_hashing}. Častá implementace zahruje pouze jednu
 tabulku, v níž má každá hašovací funkce vyhrazena vlastní prostor. Uvažujme univerzum klíčů $U$
 a velikosti hašovací tabulky $m$. Pak na příklad pro dvě hašovací funkce 
 $h_1, h_2$, kde $h_1 : U \rightarrow \{0,\ldots,r_1-1\}$ a $h_2 : U \leftarrow \{r_1,\ldots,r_2-1\}$ musí platit
@@ -273,7 +272,23 @@ Vytlačený prvek je znovu vložen do tabulky, avšak za použití jiné hašova
 dochází při vkládání ke kolizím. Zřejmě tímto způsobem může docházet k cyklům. Maximální počet po sobě jdoucích vložení je tedy
 omezen konstantou. Celý proces blíže demonstruje algoritmus \ref{alg:cuckoo_hashing} a obrázek \ref{fig:cuckoo_hashing}.
 
-\begin{figure}
+Podotkňeme, že není nezbytně nutné omezovat počet po sobě jdoucích vložení konstantou $MaxLoop$. Neúspěšnost je 
+možné detekovat cyklením operace \Call{Insert}{}. Tu je možné modelovat v teoríí grafů jako bipartitní graf $G=(U,V,E)$, 
+kde $U$ je množina vrcholú, zde slotů první hašovací tabulky, $V$ je opět množína vrcholů, zde slotů tentokrát však druhé
+hašovací tabulky a $E \subset (U \times V) \cup (V \times U)$ je množina hran představující jednotlivá vytlačení původních
+klíčů operace \Call{Insert}{}. Pak platí následující tvrzení:
+\begin{itemize}
+	\item Klíč $x \in U$ nelze do hašovací tabulky vložit, jestliže souvislá komponenta grafu indukovaná operací
+		\Call{INSERT}{} $G$ obsahuje dva a více cyklů
+		\cite{standford1}. 
+	\item Naproti tomu Klíč $x \in U$ lze do hašovací tabulky vložit, jestliže souvislá komponenta grafu indukovaná operací
+		\Call{INSERT}{} $G$ obsahuje žadný
+		a nebo maximálně jeden cyklus \cite{standford1}.
+\end{itemize}
+Přesto omezení konstantou $MaxLoop$ může být vhodné z několika důvodů. Jedním z důvodů je zjednodušení celého algoritmu
+další pak nárůstající výpočetní a paměťová náročnost (složinosti se nemění), kterou s sebou nese detekce cyklu.
+
+\begin{figure}[!ht]
 	\centering
 	\begin{subfigure}[b]{0.53\textwidth}
 		\includegraphics[width=\textwidth]{fig/cuckoo_hashing_insert}
@@ -287,7 +302,7 @@ omezen konstantou. Celý proces blíže demonstruje algoritmus \ref{alg:cuckoo_h
 	\label{fig:cuckoo_hashing}
 \end{figure}
 
-Pokud v průběhu operace dosaženo mezní hodnoty $MaxLoop$, předpokládáme že jsme narazili na cyklus. V takovém případě 
+Pokud v průběhu operace dosaženo mezní hodnoty $MaxLoop$, předpokládejme tedy, že jsme narazili na cyklus. V takovém případě 
 provedeme nejprve operaci \Call{rehash}{} a poté zkusíme prvek vložit opětovným zavoláním funkce \Call{insert}{x}.
 Funkce \Call{rehash}{} zajišťuje, aby při opětovném vložení prvku do tabulky znovu nevzniknul cyklus. Toho se dá
 dosáhnout například použitím jiných hašovacích funkci \cite{Cuckoo_hashing}. Není třeba znovu vytvářet hašovací tabulku,
@@ -1985,6 +2000,21 @@ experimentu jsou k náhlednutí jako součást práce na konference Excel@FIT a 
 \newpage
 \section{Hašování s Merkle-Damg\r{a}rdovou konstrukcí}
 
+V této sekci se budeme věnovat optimalizaci kompresních komponent Merkle-Damg\r{a}rdova schématu. Opět podotkněme,
+že se zde nejedná o evoluční návrh, neboť hašovací schéma máme pevně dané. Také uveďme, že se zde nejedná o 
+``čisté'' Merkle-Damg\r{a}rdovo schéma, nýbrž o schéma upravené pro potřeby naší aplikace. Nejdůležitější změny provedené
+na schématu jsou odstranění inicializačního vektoru (první komponenta není tedy formálně vzato kompresní) a úplné 
+vynechání zarovnání. To předpokládejme, že není v našem případě nezbytné, protože my se nesnažíme navrhovat 
+kryptografické hašovací funkce a bezpečné zarovnání je v původním schématu především z bezpečnostních důvodů (a také
+samozřejmě pro zarovnání vstupu na potřebnou délku).
+
+Dále je vhodné uvést, co zde rozumíme pod algoritmem náhodného prohledávání, s kterým budeme porovnávat námi navržený
+evoluční algoritmus (pro zjednodušení jej budeme označovat MDHash). Náhodné prohledávání budeme realizovat stejně jako
+algoritmus MDHash avšak s rozdílem, že nebudeme používat křížení ale pouze mutaci. Podstromovou mutaci budeme provádět
+se sto procentní pravděpodobností a to vždy pro kořenový uzel, čímž zaručíme znovuvygenerování celého stromu. Pojďmě se
+tedy podívat, jakých výsledků dosáhl navržený evoluční algoritmus nad jednotlivými datasety v porovnání s náhodným
+prohledáváním.  
+
 %%%%%%%%%%%%% MD AVG Population SET #1 %%%%%%%%%%%%%%%
 \begin{figure*}[!ht]
 	\centering
@@ -2036,9 +2066,19 @@ experimentu jsou k náhlednutí jako součást práce na konference Excel@FIT a 
 	\end{axis}
 	\end{tikzpicture}
 	\caption{MD a jejich fitnes hodnota nad data setem číslo 1.}
-	\label{fig:cuckooComparison1}
+	\label{fig:MDComparison1}
 \end{figure*}
 %%%%%%%%%%%%% MD AVG Population SET #1 %%%%%%%%%%%%%%%
+
+Z pohledu na graf na obrázku \ref{fig:MDComparison1} je vidět, že výsledky nejsou povzbudivé. S výjimkou několika desítek počátečních
+generací algoritmus náhodného prohledávání
+převyšuje algoritmus MDHash. I výsledná řešení jsou lepšív případě algoritmu náhodného prohledávání. Je potvrzen typický aspekt genetického
+programování, že v několika počátečních generacích algoritmus rapidně konverguje a v pozdějších naopak stagnuje. Nejmíně povzbudivým aspektem
+algoritmu MDHash nad prvním datasetem je však fakt, že nenalezl signifikantně lepší řešení než algoritmus IPHash. Rozdíl v průmětrném nejlepším
+nalezeném řešení není tak signifikantní, jak bychom si přáli, jedná se pouze o jednotky IP adres. Rozptyl určený prvním a třetím kvartilem je menší,
+než v případě algoritmu IPHash nad stejným datasetem. Můžeme tedy algoritmus MDHash považovat za stabilnější napříč jednotlivými běhy než
+algoritmus IPHash.
+
 %%%%%%%%%%%%% MD AVG Population SET #2 %%%%%%%%%%%%%%%
 \begin{figure*}[!ht]
 	\centering
@@ -2090,9 +2130,18 @@ experimentu jsou k náhlednutí jako součást práce na konference Excel@FIT a 
 	\end{axis}
 	\end{tikzpicture}
 	\caption{MD a jejich fitnes hodnota nad data setem číslo 2.}
-	\label{fig:cuckooComparison1}
+	\label{fig:MDComparison2}
 \end{figure*}
 %%%%%%%%%%%%% MD AVG Population SET #2 %%%%%%%%%%%%%%%
+
+Na obrázku \ref{fig:MDComparison2} vidíme výsledky nad datasetem dvě a i zde můžeme vidět podobné výsledky jako v případě datasetu
+jedna. Algoritmus opět rapidně konverguje v několika desítkách počátečních generací a poté stagnuje. Rozdíl oproti výsledkům nad prvním
+datasetu je však rapidnější stagnace. Po překonání prvních sto generací algoritmus MDHash téměř vůbec nevylepšuje svou hodnotu fitnes.
+Algoritmus náhodného prohledávání dává opět lepší výsledky, i když zde již není rozdíl tak markantní jako v případě prvního datasetu a to 
+zejména z důvodu menšího rozdílu v hodnotě fitnes, která se zdá je způsobena významější stagnací algoritmu. Částečně povzbudivé výsledky
+můžeme pozorovat na grafu vpravo. Rozptyl určený prvním a třetím kvartilem se nad tímto datasetem oproti předchozímu výrazně zmenšil
+výrazně. To promlouvá jednoznačně ve prospěch stability algoritmu MDHash.
+
 %%%%%%%%%%%%% MD AVG Population SET #3 %%%%%%%%%%%%%%%
 \begin{figure*}[!ht]
 	\centering
@@ -2144,9 +2193,19 @@ experimentu jsou k náhlednutí jako součást práce na konference Excel@FIT a 
 	\end{axis}
 	\end{tikzpicture}
 	\caption{MD a jejich fitnes hodnota nad data setem číslo 3.}
-	\label{fig:cuckooComparison1}
+	\label{fig:MDComparison3}
 \end{figure*}
 %%%%%%%%%%%%% MD AVG Population SET #3 %%%%%%%%%%%%%%%
+
+V předchozí sekci [] jsme mohli pozorovat znatelný pokles u třetího v hodnotě fitness u algoritmu IPHash. Tento fenomén lze
+pozorovat na obrázku \ref{fig:MDComparison3} i v případě průběhu algoritmu MDHash nad stejným datasetem, nikoli však již
+tak výrazně. Pokles je znatelný, ale už se jedná jen asi o deset adres. I nad třetím datasetem jasně dominuje algoritmus náhodného
+prohledávání, tentokrát ale výrazněji. Můžeme zde pozorovat rapidní konvergenci náhodného prohledávání v počátečních desítách
+generací, která nebyla na předchozích datasetech přítomná. Rozptyl algoritmu MDHash je nad tímto datasetem již výrazný, algoritmus
+tedy nebyl tak stabilní jako v předchozím případech není však tak výrazný jako v případě algoritmu IPHash nad totožným datasetem.
+I zde tedy můžeme považovat algoritmus MDHash za stabilnější než algoritmus IPHash. Dokázal nají i lépší řešení než algoritmus
+IPHash co se odolnosti vůči kolizím týká.
+
 %%%%%%%%%%%%% MD AVG Population SET #4 %%%%%%%%%%%%%%%
 \begin{figure*}[!ht]
 	\centering
@@ -2198,9 +2257,19 @@ experimentu jsou k náhlednutí jako součást práce na konference Excel@FIT a 
 	\end{axis}
 	\end{tikzpicture}
 	\caption{MD a jejich fitnes hodnota nad data setem číslo 4.}
-	\label{fig:cuckooComparison1}
+	\label{fig:MDComparison4}
 \end{figure*}
 %%%%%%%%%%%%% MD AVG Population SET #4 %%%%%%%%%%%%%%%
+
+V předchozí sekci [] v případě datasetu tři můžeme pozorovat pokles v hodnotě fitnes i u datasetu ctyři. Překvapivě
+tento fenomén nelze pozorovat nad posledním datasetem (\ref{fig:MDComparison4}) v případě algoritmu MDHash. Naopak právě nad tímto datasetem
+nalezl algoritmus MDHash nejlepší řešení a pouze nad tímto datasetem se dokázal vyrovnat algoritmu náhodného prohledávání.
+Stejně jako v případě datasetu jedna a dvě můžeme pozorovat rapidnější kovergenci než u algoritmu náhodného prohledávání.
+Tentokrát jej však náhodné prohledávání již nepřevýší a oba algoritmy mají v pozdějších generacích podobný průběh. Průěrný 
+nejlepší nalezený jedinec nad tímto datasetem je lepší než v případě algoritmu IPHash a to o téměř dvě desítky adres. Rozptyl
+určeny prvním a třetím kvartilem se stejně jako v případě datasetu tři zvětšil a je srovnatelný s rozptylem algoritmu IPHash.
+
+SHRNUTI.
 
 \newpage
 \section{Kukaččí hašování}
