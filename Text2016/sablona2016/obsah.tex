@@ -2269,10 +2269,48 @@ Tentokrát jej však náhodné prohledávání již nepřevýší a oba algoritm
 nejlepší nalezený jedinec nad tímto datasetem je lepší než v případě algoritmu IPHash a to o téměř dvě desítky adres. Rozptyl
 určeny prvním a třetím kvartilem se stejně jako v případě datasetu tři zvětšil a je srovnatelný s rozptylem algoritmu IPHash.
 
-SHRNUTI.
+V této sekci jsme prezentovali a zkoumali výsledky evolučního algoritmu, kterým jsme optimalizovali kompresní funkce
+upraveného Merkle-Damg\r{a}rdova schématu. Ačkoli lze považovat výsledky za lepší než v případě předešlého algoritmu IPHash a to
+zejména díky lepším výsledkům nad problematickými datasety tři a čtyři, nelze je považovat za uspokojivé. Algoritmu bylo
+umožněno provést dvojnásobný počet evaluací oproti algoritmu IPHash, avšak předčasná stagnace neumožnila dosáhnout lepších
+výsledků. Algoritmus MDHash nelze považovat za lepší v porovnání s náhodným prohledáváním, neboť jej ani nad jedním z datasetů
+nepřekonal. I přes to si lze z této série experimentů odnést některé pozotivní aspekty.
+
+\begin{itemize}
+	\item Rozptyl jednotlivých běhů tvořený prvním a třetím kvartilem nad jednotlivými datasety byl v případě prvních dvou datasetů menší, než
+		v případě algoritmu IPHash. Algoritmus MDHash lze považovat za stabilnější než IPHash.
+	
+	\item Nižší nebo žádný pokles v hodnotě fitnes u problematického třetího a čtvrtého datasetu než v případě algoritmu IPHash nad stejnými
+		datasety. To opět svědčí o dobré stabilitě algoritmu.
+		
+	\item V neposlední řadě jsme navrhli upravili Merkle-Damg\r{a}rdovo schéma zajímavým způsobem, což nebylo doposud vyzkoušeno i přes to,
+		že vásledky nelze považovat za uspokojivé.
+\end{itemize}
+
+Zůstává tedy otázka jak si vysvětlit neuspokojivé výsledky algoritmu MDHash, které nejsou v souladu s předpokladem. Můžeme vyloučit
+nedostatečný počet generací, neboť algoritmus na všech datasetech začal stagnovat příliš brzy a jeho hodnota fitnes se v pozdějších
+generacích měnila jen zřídka. Navýšením počtu evaluací bychom algoritmu tedy nepomohli. Algoritmus zdá se vždy uvázl v nějakém lokálním
+minimu. Nezbývá tedy, než konstatovat, že prostor kandidátních řešení tak jak byl modelován v této úloze není obecně vhodný genetické
+programování. Zajímavé by bylo porovnat výsledky v této sekci s výsledky optimalizace standartního Merkle-Damg\r{a}rdova schématu. Tota
+myšlenka nám otevírá prostor pro budoucí práci.
 
 \newpage
 \section{Kukaččí hašování}
+
+V této sekci se zaměříme na návrh hašovacích funkcí pro konkrétní schéma řešení kolizí a to kukaččí hašování. Použijeme základní schéma
+se dvěma hašovacími funkcemi a dvěma tabulkami tak, jak bylo popsáno v kapitole \ref{sec:hashing}. Tato metoda se nachází na pomezí
+evolučního designu a evoluční optimalizace. Navrhujeme hašovací funkce, ale při jejich ohodnocení fitnes funkcí uvažujeme již kukaččí
+hašování. Kukaččí hašování je vyjímečné dobré v časové složitosti, musíme však dbát rychlost celé konstrukce. V následující sérii 
+experimentů zvolíme relativně nízkou hodnotu konstanty $MaxLoop$ omezující počet vložení do hašovací tabulky, abychom zůstali dodrželi
+předpoklad inherentně rychlých hašovacích funkcí. Později v této sekci budeme konstantu $MaxLoop$ měnit a to proto, abychom prověřili
+její vhodné počáteční nastavení. 
+
+Vzhledem k povaze této metody, která je zeložená na řešení kolizí kvalitní metodou, očekáváme výrazně lepší výsledky než v předchozích dvou
+případech, kdy jsme žádné metodu pro řešení kolizí nepoužívali. Metodu návrhu funkcí pro kukaččí hašování budeme nazývat CuckooHash a
+znovu ji budeme porovnávat s algoritmem náhodného prohledávání. Ten bude realizován obdobným způsobem jako v předchozích sekcích. Jádro
+evolčního algoritmu ponecháme beze změny, vynecháme však operátor podstromového křížení a nastavíme pravděpodobnost podstromové mutace
+na sto procent. Budeme vyžadovat, aby byl mutován vždy kořen abstraktního syntaktického stromu, což nám zajistí znovuobnovení celého stromu.
+Jako v předešlých sekcích projdeme výsledky nad jednotlivými datasety zvlášť, počínaje prvním.
 
 %%%%%%%%%%%%% CUCKOO AVG Population SET #1 %%%%%%%%%%%%%%%
 \begin{figure*}[!ht]
@@ -2328,6 +2366,16 @@ SHRNUTI.
 	\label{fig:cuckooComparison1}
 \end{figure*}
 %%%%%%%%%%%%% CUCKOO AVG Population SET #1 %%%%%%%%%%%%%%%
+
+Graf na obrázku \ref{fig:cuckooComparison1} napovídá dobré výsledky. Vidíme, že jsme za použitím kukaččího hašování 
+dokázali nahašovat mnohem více adres nez v případě předchozích dvou sekcí. V porovnání s algoritmem CuckooHash se zdá
+být rozdíl mezi algoritmy MDHash a IPHash zanedbatelný, neboť v tomto případě jsme dokázali nahašovat téměř o 1700 adres
+více a dousáhnout tak faktoru zatížení $\alpha = 0.83$. Výsledky jsou vskutku povzbudivé. Dokázali jsme překonat algoritmus
+náhodného prohledávání, který začal předčasně 
+pomalu stagnovat. Naproti tomu, algoritmus CuckoHash potvrtuje předpoklad o typickém průběhu genetického programování a 
+rapidně konverguje v prvních několika generacích a poté velmi rychle začína stagnovat. Povzbudivé jsou i vsledky na grafu
+vpravo, který ukazuje na dobrou stabilitu algoritmu, která je srovnatelná s algoritmem MDHash.
+
 %%%%%%%%%%%%% CUCKOO AVG Population SET #2 %%%%%%%%%%%%%%%
 \begin{figure*}[!ht]
 	\centering
