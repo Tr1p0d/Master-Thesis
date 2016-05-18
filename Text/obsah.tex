@@ -384,7 +384,7 @@ ha¹ovací funkce pracují nejen s elementárními ha¹ovacími funkcemi, ale i s jejic
 takzvané \textit{mixovací komponenty} nebudeme chápat jako samostatné operace, ale rozlo¾íme je v na¹í analýze na
 elementární operace. Pro lep¹í orientaci v problematice poslou¾í pøehledová tabulka \ref{tab:generic_hashes_analysis}.
 Rozbor byl provádìn z referenèních implementací, které jsou v¹echny kromì funkce \textit{FarmHash} obsa¾eny v balíku
-\textit{SMHasher} []. Oficiální referenèní implementace funkce \textit{FarmHash} je mo¾né získat z repozitáøe na
+\textit{SMHasher} \cite{appleby2016}. Oficiální referenèní implementace funkce \textit{FarmHash} je mo¾né získat z repozitáøe na
 stránce \textit{Github} \footnote{https://github.com/google/farmhash/blob/master/src/farmhash.cc}. Implementace ha¹ovacích
 funkcí obsahují opravdu ¹iroké spektrum operátorù. Nás budou zajímat pouze ty, které jsou pou¾ity pro samotnou tvorbu
 výstupu. Nesmí nás tedy zmást napøíklad pou¾ití logického souètu nebo souèinu v øidících konstrukcích nebo operace
@@ -1733,34 +1733,134 @@ v pøípadì datasetu tøi. Nejlep¹í øe¹ení nalezlo náhodné prohledávání, ale i zde 
 \begin{tikzpicture}
 	\begin{axis}[ 
 	, grid=major
+	, name=plot1
 	, width=0.49\linewidth
+	, height=8cm
 	, legend pos=outer north east
-	, xlabel={Population size}
+	, xlabel={Velikost populace}
 	, xtick={1,2,3,4,5,6,7,8}
 	, xticklabels={8,16,32,64,128,256,512}
-	, ylabel={Initial depth}
-	, ytick={2,3,4,5,6} 
-	, zlabel={Successfully hashed}
-	, ztick={5280,5290,5300,5310,5320}
-	, zticklabels={5280,5290,5300,5310,5320}
+	, ylabel={Hloubka}
+	, ytick={3,4,5,6}
+	, zlabel style={ at={(-0.15,0.5)}} 
+	, zlabel={Naha¹ováno}
+	, zmin=5150 %{5280,5290,5300,5310,5320}
+	, zmax=5300 %
+	, ztick={5150,5200,5250,5300}
+	, zticklabels={5150,5200,5250,5300}
 	]
 	\addplot3[surf] coordinates {
-		    %8            16         32           64           128          256          512          1024  
-		    (1,2,5288.5) (2,2,5289) (3,2,5291)   (4,2,5294)	  (5,2,5297)   (6,2,5295)   (7,2,5293.5) (8,2,5296.5)
+		    %8            16         32          64         128        256        512       1024  
+		    (1,3,4000) (2,3,4603) (3,3,5188) (4,3,5204) (5,3,5233) (6,3,5239) (7,3,5242) (8,3,5243)
 		    
-		    (1,3,5292.9) (2,3,5301) (3,3,5300.5) (4,3,5314)   (5,3,5312.5) (6,3,5310.5) (7,3,5306)   (8,3,5307)
+		    (1,4,4680) (2,4,5208) (3,4,5234) (4,4,5239) (5,4,5241) (6,4,5253) (7,4,5261) (8,4,5270)
 		    
-		    (1,4,5299.5) (2,4,5306) (3,4,5305)   (4,4,5308.5) (5,4,5311.5) (6,4,5312)   (7,4,5306.5) (8,4,5309.5)
+		    (1,5,5218) (2,5,5236) (3,5,5237) (4,5,5253) (5,5,5255) (6,5,5266) (7,5,5270) (8,5,5278)
 		    
-		    (1,5,5299)   (2,5,5300) (3,5,5307)   (4,5,5313.5) (5,5,5302.5) (6,5,5311)   (7,5,5312)   (8,5,5307)
-		    
-		    (1,6,5293.5) (2,6,5302) (3,6,5304)   (4,6,5295.5) (5,6,5307)   (6,6,5304)   (7,6,5302)   (8,6,5307) 
+		    (1,6,5229) (2,6,5245) (3,6,5261) (4,6,5264) (5,6,5265) (6,6,5269) (7,6,5275) (8,6,5281) 
 		};
+	\end{axis}
+	
+	\begin{axis}[ 
+	, grid=major
+	, name=plot2
+	, width=0.49\linewidth
+	, height=8cm
+	, anchor=outer north west
+	, at=(plot1.right of north east)
+	, legend pos=outer north east
+	, xlabel={Velikost populace}
+	, xtick={1,2,3,4,5,6,7,8}
+	, xticklabels={8,16,32,64,128,256,512}
+	, ylabel={Hloubka}
+	, ytick={3,4,5,6}
+	, zlabel style={ at={(-0.15,0.5)}} 
+%	, zlabel={Naha¹ováno}
+	, zmin=5150 %{5280,5290,5300,5310,5320}
+	, zmax=5300 %
+	, ztick={5150,5200,5250,5300}
+	, zticklabels={5150,5200,5250,5300}
+	]
+	\addplot3[surf] coordinates {
+		%8            16         32          64         128        256        512       1024  
+		(1,3,4000) (2,3,4603) (3,3,5188) (4,3,5204) (5,3,5233) (6,3,5239) (7,3,5242) (8,3,5243)
+		
+		(1,4,4680) (2,4,5208) (3,4,5234) (4,4,5239) (5,4,5241) (6,4,5253) (7,4,5261) (8,4,5270)
+		
+		(1,5,5218) (2,5,5236) (3,5,5237) (4,5,5253) (5,5,5255) (6,5,5266) (7,5,5270) (8,5,5278)
+		
+		(1,6,5229) (2,6,5245) (3,6,5261) (4,6,5264) (5,6,5265) (6,6,5269) (7,6,5275) (8,6,5281) 
+	};
+	\end{axis}
+
+	\begin{axis}[ 
+	, grid=major
+	, name=plot3
+	, width=0.49\linewidth
+	, height=8cm
+	, anchor=north west
+	, at=(plot1.below south west)
+	, legend pos=outer north east
+	, xlabel={Velikost populace}
+	, xtick={1,2,3,4,5,6,7,8}
+	, xticklabels={8,16,32,64,128,256,512}
+	, ylabel={Hloubka}
+	, ytick={3,4,5,6} 
+	, zlabel style={ at={(-0.15,0.5)}}
+	, zlabel={Naha¹ováno}
+	, zmin=5150 %{5280,5290,5300,5310,5320}
+	, zmax=5300 %
+	, ztick={5150,5200,5250,5300}
+	, zticklabels={5150,5200,5250,5300}
+	]
+	\addplot3[surf] coordinates {
+		%8            16         32          64         128        256        512       1024  
+		(1,3,4137) (2,3,4498) (3,3,5202) (4,3,5211) (5,3,5221) (6,3,5234) (7,3,5235) (8,3,5242)
+		
+		(1,4,5187) (2,4,5212) (3,4,5223) (4,4,5237) (5,4,5260) (6,4,5241) (7,4,5263) (8,4,5268) % 5,4 coordinate didnt complete FIX IT
+		
+		(1,5,5201) (2,5,5214) (3,5,5240) (4,5,5252) (5,5,5260) (6,5,5252) (7,5,5266) (8,5,5276)
+		
+		(1,6,5228) (2,6,5250) (3,6,5259) (4,6,5266) (5,6,5266) (6,6,5259) (7,6,5267) (8,6,5280) 
+	};
+	\end{axis}
+	
+	\begin{axis}[ 
+	, grid=major
+	, name=plot4
+	, width=0.49\linewidth
+	, height=8cm
+	, anchor=outer north west
+	, at=(plot3.right of north east)
+	, legend pos=outer north east
+	, xlabel={Velikost populace}
+	, xtick={1,2,3,4,5,6,7,8}
+	, xticklabels={8,16,32,64,128,256,512}
+	, ylabel={Hloubka}
+	, ytick={3,4,5,6} 
+	, zlabel style={ at={(-0.15,0.5)}}
+%	, zlabel={Naha¹ováno}
+	, zmin=5150 %{5280,5290,5300,5310,5320}
+	, zmax=5300 %
+	, ztick={5150,5200,5250,5300}
+	, zticklabels={5150,5200,5250,5300}
+	]
+	\addplot3[surf] coordinates {
+		%8            16         32          64         128        256        512       1024  
+		(1,3,2499) (2,3,4533) (3,3,5166) (4,3,5199) (5,3,5209) (6,3,5225) (7,3,5231) (8,3,5236)
+		
+		(1,4,5016) (2,4,5197) (3,4,5225) (4,4,5234) (5,4,5251) (6,4,5257) (7,4,5260) (8,4,5275) 
+				
+		(1,5,5203) (2,5,5217) (3,5,5239) (4,5,5250) (5,5,5258) (6,5,5268) (7,5,5264) (8,5,5278)
+		
+		(1,6,5228) (2,6,5250) (3,6,5257) (4,6,5248) (5,6,5264) (6,6,5268) (7,6,5277) (8,6,5280) 
+	};
 	\end{axis}
 \end{tikzpicture}
 \caption{Number of successfully hashed addresses in relation to population size and initial depth.}
 \label{fig:basicPopulationDepth1}
 \end{figure}
+
 %%%%%%%%%%%%% IPHASH Population depth %%%%%%%%%%%%%%%
 
 Zkusme si nyní ovìøit na¹i volbu volbu funkèních a terminálních symbolù. To mù¾eme provést pøídáním, èi odebraním 
@@ -1834,7 +1934,7 @@ tvrzení si ovìøíme v následující èásti této sekce. Rychlost ha¹ovacích funkcí na
 velmi vysoká díky omezení hloubky stromu. Toto omezení má za následek omezený poèet pou¾itých ha¹ovacích operátorù v
 dané ha¹ovací funkci, které spotøebovávají drahocený výpoèetní výkon. V experimentu porovnáme dvì vybrané námi navr¾ené
 ha¹ovací funkce se state-of-the-art ha¹ovacími funkcemi navr¾enými èlovìkem. Ve¹keré implementace obecných ha¹ovací funkcí
-jsou pøevzaty z ji¾ døíve zmínìného balíku \textit{SMHasher} []. 
+jsou pøevzaty z ji¾ døíve zmínìného balíku \textit{SMHasher} \cite{appleby2016}. 
 
 Ve¹keré zdrojové texty souèástí tohoto experimentu,
 jsou kompilovány pøekladaèem \texttt{gcc} verze 5.2.0. Bylo pou¾ito \texttt{C++} ve verzi 11, nebo» poskytuje velmi
@@ -1847,6 +1947,7 @@ uvádíme relativní zrychlení vùèi dvìma ha¹ovacím funkcím nalezeným algoritmem IP
 
 \begin{table}[!ht]
 	\centering
+	\caption{Výsledky testu rychlosti vybraných ha¹ovacích funkcí a jejich porovnání s funkcemi nalezenými algoritmem IPHash.}
 	\begin{tabular}{lccc}
 		\hline
 		Funkce & Èas [sekundy]  & Zrychlení (IPHash 1) & Zrychlení (IPHash 2) \\ 
@@ -1862,7 +1963,6 @@ uvádíme relativní zrychlení vùèi dvìma ha¹ovacím funkcím nalezeným algoritmem IP
 		\hline
 	\end{tabular}	
 	\label{tab:speedcomparison}
-	\caption{Výsledky testu rychlosti vybraných ha¹ovacích funkcí a jejich porovnání s funkcemi nalezenými algoritmem IPHash.}
 \end{table}
 
 Nejprve je dùle¾ité podoknout, ¾e výsledky se mohou (a budou) li¹it pøi pou¾ití jiného pøekladaèe, èi pøi spu¹tìní na jiné
@@ -1905,8 +2005,8 @@ experimentu jsou k náhlednutí jako souèást práce na konference Excel@FIT a která
 	]
 	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set1/MDMedian.dat};
 	\addlegendentry{MDHashHash}
-%	\addplot[color=black,  dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set1/MDRSMedian.dat};
-%	\addlegendentry{MDHash Random Search}
+	\addplot[color=black,  dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set1/MDRSMedian.dat};
+	\addlegendentry{MDHash Random Search}
 	\end{axis}
 	
 	\begin{axis}[ %
@@ -2323,16 +2423,190 @@ experimentu jsou k náhlednutí jako souèást práce na konference Excel@FIT a která
 \end{figure*}
 %%%%%%%%%%%%% CUCKOO AVG Population SET #4 %%%%%%%%%%%%%%%
 
-\section{Shrnutí výsledkù}
+%%%%%%%%%%%%% CUCKOO MAXLOOP %%%%%%%%%%%%%%%
 
-\begin{figure}[!h]
+\begin{figure}[!ht]
 	\centering
 	\begin{tikzpicture}
 	\begin{axis}
 	[ boxplot/draw direction=y
 	, name=plot1	
 	, xtick={1,2,3}
-	, xticklabels={IPHash, MDHash, CuckooHash}
+	, xticklabels={,,}
+	, ymin=6800
+	, ymax=6970
+	]
+	\addplot+[
+	boxplot prepared={
+		lower whisker=6853,
+		lower quartile=6861.91,
+		median=6871,
+		upper quartile=6877.16,
+		upper whisker=6906,
+	},
+	] coordinates {}; % CUCKOO 5
+	
+	\addplot+[
+	boxplot prepared={
+		lower whisker=6889,
+		lower quartile=6911,
+		median=6920,
+		upper quartile=6929,
+		upper whisker=6951,
+	},
+	] coordinates {}; % CUCKOO 10
+	
+	\addplot+[
+	boxplot prepared={
+		lower whisker=6889,
+		lower quartile=6911,
+		median=6920,
+		upper quartile=6929,
+		upper whisker=6951,
+	},
+	] coordinates {}; % CUCKOO 15
+	\end{axis}
+	
+	\begin{axis}
+	[ boxplot/draw direction=y
+	, name=plot2
+	, at=(plot1.right of south east)
+	, xtick={1,2,3}
+	, xticklabels={,,}
+	, yticklabels={,,}
+	, ymin=6800
+	, ymax=6970
+	]
+	\addplot+[
+	boxplot prepared={
+		lower whisker=6843,
+		lower quartile=6858,
+		median=6868,
+		upper quartile=6878.25,
+		upper whisker=6908,
+	},
+	] coordinates {}; % CUCKOO 5
+	
+	\addplot+[
+	boxplot prepared={
+		lower whisker=6882,
+		lower quartile=6905,
+		median=6917,
+		upper quartile=6931,
+		upper whisker=6949,
+	},
+	] coordinates {}; % CUCKOO 10
+	
+	\addplot+[
+	boxplot prepared={
+		lower whisker=6882,
+		lower quartile=6905,
+		median=6917,
+		upper quartile=6931,
+		upper whisker=6949,
+	},
+	] coordinates {}; % CUCKOO 15
+	\end{axis}	
+	
+	\begin{axis}
+	[ boxplot/draw direction=y
+	, name=plot3
+	, anchor=north west
+	, at=(plot1.below south west)
+	, xtick={1,2,3}
+	, xticklabels={5,10,15}
+	% , yticklabels={,,}
+	, ymin=6800
+	, ymax=6970
+	]
+	\addplot+[
+	boxplot prepared={
+		lower whisker=6838,
+		lower quartile=6858,
+		median=6865.5,
+		upper quartile=6877,
+		upper whisker=6902,
+	},
+	] coordinates {}; % CUCKOO 5
+	
+	\addplot+[
+	boxplot prepared={
+		lower whisker=6891,
+		lower quartile=6908,
+		median=6919,
+		upper quartile=6931,
+		upper whisker=6956,
+	},
+	] coordinates {}; % CUCKOO 10
+	
+	\addplot+[
+	boxplot prepared={
+		lower whisker=6891,
+		lower quartile=6908,
+		median=6919,
+		upper quartile=6931,
+		upper whisker=6956,
+	},
+	] coordinates {}; % CUCKOO 15
+	\end{axis}
+	
+	\begin{axis}
+	[ boxplot/draw direction=y
+	, name=plot4
+	, anchor=north west
+	, at=(plot2.below south west)
+	, xtick={1,2,3}
+	, xticklabels={5, 10, 15}
+	, yticklabels={,,}
+	, ymin=6800
+	, ymax=6970
+	]
+	\addplot+[
+	boxplot prepared={
+		lower whisker=6817,
+		lower quartile=6866,
+		median=6872.5,
+		upper quartile=6879,
+		upper whisker=6905,
+	},
+	] coordinates {}; % CUCKOO 5
+	
+	\addplot+[
+	boxplot prepared={
+		lower whisker=6892,
+		lower quartile=6908,
+		median=6917,
+		upper quartile=6926,
+		upper whisker=6962,
+	},
+	] coordinates {}; % CUCKOO 10
+	
+	\addplot+[
+	boxplot prepared={
+		lower whisker=6892,
+		lower quartile=6908,
+		median=6917,
+		upper quartile=6926,
+		upper whisker=6962,
+	},
+	] coordinates {}; % CUCKOO 10
+	\end{axis}		
+	
+\end{tikzpicture}
+\caption{Cuckoo}
+\label{fig:cuckoo_maxloop}
+\end{figure}
+%%%%%%%%%%%%% CUCKOO MAXLOOP %%%%%%%%%%%%%%%
+
+\section{Shrnutí výsledkù}
+\begin{figure}[!ht]
+	\centering
+	\begin{tikzpicture}
+	\begin{axis}
+	[ boxplot/draw direction=y
+	, name=plot1	
+	, xtick={1,2,3}
+	, xticklabels={,,}
 	%	, ymin=5200
 	%	, ymax=5360
 	]
@@ -2372,7 +2646,7 @@ experimentu jsou k náhlednutí jako souèást práce na konference Excel@FIT a která
 , name=plot2
 , at=(plot1.right of south east)
 , xtick={1,2,3}
-, xticklabels={IPHash, MDHash, CuckooHash}
+, xticklabels={,,}
 , yticklabels={,,}
 %	, ymin=5200
 %	, ymax=5360
