@@ -830,14 +830,14 @@ S parciálními funkcemi se můžeme vypořádat tím, že je explicitně rozš�
 totální nebo v případě, je-li nedefinovaná hodnota detekována, značně snížíme jedincův 
 fitness.
 
-\chapter{Návrh řešení}
+\chapter{Návrh metod pro evoluční návrh hašovacích funkcí}
 \label{sec:solution_design}
 
-Jak již bylo řečeno v kapitole \ref{sec:hashing}, navrhujeme-li hašovací funkci "na
-míru" nějakému konkrétnímu univerzu klíčů, můžeme dosáhnout podstatně lepší 
+Jak již bylo řečeno v kapitole \ref{sec:hashing}, navrhujeme-li hašovací funkci ``na
+míru'' nějakému konkrétnímu univerzu klíčů, můžeme dosáhnout podstatně lepší 
 výkonnosti hašovací funkce, než je tomu v případě obecných hašovacích funkcí.
 
-\section{Problém}
+\section{Definice problému}
 Našim problémem bude navrhnout konkrétní hašovací funkci pro hašování domény
 \texttt{IP} adres. Adresa \texttt{IP} je číslo, jednoznačně identifikující síťové
 rozhraní v síti, která používá internetový protokol \texttt{IP}. Vzhledem k tomu,
@@ -854,13 +854,13 @@ by byla nedostupná i pro specializované počítače, uvažujeme-li, že by tak
 stroj měl dělat i něco jiného, než uchovávat tak ohromnou tabulku. Musíme se
 tedy uchílit k návrhu hašovací funkce.
 
-Pracujeme nad ctyřmi datasety, kde každý dataset obsahuje právě 8192 různých 
+Pracujeme nad čtyřmi datasety, kde každý dataset obsahuje právě 8192 různých 
 IP adres. Pro každý dataset bude nutno navrhnout zvláštní hašovací funkci a tu
-na dané vstupy natrénovat. Nenavrhujeme obecnější hašovací funkci, která by dobře
+na dané vstupy ``natrénovat''. Nenavrhujeme obecnější hašovací funkci, která by dobře
 pracovala nad libovolnou podmnožinou celého univerza IP adres, ale velmi
 specifické funkce, které budou dobře pracovat právě nad zvoleným datasetem.
 Protože celý hašovaný prostor je předem znám, snažíme se najít takové hašovací
-funkce, které pojmou co nejvíce z dané podmnožiny. State of the art řešení je v
+funkce, které pojmou co nejvíce z dané podmnožiny. State-of-the-art řešení je v
 tomto případě taková hašovací funkce, která pojme celý podprostor, její 
 faktor zatížení bude roven právě jedné ($\alpha = 1$). Taková řešení však
 bude těžké najít. Pro naše účely postačí, nalezneme-li takové, které budou
@@ -869,27 +869,27 @@ možnost použít metody perfektního hašovaní \cite{perfect_hashing}, ale to 
 být ve všech případech například z důvodů použití na specializovaném hardware
 dostupná možnost. Zabývat se jí tedy nebudeme.
 
-
 \section{Princip}
-Hašovací funkce budeme navrhovat evolučnímy algoritmy, konkrétně za použití 
-genetického programování. Zvoleno bylo genetické programování, protože 
-jako jedince populace abstraktní syntaktické stromy. Jenotlivé syntaktické 
-stromy budeme interpretovat nad zadanými vstupy. Ohodnocení konkrétního jedince
-bude spočívat v nahašování jednoho celé subsetu. Na výstupu budeme měřit, kolik 
-různých klíčů dokázala hašovach tabulku obsáhnout klíčů.
+Hašovací funkce budeme navrhovat evolučními algoritmy, a to konkrétně za použití 
+genetického programování, popsaného v předchozí kapitole \ref{sec:evolution_design}.
+Zvoleno bylo genetické programování, protože 
+jedince populace reprezentuje abstraktními syntaktickými stromy. Jenotlivé syntaktické 
+stromy budou reprezentovat přímo hašovací funkce a ty budeme interpretovat nad zadanými vstupy.
+Ohodnocení konkrétního jedince bude spočívat v nahašování jednoho celé subsetu a na výstupu budeme
+měřit počet kolizí, tedy kolik různých klíčů zobrazilo kandidátní řešení na stejný slot.
 
 \section{Přinos práce}
-Evoluční návrh hašovacích funkcí byl se ukázalo jako zajímavé téma v posledním 
+Evoluční návrh hašovacích funkcí se ukázalo jako zajímavé téma v posledním 
 desetiletí \cite{dobai0,NCHF_auto_design,grammar_evolution,safdari}.
 Naprostá většina prací se se zaměrovala na návrh obecných hašovacích
 funkcí. Byly použity jak evoulční návrh tak evoluční optimalizace. Jedna z prací
 podobná té naší je \cite{safdari}. Je podobná ve smyslu cíle a použité techniky,
-avšak autor zde použil evoluční optimalizaci namísto návrhu. Autor zde optimalizuje
+avšak autor zde použil evoluční optimalizaci namísto návrhu. Autor optimalizuje
 parametry $a,b$ následující hašovací funkce:
 $$h_{a,b}(k) = ((ak + b) \; mod \; p) \; mod \; N$$
 kde $p$ je nějaké prvočíslo a $N - 1$ je největší index slotu hašovací tabulky.
 ``Výsledky jsou slibné, ale použitá metodika je sporná'' \cite{NCHF_auto_design}.
-Protože množina klíčů je obsahuje celá čisla a je volena náhodně, náskýta se otázka,
+Protože množina klíčů obsahuje celá čís	la a je volena náhodně (pseudonáhodně), náskýta se otázka,
 proč vůbec evolvovat hašovací funkci, když mohou být použity její prvky k indexování
 napřímo. Druhá věc je, že autor používa jako primární metriku fitness funkce odolnost
 vůči kolizím, která je silně závislá na vstupní množině. Funkce tedy nemusí dobře 
@@ -898,10 +898,10 @@ zobecňovat.
 Vhodnější metrikou pro návrh obecných hašovacích funkcí je lavinový efekt, který 
 není závislý na vstupu. Tohoto faktu využili autoři další podobné práce \cite{NCHF_auto_design}
 zabývající se návrhem hašovacích funckí. Tato práce je pravděpodobně nejblíže té 
-naší s rozdílem, že my nenavrhujeme obecné hašovací funkce. Autoři stejně jako my,
+naší ale s rozdílem, že my nenavrhujeme obecné hašovací funkce. Autoři stejně jako my,
 zvolili genetické programování jako evoluční platformu a volili i podobné parametry.
 Jako základ pro svoji fitnes funkci zvolili lavinový efekt, který není
-závislý na vstupu. Funkce navržené jejích systémem otestovali na různých vstupních třídách
+závislý na vstupu. Funkce navržené jejich systémem otestovali na různých vstupních třídách
 a dosáhli slibných výsledků. Tvrdí, že jeji algoritmus je velice robustní, protože změny
 klíčových parametrů mají jen velmi nízký nebo žádný dopad na výsledné funkce. Bohužel
 součástí jejich experimentu není porovnání s algoritmem náhodného prohledávání, ke 
@@ -912,13 +912,13 @@ není ůplně pravda. Takový přístup se nachází na pomezí evolučního ná
 
 Zajímavou prací, která se vydala přístupem kartézského genetického programování je
 \cite{dobai0}. Kartézské genetické programování je zejména vhodné pro aplikace blízké
-hardwarové vrstvě, takže jeho volba se zdá velmi dobrá vzhledem k cílové aplikační doméně
-, kterou jsou síťové prvky. Nesporný přínos práce spočívá v použití Kukaččího hašování, které
+hardwarové vrstvě, takže jeho volba se zdá velmi dobrá vzhledem k cílové aplikační doméně,
+kterou jsou síťové prvky. Nesporný přínos práce spočívá v použití Kukaččího hašování, které
 je použito za účelem zvýšení faktoru zatížení výsledné hašovací tabulky a práce tak dosáhla velmi
 dobrých výsledků. Faktor, který tato a naše práce sdílí je návrh doménově specifické hašovací 
-funkce, kde hašovanou doménou jsou také IP adresy. Práce se však rozchází zejména ve volbě 
+funkce, kde hašovanou doménou jsou také \texttt{IP} adresy. Práce se však rozchází zejména ve volbě 
 fitnes funkce. Zatímco my (jak uvidíme později v této kapitole) jsme zvolili přístup, kdy hašujeme
-celý daný rozsah a měříme výskyt kolizi, měří počet úspěšně nahašovaných adres až do výskytu
+celý daný rozsah a měříme výskyt kolizí, autoři měří počet úspěšně nahašovaných adres až do výskytu
 první kolize. Taková metrika je vskutku zajímavá, ale intuitivně se naskýta úvaha, že fitnes funkce
 velmi špatně ohodnotí řešení, která mají kolizi velmi brzo, ale přitom mohou nahašovat velkou část
 celého rozsahu. Fitnes funkce jasně míří na cíl nahašovat celý rozsah (tedy optimální řešení), toho
@@ -934,10 +934,11 @@ kvality odolnost vůči kolizím, které je nepřímým ukazatelem toho, jak dob
 náhodně distribuuje své výstupy. Evaluovanou hašovací
 funkci budeme testoat nad všemi prvky univerza. To znamená, že budeme navrhovat
 celkem ctyři hašovací funkce, pro každý vsupní dataset jednu. Kdybychom pro všechny čtyři
-datasety navrhovali jednu jedinou, nedostali bychom dobré výsledky. Výsledný hašovací tabulka
-by měla 8192 slotů, ale byla by ``natrénována'' nad všemi adresami ze všech datasetů. Navic 
+datasety navrhovali jednu jedinou, nedostali bychom dobré výsledky. Výsledná hašovací tabulka
+by měla 8192 slotů, ale byla by ``natrénována'' nad všemi adresami ze všech datasetů, které mají dohromady mnohem více 
+různých klíčů. Navic 
 bychom se museli zabývat vhodnou volbou trénovacích dat, což je obtížný úkol a navíc přídat
-kritérim, které by bralo v úvahu zobecňování. Výsledný hašovací funkce by již nebyla obecná, ale
+kritérim, které by bralo v úvahu zobecňování. Výsledná hašovací funkce by již nebyla čistě jednoúčelová, ale
 někde ``na půl cesty'' mezi obecnou a velmi specifickou hašovací funkci.
 
 Neméně důležitým kritériem je rychlost hašovací funkce a to obzvláště v aplikacích jako jsou
@@ -949,26 +950,26 @@ abstraktních syntaktických stromů a vhodně zvolíme množinu terminálů a n
 
 V této sekci uvedeme, jaké parametry jsme zvolili parametry pro geneticé programování.
 
-\subsection{Genetické operátory a selekce}
+\subsection{Genetické operátory a metoda selekce}
 
-Operátory mutace použijeme ve dvou verzích. \textit{Podstromovou} mutaci a 
-\textit{bodovou} mutaci zároveň. Budeme náhodně volit mezi oběma alternativami, 
-avšak pravděpodobnost mutace ponecháme velmi nízkou. Původní implementace algoritmů
+Jako operátor mutace použijeme podstromovou verzi podstromovou mutaci. Jedná se o základní formu mutace
+u genetického programování s dobrými výsledky.
+Pravděpodobnost mutace ponecháme velmi nízkou. Původní implementace algoritmů
 genetického programování \cite{GPTutorial} operátor mutace vynechávaly úplně. 
 Budeme raději volit cestu postupné pomaleji konvergující evoluce, než abychom 
-nějaká řešení minuli.
+nějaká řešení minuli. 
 
-Co se křížení týka, v prvních verzích použijeme základní formu tedy \textit{podstromové}
-křížení, později jej můžeme porovnat i s pokročilejšími technikami jako jsou 
-\textit{jednobodové} a křížení se zachováním kontextu. 
+Co se křížení týka, opět použíjeme dobře pracující základní formu tedy podstromové křížení. Důležitá jsou zde parametry pro výběr kříženého uzlu. 
+Kořen abstraktních syntaktických stromů pro křížení nemá smysl volit, neboť by křížení degradovalo na operaci prohození. Malý vliv na konvergenci
+má  pro křížení i volba terminálních uzlů. V našem případě také budeme omezovat maximální hloubku kandidátních řešení a volba terminálního uzlu
+by mohla vyústila v neúspěšné křížení. Vyběr uzlů pro křížení budemep provádět tedy se nulovou pravděpodobností pro kořen, 10\% pravděpodobností
+pro terminální uzel a 90\% pravděpodobností pro ostatní uzly.
 
-Selekci použijeme turnajovou a to zejména kvůli své determinitičnosti (jedince
-sice musíme volit náhodně, ale nemusíme se mezi nimi stochastiky rozhodovat). Dalším důvodem
-je dobrá škálovatelnost selekčního tlaku.
+Selekci použijeme turnajovou a to zejména kvůli své determinitičnosti (jedince sice musíme volit náhodně, ale nemusíme se mezi nimi stochastiky rozhodovat).
+Dalším důvodem je dobrá škálovatelnost selekčního tlaku. Velikost turnaje zvolíme standartně na hodnotu sedm.
 
-Počáteční populaci budeme generovat náhodně bez použití jakýchkoli heuristik
-a to metodou \textit{ramped-half-and-half}, která zajišťuje pro start algoritmu
-kvalitní populaci co se různorodosti verlikostí a tvarů jedinců týká. 
+Počáteční populaci budeme generovat náhodně bez použití jakýchkoli heuristik a to metodou ramped-half-and-half, která zajišťuje pro start algoritmu
+kvalitní populaci co se různorodosti verlikostí a tvarů jedinců týká. S 50\% pravděpodobností budeme generovat plný strom.
 
 \subsection{Množina terminálů a funkčních symbolů}
 
@@ -977,7 +978,7 @@ proměnné vyrobíme z jednotlivých oktetů adres a budeme požadovat, aby kaž
 vstupní program obsahoval všechny proměnné alespoň jednou, tedy aby pracoval
 s celou adresou. Jako konstanty budeme volit prvočísla. 
 
-Prvočísla hrají důležitou roli při operaci modulo. Pokud volíme jako argument modula nějaké
+Prvočísla hrají důležitou roli u aritmetických operací. Pokud volíme jako argument nějaké
 násobky malých čísel jako je například čislo dvě, může se stát, že funkce bude
 mít tendenci seskupovat čísla dělitelná dvěmi. Jako konstanty budeme volit
 prvočísla z rozsahu $\langle 2, 2N \rangle$, kde $N$ je velikost datasetu. Prvočísla
@@ -989,25 +990,29 @@ nabývat stejné hodnoty, ale v mutaci jej bude měnit s určitou pravděpodobno
 nějaké nejbližší prvočíslo. 
 
 Každá IP adresa má délku 32 bitů a skládá se ze čtyř osmibitových oktetů. Oktety zahrneme
-do naší množiny terminálních symbolů každý zvlášť a označíme je $o_0 \ldots o_4$ jemnější 
-dělení (například 4, 2 nebo 1 bit) nebudeme uvažovat, protože použijeme rotace (viz. dále),
+do naší množiny terminálních symbolů každý zvlášť a označíme je $o_0 \ldots o_3$ jemnější 
+dělení (například 4, 2 nebo 1 bit) nebudeme uvažovat, protože použijeme rotace,
 které budou schopny vybrat jednotlivé bity z oktetu.
 
 Budeme-li uvažovat Merkle-Damg\r{a}rdovo schéma, musíme reprezentovat v naší
 množině terminálů mezivýsledky kompresní funkce. I když se jedná obecně o iterativní
 schéma pracující nad libovolnou délkou vstupu, my si vzhledem k předem pevně 
-dané délce 32 bitů vystačíme se ctyřmi kompresními jednotkami, jejichž mezivýsledky
-budeme značit $a_0, a_1, a_2$ (pozn.v případě $a_3 $ se jedná o výstup). 
+dané délce 32 bitů vystačíme se čtyřmi kompresními jednotkami, jejichž mezivýsledky
+budeme značit $a_0, a_1, a_2$ (pozn. v případě $a_3 $ se jedná o výstup). 
 
-Množinu funkcí zvolíme z běžných operací. Vyhneme se cyklům a jiným složitým
+Množinu funkcí zvolíme z běžných operací. Ve volbě vhodných operací nám pomůže
+rozbor state-of-the-art hašovacích funkcí provedený v kapitole \ref{sec:hashing}.
+Vyhneme se cyklům a jiným složitým
 řídícím konstrukcím, neboť ty by vzhledem ke stochastické povaze algoritmu mohly
 vyústit ve velmi pomalé hašovací funkce. Další nevítanou skupinou operací jsou operace
 v plovoucí řádové čárce, které na procesorech s komplexní instrukční sadou vyžadují
-mnoho taktů procesoru aří implementaci v hardware zase zabírají velké místo na čipu.
+mnoho taktů procesoru a při implementaci v hardware zase zabírají mnoho místo na čipu.
 Nosnou část množiny funkcí budou tvořit aritmetické operace. Konkrétně do ní zahrneme
-násobení ($*$), sčítání ($+$), odčítání ($-$) a operaci modulo ($mod$). V případě dělení
-se spokojíme s dělením beze zbytku ($/$). Používat budeme také booleovské operace,
-kam zahrneme logické součet ($OR$), logický součin ($AND$) a negaci ($NOT$), která 
+násobení ($*$), sčítání ($+$). Ostatním běžným operacím jako  odčítání ($-$), modulo ($mod$) ani dělení ($/$)
+se vyhneme.
+
+Používat budeme také logické operace,
+kam zahrneme logický součet ($OR$), logický součin ($AND$) a jedničkový doplňek ($\neg$), který 
 je důležitá zejmána proto, protože umožňuje vytvořit úplnou bázi a logické funkce mohou
 tedy zkonstruovat libovolnou logickou funkci. Poslední skupinu budou tvořit funkce bitové.
 Zde zahrneme pravou ($\ggg$) a levou ($\lll$) rotaci. Které jsou důležité pro výběr 
@@ -1050,7 +1055,7 @@ popisují tabulky \ref{tab:function_set_design} a \ref{tab:terminal_set_design}.
 
 \section{Evoluční návrh hašovacích funkcí}
 V této sekci představíme princip metody a konkrétní podobu navrženého řešení pro přímý evoluční 
-návrh hašovacích funkcí. Přímý proto, protože zde nebudeme uvažovat zádné schéma ani koncept
+návrh hašovacích funkcí. Přímý proto, protože zde nebudeme uvažovat žádné schéma ani koncept
 jehož části bychom evolvovali. Hašovací funkce zde budou reprezentovat přímo abstraktní syntaktické
 stromy, s kterými pracuje algoritmus genetického programování. Funkce navržené touto metodou 
 budeme označovat \textit{IPHash}. Každý jedinec bude pracovat se všemi oktety IP adresy.
@@ -1060,10 +1065,10 @@ křážení zvolíme v podstromové variantě a operátor mutace taktéž. Hloub
 na hodnotu šest a to ze dvou důvodu. Jednak protože očekáváme od našich hašovacích funkcí aby byly
 rychlé a také proto, že algoritmus genetického programování je paměťově náročný a s rostoucí hloubkou
 stromů roste exponenciálně paměťová náročnost, což klade neúnosné nároky na výpočetní zařízení 
-(servery \textit{edesign1} \ldots \textit{edesign4}). Parametry základní variantu této metody shrnuje 
+(servery \textit{edesign1} \ldots \textit{edesign4}). Parametry této metody shrnuje 
 tabulka \ref{tab:IPHash_params}.
 
-\begin{table}[h]
+\begin{table}[!ht]
 	\centering
 	\caption{Kompletní shrnutí parametrů genetického programování pro experimenty spjaté s touto sekcí.}
 	\begin{tabular}{lc} \\ \hline
@@ -1101,41 +1106,31 @@ tabulka \ref{tab:IPHash_params}.
 \section{Optimalizace za použití Merkle-Damg\r{a}rdova schématu}
 
 Dále se budeme zabývat evolučním návrhem kompresních funkcí pro Merkle-Damg\r{a}rdovo schéma.
-Budeme zkoumat dva různé přístupy. V prvním případě budeme evolvovat jednu jedinou kompresní 
-při konstrukci Merkle-Damg\r{a}rdova schématu tak jak bylo popsáno v kapitole \ref{sec:hashing}.
-V druhém připadě budeme namísto jedné kompresní funkce evolvovat hned ctyři, pro každý oktet
-hašovací funkce jednu jak je ukázáno na obrázku \ref{fig:merkle_damgard_2}. Tento přístup nám
-umožní dekomponovat prohledávací prostor a dosáhnout tak lepších výsledků díky navržení
-kompresních funkcí na míru konkrétnímu oktetu IP adresy. Merkle-Damg\r{a}rdovo schéma je obecně
-iterativní schéma přijímat vstup o libovolné velikosti. My využijeme v obou případech faktu, že délku
-vstupu předem známe. Omezíme se tedy pouze na ctyři kompresní funkce, pro každý oktet vstupu jednu.
-A protože je velikost vstupu násobek osmi, nemusíme poslední oktet doplňovat o ohraničující vatu. Dále
-náme nezáleží na kryptografické bezpečnosti, můžeme tedy vzpostit poslední kompresní komponentu
+K optimalizaci mixovacích komponent budeme přistupovat z úplně jiného úhlu. Upravíme  Merkle-Damg\r{a}rdovo
+schéma tak jak je zobrazeno na obrázku \ref{fig:merkle_damgard_2}. V originálním schématu se
+jedna mixovací funkce používá iterativně. My máme tu výhodu, že známe velikost vstupu dopředu. Můžeme
+si tedy dovolit navrhnout pro každou mixovací komponentu samostatnou hašovací funkci, pro každý oktet
+hašovací funkce jednu. A protože je velikost vstupu násobek osmi, nemusíme poslední oktet doplňovat o ohraničující vatu. Dále
+nám nezáleží na kryptografické bezpečnosti, můžeme tedy vzpostit poslední kompresní komponentu
 pro délkové ohraničení. Ani dobrovolnou finalizační komponentu nevyužijeme. Výsledná hašovací funkce
 bude tvaru
-$$f_{Merkle-Damgard} : IV \times X \to \{0,1,2 \ldots 8192\}$$,
+$$f_{Merkle-Damgard} : X \to \{0,1,2 \ldots 8192\}$$,
 kde $IV$ je nějaké celé číslo a $X$ je vstupní IP adresa.
 
-Druhý bude vyžadovat zásadní změnu v reprezentaci jedinců. Každý jedinec se bude skládat ze ctyř 
+Tento přístup bude vyžadovat zásadní změnu v reprezentaci jedinců. Každý jedinec se bude skládat ze čtyř 
 různých abstraktních syntaktickách stromů reprezentující jednotlivé kompresní funkce. Genetické operátory
 mutace a zejména křížení pracují v každém procesu reprodukce pouze nad jedním abstraktním
-syntaktickým stromem. Protože naráz pracujeme se čtyřmi stromy zvedme počet evaluací ctyřnásobně na
-400 000 evaluací, abychom dosáhli ekvivalentní situace v porovnání s ostatními metodami. V procesu
-reprodukce jsou abstraktní syntaktické stromy vybírány náhodně. 
+syntaktickým stromem. Protože naráz pracujeme se čtyřmi stromy zvedme počet evaluací dvojnásobně na
+200 000 evaluací (při čtyřnásobném navýšení trvá výpočet evolučního algoritmu neúnostně dlouho),
+abychom dosáhli ekvivalentní situace v porovnání s ostatními metodami. V procesu reprodukce jsou abstraktní
+syntaktické stromy vybírány náhodně. 
 
 \begin{figure}[!ht]
-\begin{subfigure}[b]{0.49\textwidth}
-	\includegraphics[width=\textwidth]{fig/merkle_damgard_design1}
-	\caption{První případ, který budeme studovat. Schéma používá zřetězení jediné kompresní funkce.}
-\end{subfigure}
-\begin{subfigure}[b]{0.49\textwidth}
 	\includegraphics[width=\textwidth]{fig/merkle_damgard_design2}
-	\caption{Druhý případ, který budeme studovat. Schéma používá zřetězení několika různých kompresních funkcí.}
-\end{subfigure}
-	\caption{Porovnání dvou navržených řešení používající Merkle-Damg\r{a}rdovo schéma.}
+	\caption{Námi upravené Merkle-Damg\r{a}rdovo schéma používá zřetězení několika různých kompresních funkcí.}
 \end{figure}
 
-U obou variant do tabulky terminálních symbolů musíme zavést příslušné symboly reprezentující
+Poslední změnu musí prodělat ještě množina terminálních symbolu, do které je nutné zavést příslušné symboly reprezentující
 konkrétní mezivýsledky $a_0, a_1, a_2$. Ostatní parametry se oproti metodě v předchozí sekci neliší.
 
 \section{Evoluční návrh za použití kukaččího hašování}
@@ -1149,31 +1144,31 @@ Vzhledem k tomu, že zde pracujeme již přímo s návrhem hašovací tabulky, k
 řešení kolizí, očekáváme výrazně lepší výsledky, než v předchozích případech. Musíme však pamatovat
 na to, že naše hašovací funkce musejí být rychlé. Ačkoliv Kukaččí hašování pracuje nad všemi
 operacemi v konstantním čase a to i v nejhorším případě, může být výsledná tabulka pomalá. Takový
-stav může nastat v případě, že jsou jednotlivé klíče často vytlačovány (viz. funkce \Call{INSERT()}
+stav může nastat v případě, že jsou jednotlivé klíče často vytlačovány (viz. funkce \Call{INSERT}{}
 algoritmu \ref{alg:cuckoo_hashing}) nebo není možné vložit klíč do tabulky vůbec a je nutné
-volat \Call{REHASH()}. 
+volat \Call{REHASH}{}. 
 
-Funkci \Call{REHASH} nebudeme v našem návrhu vůbec uvažovat, protože její funkce spočíva v nalezení
+Funkci \Call{REHASH} nebudeme v našem návrhu vůbec uvažovat, protože její funkce spočívá v nalezení
 nových hašovacích funkcí a znovu vytvoření hašovací tabulky. Tato operace je jedna velice časově
 náročná, což by zpomalovalo výslednou hašovací tabulku a navíc bychom museli zajistit vhodné nalezení
 nových hašovacích funkcí, což lze řešit například genetickým algoritmem, který však už nesmí být
 součástí výsledku.
 
-Druhým faktorem mající významný dopad na ryhlost je počet iterace vnější smyčky v operaci
-\Call{INSERT()}. S vzrůstajícím počtem iterací roste také počet volání hašovacích funkcí, které
+Druhým faktorem mající významný dopad na ryhlost je počet iterací vnější smyčky v operaci
+\Call{INSERT}{}. S vzrůstajícím počtem iterací roste také počet volání hašovacích funkcí, které
 i přes to, že jsou inherentně rychlé mohou hašovací tabulku zpomalit.
 
-Nyní přejděme k samotnému návrhu experimentů a parametrů pro genetické programování. Množinu termínálních
+Množinu termínálních
 symbolů ponecháme stejno jako v předchozích případech, stejně tak i množinu funkcí a ostatní parametry
 genetického programování. Jedinou změnou bude reprezentace jedince. Ten bude tentokrát reprezentován
-dvěma abstraktními syntaktickými stromy. Každý strom bude reprezentovat jednu hašovací funkci, každé
-hašovací funkci bude přidělena jedna polovina hašovací tabulky. Počet generací ponecháme na 100000,
+dvěma abstraktními syntaktickými stromy. Každý strom bude reprezentovat jednu hašovací funkci, oboum
+hašovacím funkcím bude přidělena jedna polovina hašovací tabulky. Počet generací ponecháme na 100000,
 neboť touto volbou fitness funkce zásadně zmenšíme prohledávací prostor.
 
-\chapter{Experimenty}
+\chapter{Experimenty s navrženými metodami}
 
 %%%%%%%%%%%%% EXPERIMENTS WITH VARIOUS FUNCTIONS %%%%%%%%%%%%%%%
-V této kapitole provedeme experimenty v nichž nejprve ověříme, zda navržené řešení poskytuje dobré
+V této kapitole provedeme experimenty v nichž nejprve ověříme, zda navržené řešení poskytuje očekávané
 výsledky. Poté provedeme další sérii experimentů, v níchž budeme postupně měnit parametry navrženého
 řešení a vyhodnotíme výsledky. Měnit budeme jak samotné parametry algoritmu genetického
 programování, tak i množiny terminálních a neterminálních symbolů. Budeme provádět vždy pouze
@@ -1184,25 +1179,27 @@ V následující sekci budeme experimentovat s evolvovanými hašovacími funkce
 Merkle-Damg\r{a}rdovo schéma popsané v kapitole \ref{sec:hashing}. Krátce popíšeme změny v našem
 evolučním algoritmu a provedeme příslušné experimenty.
 
-V poslední sekci této kapitoly uvedeme do námi navrženého řešení Kukaččí schéma jak bylo popsané
+V poslední sekci této kapitoly uvedeme do námi navrženého řešení kukaččí schéma jak bylo popsané
 v kapitole \ref{sec:hashing}. Opět shrneme změny v genetickém algoritmu, provedeme a vyhodnotíme
 příslušné experimenty.
 
-Ve všech experimentech budeme měrit míru odolnosti proti kolizím, konkrétně tedy kolik je daná hašovací 
+Ve všech experimentech budeme měřit míru odolnosti proti kolizím, konkrétně tedy kolik je daná hašovací 
 funkce schopna nahašovat různých IP adres. Další, neméně důležitou roli hraje u hašovacích funkcí jejich
 rychlost. Provedeme tedy i experimenty, které odhalí rychlost s jakou jednotlivé hašovací funkce provádí svou
 činnost. 
 
-\section{Experimenty s navrženým řešením}
-Nejprve se tedy budeme zkoumat výsledky, jaké poskytuje námi navržené řešení z kapitoly
- \ref{sec:solution_design}. Námi navržený algoritmus porovnáme se dvěma variantami náhodného prohledávání.
- První varianta bude náhodné prohledávání bez použití elitismu, druhá s elitismem. Do grafu zahrneme i jednu
- variantu človekem vytvořené obecné hašovací funkce, konkrétně hašovací funkci \textit{Murmurhash3} představenou
- v sekci \ref{sec:evolution_design}. Běhy námí navrženého řešení jsme promítli do grafů, kde každému
- datasetu odpovída jeden graf. Na levé straně grafu můžeme vidět průběhy námi navrženého systémů a oba
- algoritmy náhodného prohledávání. Každá křivka je výsledkem mediánu z padesátí nezávislých běhů. Na levé
+\section{Experimenty s funkcemi navrženými přímou metodou}
+Nejprve se tedy budeme zkoumat výsledky, jaké poskytuje námi navržené řešení ve své přímé podobě z kapitoly
+ \ref{sec:solution_design}. Námi navržený algoritmus porovnáme s náhodným prohledáváním.
+ Jedná se o náhodné prohledávání s elitismem. Ta je realizována jako úprava stávajícího algoritmu tak, aby pouze mutoval.
+ Mutovaným uzlem bude vždy kořen, čímž zajistíme znovuvygenerování celého kandidátního řešení.
+ 
+ Do grafu zahrneme i jednu variantu človekem vytvořené obecné hašovací funkce, konkrétně hašovací funkci \textit{Murmurhash3} představenou
+ v sekci \ref{sec:evolution_design}. Běhy námi navrženého řešení jsme promítli do grafů, kde každému
+ datasetu odpovída jeden graf. Na levé straně grafu můžeme vidět průběhy námi navrženého systémů
+ algoritmus náhodného prohledávání. Každá křivka je výsledkem mediánu z padesáti nezávislých běhů. Na pravé
  straně můžeme pozotovat medián systémů IPHash a u něj ještě interval spolehlivosti. Interval spolehlivosti
- je zaznačen dvěma ohraničujícímy křivkami, kde spodní zační první a horní třetí kvartil.
+ je zaznačen dvěma ohraničujícímy křivkami, kde spodní značí první a horní třetí kvartil.
 
 %%%%%%%%%%%%% IPHASH AVG Population SET #1 %%%%%%%%%%%%%%%
 \begin{figure*}[!ht]
@@ -1224,9 +1221,6 @@ Nejprve se tedy budeme zkoumat výsledky, jaké poskytuje námi navržené řeš
 	]
 	\addplot[color=black, dashdotted, thick, mark=none] table {graph/IPHash/Set1/ElitistRandomRun_1.dat};
 	\addlegendentry{Elitist Random Search}
-	
-	\addplot[color=blue, dotted, very thick, mark=none] table {graph/IPHash/Set1/RandomRun_1.dat};
-	\addlegendentry{Random Search}
 	
 	\addplot[color=green, solid, thick, mark=none] coordinates {(0,5190) (194, 5190)};
 	\addlegendentry{MurmurHash3}
@@ -1262,20 +1256,20 @@ Nejprve se tedy budeme zkoumat výsledky, jaké poskytuje námi navržené řeš
 	\addlegendentry{Diversity of runs}
 	\end{axis}
 	\end{tikzpicture}
-	\caption{Evolvované hašovací funkce a jejich fitnes hodnota nad data setem číslo 1.}
+	\caption{Evolvované hašovací funkce a jejich fitnes hodnota nad data setem číslo 1. TODO: FIX THIS}
 	\label{fig:basicComparison1}
 \end{figure*}
 %%%%%%%%%%%%% IPHASH AVG Population SET #1 %%%%%%%%%%%%%%%
 
-Na obrázku \ref{fig:basicComparison1} můžeme vidět vidět porovnání běhů a jejich výsledků všech algoritmů.
-Je patrné, že nad prvním datasetem, navržené řešení jasně dominuje nad zbývajícímy algoritmy. IPHash
+Na obrázku \ref{fig:basicComparison1} můžeme vidět vidět porovnání běhů a jejich výsledků obou algoritmů.
+Je patrné, že nad prvním datasetem, navržené řešení jasně dominuje nad náhodným prohledáváním. IPHash
 nahašoval o 25 IP adres více než druhý nejůspěšnější algoritmus náhodného prohledávání. Nejhůře si vedl
 člověkem vytvořený algoritmus \textit{MurmurHash3}, který nahašoval o celých 111 IP adres méně. 
 
-Z intervalu spolehlivost můžeme usoudit, že námi navržený algoritmus skutečně funguje dobře a rozptyly jeho
-řešení nejsou příliš signifikantní. Nalezené řešení není tedy dílem čísté náhody. Z grafu můžeme vyčíst, že 
+Z intervalu spolehlivost můžeme usoudit, že námi navržený algoritmus skutečně dobře a rozptyly jeho
+řešení nejsou příliš signifikantní, ale je zde prostor pro zlepšení . Nalezené řešení není tedy dílem čísté náhody. Z grafu můžeme vyčíst, že 
 algoritmus v prních několika generacích rapidně konverguje a s postupným příbýváním generací se jeho 
-konvergence zpomaluje. Toto je typickou vlastností algoritmu genetického programování \cite{GPTutorial}.
+konvergence zpomaluje. Jedná se o téměř ukázkový běh algoritmu genetického programování \cite{GPTutorial}.
 
 %%%%%%%%%%%%% IPHASH AVG Population SET #2 %%%%%%%%%%%%%%%
 \begin{figure*}[!ht]
@@ -1297,9 +1291,6 @@ konvergence zpomaluje. Toto je typickou vlastností algoritmu genetického progr
 	]
 	\addplot[color=black, dashdotted, thick, mark=none] table {graph/IPHash/Set2/ElitistRandomRun_2.dat};
 	\addlegendentry{Elitist Random Search}
-	
-	\addplot[color=blue, dotted, very thick, mark=none] table {graph/IPHash/Set2/RandomRun_2.dat};
-	\addlegendentry{Random Search}
 	
 	\addplot[color=green, solid, thick, mark=none] coordinates {(0,5190) (194, 5190)};
 	\addlegendentry{MurmurHash3}
@@ -1367,9 +1358,6 @@ konverguje v prvních několika generacích. Poté jeho nástup ustává.
 	]
 	\addplot[color=black, dashdotted, thick, mark=none] table {graph/IPHash/Set3/ElitistRandomRun_3.dat};
 	\addlegendentry{Elitist Random Search}
-	
-	\addplot[color=blue, dotted, very thick, mark=none] table {graph/IPHash/Set3/RandomRun_3.dat};
-	\addlegendentry{Random Search}
 	
 	\addplot[color=green, solid, thick, mark=none] coordinates {(0,5206) (194, 5206)};
 	\addlegendentry{MurmurHash3}
@@ -1446,9 +1434,6 @@ velmi rychle však ztrácí veškerý progres a téměř úplně staguje.
 	]
 	\addplot[color=black, dashdotted, thick, mark=none] table {graph/IPHash/Set4/ElitistRandomSearch_4.dat};
 	\addlegendentry{Elitist Random Search}
-	
-	\addplot[color=blue, dotted, very thick, mark=none] table {graph/IPHash/Set4/RandomSearch_4.dat};
-	\addlegendentry{Random Search}
 	
 	\addplot[color=green, solid, thick, mark=none] coordinates {(0,5206) (194, 5206)};
 	\addlegendentry{MurmurHash3}
@@ -1742,6 +1727,17 @@ algoritmus. U třetího datasetu se výsledky zhoršili v porovnání s předcho
 rovnocéné, ale nejlepší řešení nalezl algoritmus IPHash. V případě posledního datasetu jsou výsledky podobné jako
 v případě datasetu tři. Nejlepší řešení nalezlo náhodné prohledávání, ale i zde můžeme pozorovat zhořšení. 
 
+Správná volba hloubky abstraktního stromu kandidátního řešení má zásadní vliv jak na kvalitu vyevolvovaných řešení,
+tak i na rychlost. Předpokládáme, že větší hloubka stromu implikuje větší prohledávací prostor algoritmu, v kterém
+se vyskytují i kvalitní řešení. Musíme však brát v potaz to, že velmi hluboké stromy reprezentují složitá a velká kandidátní
+řešení, která mohou neúměrně zpomalovat výpočet hašovací funkce. Důležitým aspektem genetického programování je 
+dobrá volba velikosti počáteční generace. Ta se typicky používá co nejvyšší (až tisíce jedinců), aby algoritmus nalezl
+optimální řešení v prvních padesátí generacích \cite{GPTutorial}.
+
+V následující části tedy prozkoumáme, jaký vliv má na hodnotu fitnes volba maximální hloubky abstraktního syntaktického
+stromu kandidátních řešení v závislosti na velikosti populace. To nám zároveň umožní si ověřit, zda jsme tyto parametry
+zvolili správně v návrhu řešení \ref{sec:solution_design}.
+
 %%%%%%%%%%%%% IPHASH Population depth %%%%%%%%%%%%%%%
 \begin{figure}[!ht]
 \centering
@@ -1797,14 +1793,14 @@ v případě datasetu tři. Nejlepší řešení nalezlo náhodné prohledáván
 	, zticklabels={5150,5200,5250,5300}
 	]
 	\addplot3[surf] coordinates {
-		%8            16         32          64         128        256        512       1024  
-		(1,3,4000) (2,3,4603) (3,3,5188) (4,3,5204) (5,3,5233) (6,3,5239) (7,3,5242) (8,3,5243)
+		%8            16              32              64             128            256           512           1024  
+		(1,3,4158) (2,3,4481) (3,3,5183) (4,3,5211) (5,3,5215) (6,3,5230) (7,3,5232) (8,3,5239)
 		
-		(1,4,4680) (2,4,5208) (3,4,5234) (4,4,5239) (5,4,5241) (6,4,5253) (7,4,5261) (8,4,5270)
+		(1,4,4947) (2,4,5184) (3,4,5223) (4,4,5238) (5,4,5241) (6,4,5255) (7,4,5269) (8,4,5270)
 		
-		(1,5,5218) (2,5,5236) (3,5,5237) (4,5,5253) (5,5,5255) (6,5,5266) (7,5,5270) (8,5,5278)
+		(1,5,5165) (2,5,5225) (3,5,5249) (4,5,5248) (5,5,5261) (6,5,5261) (7,5,5272) (8,5,5276)
 		
-		(1,6,5229) (2,6,5245) (3,6,5261) (4,6,5264) (5,6,5265) (6,6,5269) (7,6,5275) (8,6,5281) 
+		(1,6,5239) (2,6,5249) (3,6,5261) (4,6,5264) (5,6,5272) (6,6,5271) (7,6,5275) (8,6,5281) 
 	};
 	\end{axis}
 
@@ -1872,9 +1868,33 @@ v případě datasetu tři. Nejlepší řešení nalezlo náhodné prohledáván
 	};
 	\end{axis}
 \end{tikzpicture}
-\caption{Number of successfully hashed addresses in relation to population size and initial depth.}
+\caption{Počet úspěšně nahašovaných IP adres v závislosti na velikosti populace a maximální hloubce kandidátního řešení. 
+	Uvedeny jsou výsledky naříč datasety jedna (vlevo nahoře), dvě (vpravo nahoře), tři (vlevo dole) a čtyři (vpravo dole).}
 \label{fig:basicPopulationDepth1}
 \end{figure}
+
+Výsledky vidíme zobrazené jako tří rozměrné grafy na obrázku \ref{fig:basicPopulationDepth1}. Na všech čtyřech grafech
+zobrazující výsledky nad jednotlivými datasety je patrné, že pro velmi malé populace (8 a 16 jedinců) nenalezne agoritmus
+IPHash dobré hašovací funkce. Jejich hodnota fitnes je o několik tisíc nahašovaných adres menší (nelze rozumně zobrazit na grafu).
+Pro exponenciálně vzrůstající velikost velikost populace roste však hodnota fitnes jen střídmě. Je vidět, že neustálým zvětšováním
+velikosti populace lepších výsledků nedosáhneme, i přes to že se velikost populace o hodnotě 1024 jedinců jeví jako lepší volba.
+
+Obdobně je tomu při zvyšování hloubky stromu. Zde je přírůstek lineární (nikoli exponenciální jako v případě populace). I zde můžeme
+pozorovat předpokládanou tendenci algoritmu IPHash zvyšovat hodnotu fitnes s přibývající maximální hloubkou stromu a tedy se 
+zvětšujícím se prohledávaným prostorem. Zajímavý je fakt, že s přibývající velikostí populace se zvětšuje i hodnota fitnes u mělkých
+abstraktních syntaktických stromů (hloubky 3 a 4). Velké populace tedy dokážou nalézt kvalitní řešení i v relativně mělkých stromech.
+Toto je zásadní poznatek, který nám umožní v případě potřeby rozumně přesunout důraz na rychlost volbou mělčích stromů, aniž by
+zásadně (jedná se přibližně o rozdíl 50 nahašovaných adres) utrpěla hodnota fitnes. Dále můžeme pozorovat některé zajímavé vlastnosti. 
+
+\begin{itemize}
+	\item První z nich je četnost výstupků na ploše grafu. V případě prvních dvou datasetů jsou plochy grafů relativně ``hladké''. Naproti tomu v
+		případě datasetů tři a čtyři, můžeme pozorovat několik propadlých nebo vystouplých bodů. To může svědčit o deformovaném
+		prohledávaném prostoru kandidátních řešení, jak jsme mohli vidět i v předchozí části této sekce. Může se však jednat i o náhodu.
+		
+	\item Hlubší abstraktní syntaktické stromy se zdají být méně náchylné na zvolenou velikost populace. Na všech čtyřech datasetech již
+		od velikosti populace 32 jedinců můžeme pozorovat dobré výsledky. Můžeme tedy tvrdit, že volba velikosti populace ovlivňuje zejména
+		mělké abstraktní syntaktické stromy. 
+\end{itemize}
 
 %%%%%%%%%%%%% IPHASH Population depth %%%%%%%%%%%%%%%
 
@@ -2321,10 +2341,10 @@ Jako v předešlých sekcích projdeme výsledky nad jednotlivými datasety zvl�
 	, height=8cm
 	, width=0.50\textwidth
 	, grid=major
-	, xlabel=Generation
-	, ymin=6700
+	, xlabel=Generace
+	, ymin=6600
 	, ymax=6900
-	, ylabel=Successfully hashed
+	, ylabel=Úspěšně nahašováno
 	, legend style=
 	{ at={(1.0, 0.3)}
 		, anchor=east
@@ -2340,12 +2360,12 @@ Jako v předešlých sekcích projdeme výsledky nad jednotlivými datasety zvl�
 	, name=plot2
 	, at=(plot1.right of south east)
 	, anchor=left of south west
-	, ymin=6700
+	, ymin=6600
 	, ymax=6900
 	, height=8cm
 	, width=0.50\textwidth
 	, grid=major
-	, xlabel=Generation
+	, xlabel=Generace
 	%%	, ylabel=Successfully hashed
 	, yticklabels={,,}
 	%%	, legend pos=outer north east
@@ -2385,10 +2405,10 @@ vpravo, který ukazuje na dobrou stabilitu algoritmu, která je srovnatelná s a
 	, height=8cm
 	, width=0.50\textwidth
 	, grid=major
-	, xlabel=Generation
-	, ymin=6700
+	, xlabel=Generace
+	, ymin=6600
 	, ymax=6900
-	, ylabel=Successfully hashed
+	, ylabel=Úspěšně nahašováno
 	, legend style=
 	{ at={(1.0, 0.3)}
 		, anchor=east
@@ -2404,12 +2424,12 @@ vpravo, který ukazuje na dobrou stabilitu algoritmu, která je srovnatelná s a
 	, name=plot2
 	, at=(plot1.right of south east)
 	, anchor=left of south west
-	, ymin=6700
+	, ymin=6600
 	, ymax=6900
 	, height=8cm
 	, width=0.50\textwidth
 	, grid=major
-	, xlabel=Generation
+	, xlabel=Generace
 	%%	, ylabel=Successfully hashed
 	, yticklabels={,,}
 	%%	, legend pos=outer north east
@@ -2431,6 +2451,12 @@ vpravo, který ukazuje na dobrou stabilitu algoritmu, která je srovnatelná s a
 \end{figure*}
 
 %%%%%%%%%%%%% CUCKOO AVG Population SET #2 %%%%%%%%%%%%%%%
+
+I nad datasetem číslo dvě podává algoritmus CuckooHash dobré výsledky. I zde jsme nahašovali více než 6850 adres
+a opět jsme překonali algorimus náhodného prohledávání. Algoritmus opět rychle konverguje v prních generacích a poté 
+začíná velmi rychle stagnovat. Inteval spolehlivosti vyznačeny na grafu vpravo opět vykazuje jen mírný rozptyl a stabilita
+je opět dobrá.
+
 %%%%%%%%%%%%% CUCKOO AVG Population SET #3 %%%%%%%%%%%%%%%
 \begin{figure*}[!ht]
 	\centering
@@ -2440,10 +2466,10 @@ vpravo, který ukazuje na dobrou stabilitu algoritmu, která je srovnatelná s a
 	, height=8cm
 	, width=0.50\textwidth
 	, grid=major
-	, xlabel=Generation
+	, xlabel=Generace
 	, ymin=6600
 	, ymax=6900
-	, ylabel=Successfully hashed
+	, ylabel=Úspěšně nahašováno
 	, legend style=
 	{ at={(1.0, 0.3)}
 		, anchor=east
@@ -2464,7 +2490,7 @@ vpravo, který ukazuje na dobrou stabilitu algoritmu, která je srovnatelná s a
 	, height=8cm
 	, width=0.50\textwidth
 	, grid=major
-	, xlabel=Generation
+	, xlabel=Generace
 	%%	, ylabel=Successfully hashed
 	, yticklabels={,,}
 	%%	, legend pos=outer north east
@@ -2485,6 +2511,13 @@ vpravo, který ukazuje na dobrou stabilitu algoritmu, která je srovnatelná s a
 	\label{fig:cuckooComparison3}
 \end{figure*}
 %%%%%%%%%%%%% CUCKOO AVG Population SET #3 %%%%%%%%%%%%%%%
+
+Na prvních dvou datasetech jsme mohli pozorovat velmi dobré výsledky. V předchozích sekcích, kde jsou metody postavené na jiném přístupu
+jsme mohli pozorovat úbytek na hodnotě fitnes v případě datasetu tři a čtyři. Tento negativní fenomén se však případě metody založené na
+kukaččím hašování nepotvrdil. Algoritmus stále vykazuje obdobné výsledky. Opět je potvrzen typický průběh genetického programování a 
+podařilo se nám předčit náhodné prohledávání. Stabilita algoritmu je obět dobrá, interval spolehlivosti je opět příznivý stejně jako nad předchozími
+dvěma datasety.
+
 %%%%%%%%%%%%% CUCKOO AVG Population SET #4 %%%%%%%%%%%%%%%
 \begin{figure*}[!ht]
 	\centering
@@ -2494,10 +2527,10 @@ vpravo, který ukazuje na dobrou stabilitu algoritmu, která je srovnatelná s a
 	, height=8cm
 	, width=0.50\textwidth
 	, grid=major
-	, xlabel=Generation
-	, ymin=6600
+	, xlabel=Generace
+	, ymin=6550
 	, ymax=6900
-	, ylabel=Successfully hashed
+	, ylabel=Úspěšně nahašováno
 	, legend style=
 	{ at={(1.0, 0.3)}
 		, anchor=east
@@ -2513,12 +2546,12 @@ vpravo, který ukazuje na dobrou stabilitu algoritmu, která je srovnatelná s a
 	, name=plot4
 	, at=(plot1.right of south east)
 	, anchor=left of south west
-	, ymin=6600
+	, ymin=6550
 	, ymax=6900
 	, height=8cm
 	, width=0.50\textwidth
 	, grid=major
-	, xlabel=Generation
+	, xlabel=Generace
 	%%	, ylabel=Successfully hashed
 	, yticklabels={,,}
 	%%	, legend pos=outer north east
@@ -2540,18 +2573,39 @@ vpravo, který ukazuje na dobrou stabilitu algoritmu, která je srovnatelná s a
 \end{figure*}
 %%%%%%%%%%%%% CUCKOO AVG Population SET #4 %%%%%%%%%%%%%%%
 
-%%%%%%%%%%%%% CUCKOO MAXLOOP %%%%%%%%%%%%%%%
+Stejně tak dobře si algoritmus CuckooHash vedl i nad posledním datasetem (\ref{fig:cuckooComparison4}). Znovu předčil algoritmus náhodného prohledávání,
+průběh odpovídá typickému průběhu algoritmu genetického programování. Není potvrzen negativní fenomén o propadu v hodnotě
+fitnes nad posledními dvěma datasety, protože algoritmus si vede znovu stejně dobře jako v předchozích případech. Přesto zde lze
+pozorovat některé zajímavé rysy, které nebyly doposud přítomny.
+\begin{itemize}
+	\item Prvním z nich je nízká úroveň fitnes v první generaci u prvního kvartilu definující spodní hranici intervalu spolehlivosti. Ta je o 50 nahašovaných
+		 adres nižší než v předchozích případech. To může svědčit o jiné stavbě stavového prostoru
+		, což potvrzuje i negativní fenomén o úbytku na hodnotě fitnes v předchozích dvou sekcích. Algoritmus CuckooHash se však s ním dokáže vypořádat a najít
+		v něm dobrá řešení.
+	\item Druhým zejímavým rysem je náhlá rapidní kovergence po krátce po překročení sté generace průběhu algoritmu. Tento fenomén lze pozorovat v případě
+		spodní hranice intervalu spolehlivosti i v případě algoritmu náhodného prohledávání. Tento rys lze vysvětlit jen obtížně, ale nejjednoduším vysvětlením (a
+		pravděpodobně také správným) je, že se jedná pouze o náhodu.
+\end{itemize}
 
+V následující části sekce se budeme zabývat vlivem, jaký má na evolvované hašovací funkce nastavení konstanty $MaxLoop$ u operace \Call{Insert}{} definované
+v kapitole \ref{sec:hashing}. Očekávané výsledky jsou, že s narástající hodnoutou konstanty, by měla růst i hodnota fitnes a zvětšovat se tak faktor zatížení
+hašovací tabulky $\alpha$. Provedeme sérii experimentů, kde budeme porovnávat výsledky s hodnotou konstanty $MaxLoop = 5$, tedy v podobě v jaké je metoda
+CuckooHash navržena s výsledky experimentů, kde bude konstanta $MaxLoop = 10$ a $MaxLoop = 15$. Experimenty provedeme nad všemi čtyřmi datasety.
+
+%%%%%%%%%%%%% CUCKOO MAXLOOP %%%%%%%%%%%%%%%
 \begin{figure}[!ht]
 	\centering
 	\begin{tikzpicture}
 	\begin{axis}
 	[ boxplot/draw direction=y
+	, grid=major
 	, name=plot1	
 	, xtick={1,2,3}
 	, xticklabels={,,}
+	, ylabel=Úspěšně nahašováno
 	, ymin=6800
-	, ymax=6970
+	, ytick={6825, 6850, 6875, 6900, 6925, 6950, 6975, 7000}
+	, ymax=7000
 	]
 	\addplot+[
 	boxplot prepared={
@@ -2575,24 +2629,26 @@ vpravo, který ukazuje na dobrou stabilitu algoritmu, která je srovnatelná s a
 	
 	\addplot+[
 	boxplot prepared={
-		lower whisker=6889,
-		lower quartile=6911,
-		median=6920,
-		upper quartile=6929,
-		upper whisker=6951,
+		lower whisker=6910,
+		lower quartile=6925,
+		median=6933,
+		upper quartile=6939,
+		upper whisker=6966,
 	},
 	] coordinates {}; % CUCKOO 15
 	\end{axis}
 	
 	\begin{axis}
 	[ boxplot/draw direction=y
+	, grid=major
 	, name=plot2
 	, at=(plot1.right of south east)
 	, xtick={1,2,3}
 	, xticklabels={,,}
 	, yticklabels={,,}
 	, ymin=6800
-	, ymax=6970
+	, ytick={6800, 6825, 6850, 6875, 6900, 6925, 6950, 6975, 7000}
+	, ymax=7000
 	]
 	\addplot+[
 	boxplot prepared={
@@ -2616,25 +2672,29 @@ vpravo, který ukazuje na dobrou stabilitu algoritmu, která je srovnatelná s a
 	
 	\addplot+[
 	boxplot prepared={
-		lower whisker=6882,
-		lower quartile=6905,
-		median=6917,
-		upper quartile=6931,
-		upper whisker=6949,
+		lower whisker=6900,
+		lower quartile=6925,
+		median=6934,
+		upper quartile=6943,
+		upper whisker=6967,
 	},
 	] coordinates {}; % CUCKOO 15
 	\end{axis}	
 	
 	\begin{axis}
 	[ boxplot/draw direction=y
+	, grid=major
 	, name=plot3
 	, anchor=north west
 	, at=(plot1.below south west)
 	, xtick={1,2,3}
 	, xticklabels={5,10,15}
+	, ylabel=Úspěšně nahašováno
 	% , yticklabels={,,}
 	, ymin=6800
-	, ymax=6970
+	, ytick={6800, 6825, 6850, 6875, 6900, 6925, 6950, 6975, 7000}
+	, ymax=7000
+	, xlabel=$MaxLoop$
 	]
 	\addplot+[
 	boxplot prepared={
@@ -2658,25 +2718,28 @@ vpravo, který ukazuje na dobrou stabilitu algoritmu, která je srovnatelná s a
 	
 	\addplot+[
 	boxplot prepared={
-		lower whisker=6891,
-		lower quartile=6908,
-		median=6919,
-		upper quartile=6931,
-		upper whisker=6956,
+		lower whisker=6899,
+		lower quartile=6925,
+		median=6936,
+		upper quartile=6945,
+		upper whisker=6969,
 	},
 	] coordinates {}; % CUCKOO 15
 	\end{axis}
 	
 	\begin{axis}
 	[ boxplot/draw direction=y
+	, grid=major
 	, name=plot4
 	, anchor=north west
 	, at=(plot2.below south west)
 	, xtick={1,2,3}
 	, xticklabels={5, 10, 15}
 	, yticklabels={,,}
+	, xlabel=$MaxLoop$
 	, ymin=6800
-	, ymax=6970
+	, ytick={6800, 6825, 6850, 6875, 6900, 6925, 6950, 6975, 7000}
+	, ymax=7000
 	]
 	\addplot+[
 	boxplot prepared={
@@ -2700,34 +2763,50 @@ vpravo, který ukazuje na dobrou stabilitu algoritmu, která je srovnatelná s a
 	
 	\addplot+[
 	boxplot prepared={
-		lower whisker=6892,
-		lower quartile=6908,
-		median=6917,
-		upper quartile=6926,
-		upper whisker=6962,
+		lower whisker=6909,
+		lower quartile=6930,
+		median=6934,
+		upper quartile=6942,
+		upper whisker=6961,
 	},
-	] coordinates {}; % CUCKOO 10
+	] coordinates {}; % CUCKOO 15
 	\end{axis}		
 	
 \end{tikzpicture}
-\caption{Alogirmtus CuckooHASH pro ruzně nastavené hodnoty proměnné \texttt{MaxLoop} při vkládání do hašovací tabulky.}
+\caption{Výsledky alogirmtu CuckooHASH pro ruzně nastavené hodnoty konstanty \texttt{MaxLoop}. Zobrazeny výsledky pro dataset jedna (vlevo nahoře),
+	dvě (vpravo nahoře), tři (vlevo dole) a čtyři (vpravo dole).}
 \label{fig:cuckoo_maxloop}
 \end{figure}
 %%%%%%%%%%%%% CUCKOO MAXLOOP %%%%%%%%%%%%%%%
 
+Výsledky můžeme vidět na grafech v na obrázku \ref{fig:cuckoo_maxloop}. Výsledky na všech čtyřech grafech potvrzují předpoklad a se vzrůstající hodnotou
+konstanty $MaxLoop$ roste i hodnota fitnes. Zajímavá je také závislost. S lineárně přírůstkem konstanty se přírustek fitnes zmenšuje a připomíná logaritmickou
+křivku. Tato tendence by žřejmě pokračovala i při vyšších hodnotách konstanty $MaxLoop$. Neustálým zvyšováním konstanty tedy nelze optimálního řešení
+s faktorem zetížení $\alpha$ nedosáhout. Na všech čtyřech datasetech prokazuje CuckooHash dobré výsledky i v případě jinak nastavené konstanty $MaxLoop$.
+Na všech čtyřech grafech můžeme vidět, že algoritmus je velmi stabilní i s ohledem na nejlepší a nejhorší řešení, kde je rozdíl vždy maximálně 75 nahašovaných 
+adres. Stabilitu co se rozdílu mezi prvním a třetím kvartilem týče jsme ukázali již v předchozí části a výsledky této série experimentů je jen potvrzují.
+
 \section{Shrnutí výsledků}
+
+V poslední sekci kapitoly se budeme věnujeme shrnutí dosažených výsledků všch tří metod (IPHash, MDHash, CuckooHash), pozitivním
+i negativním aspektům. Doplníme shrnující grafy a tabulky, porovnáme výsledky vůči state-of-the-art hašovacím funkcím navržnými člověkěm.
+
+%%%%%%%%%%%%% CONCLUSION BOXPLOT 1 %%%%%%%%%%%%%%%
 \begin{figure}[!ht]
 	\centering
 	\begin{tikzpicture}
 	\begin{axis}
 	[ boxplot/draw direction=y
 	, name=plot1	
-	, xtick={1,2,3}
+	, grid=major
+	, xtick={1,2,3,4}
 	, xticklabels={,,}
-	%	, ymin=5200
-	%	, ymax=5360
+    , ymin=5240
+	, ymax=5360
+	, ylabel=Úspěšně nahašováno
+	, ytick={5260, 5280, 5300, 5320, 5340, 5360}		
 	]
-	\addplot+[
+	\addplot+[color=red,
 	boxplot prepared={
 		lower whisker=5279,
 		lower quartile=5292,
@@ -2737,7 +2816,249 @@ vpravo, který ukazuje na dobrou stabilitu algoritmu, která je srovnatelná s a
 	},
 	] coordinates {}; % IPHash SET1
 	
-	\addplot+[
+	\addplot+[color=black,
+	boxplot prepared={
+		lower whisker=5242,
+		lower quartile=5265,
+		median=5274,
+		upper quartile=5286,
+		upper whisker=5319,
+	},
+	] coordinates {}; % RS SET 1
+	
+	\addplot+[color=green,
+	boxplot prepared={
+		lower whisker=5268,
+		lower quartile=5282,
+		median=5291,
+		upper quartile=5301,
+		upper whisker=5321,
+	},
+	] coordinates {}; % MD SET1
+	
+	\addplot+[color=black,
+	boxplot prepared={
+		lower whisker=5279,
+		lower quartile=5294,
+		median=5301,
+		upper quartile=5311,
+		upper whisker=5339,
+	},
+	] coordinates {}; % MDRS SET1
+	
+	\end{axis}
+	
+	\begin{axis}
+	[ boxplot/draw direction=y
+	, name=plot2
+	, grid=major
+	, at=(plot1.right of south east)
+	, xtick={1,2,3,4}
+	, xticklabels={,,}
+	, yticklabels={,,}
+    , ymin=5240
+    , ymax=5360
+    , ytick={5240, 5260, 5280, 5300, 5320, 5340, 5360}		
+	, yticklabels={,,}
+	]
+	\addplot+[color=red,
+	boxplot prepared={
+		lower whisker=5286,
+		lower quartile=5298,
+		median=5305,
+		upper quartile=5319,
+		upper whisker=5352,
+	},
+	] coordinates {}; % IPHash SET 2
+	
+	\addplot+[color=black,
+	boxplot prepared={
+		lower whisker=5251,
+		lower quartile=5270,
+		median=5279,
+		upper quartile=5285,
+		upper whisker=5328,
+	},
+	] coordinates {}; % RS SET 2
+	
+	\addplot+[color=green,
+	boxplot prepared={
+		lower whisker=5270,
+		lower quartile=5288,
+		median=5293,
+		upper quartile=5298,
+		upper whisker=5349,
+	},
+	] coordinates {}; % MD SET2
+	
+	\addplot+[color=black,
+	boxplot prepared={
+		lower whisker=5286,
+		lower quartile=5295,
+		median=5300,
+		upper quartile=5309,
+		upper whisker=5333,
+	},
+	] coordinates {}; % MDRS SET2
+	\end{axis}	
+	
+	\begin{axis}
+	[ boxplot/draw direction=y
+	, name=plot3
+	, grid=major
+	, anchor=north west
+	, at=(plot1.below south west)
+	, xtick={1,2,3,4}
+	, xticklabels={IPHash, IPRS, MDHash, MDRS}
+	, ymin=5240
+	, ymax=5360
+	, ylabel=Úspěšně nahašováno
+    , ytick={5240, 5260, 5280, 5300, 5320, 5340, 5360}		
+	]
+	\addplot+[color=red,
+	boxplot prepared={
+		lower whisker=5242,
+		lower quartile=5261,
+		median=5274,
+		upper quartile=5287,
+		upper whisker=5342,
+	},
+	] coordinates {}; % IPHash SET3
+	
+	\addplot+[color=black,
+	boxplot prepared={
+		lower whisker=5237,
+		lower quartile=5263,
+		median=5275,
+		upper quartile=5289,
+		upper whisker=5318,
+	},
+	] coordinates {}; % RS SET3
+	
+	\addplot+[color=green,
+	boxplot prepared={
+		lower whisker=5262,
+		lower quartile=5284,
+		median=5288,
+		upper quartile=5298,
+		upper whisker=5318,
+	},
+	] coordinates {}; % MD SET3
+	
+	\addplot+[color=black,
+	boxplot prepared={
+		lower whisker=5285,
+		lower quartile=5295,
+		median=5303,
+		upper quartile=5310,
+		upper whisker=5332,
+	},
+	] coordinates {}; % MDRS SET3
+	
+	\end{axis}
+	
+	\begin{axis}
+	[ boxplot/draw direction=y
+	, name=plot4
+	, grid=major
+	, anchor=north west
+	, at=(plot2.below south west)
+	, xtick={1,2,3,4}
+	, xticklabels={IPHash, IPRS, MDHash, MDRS}
+	, yticklabels={,,}
+    , ymin=5240
+	, ymax=5360
+    , ytick={5240, 5260, 5280, 5300, 5320, 5340, 5360}
+	, yticklabels={,,}
+	]
+	\addplot+[color=red,
+	boxplot prepared={
+		lower whisker=5252,
+		lower quartile=5264,
+		median=5278,
+		upper quartile=5285,
+		upper whisker=5298,
+	},
+	] coordinates {}; % IPHash SET4
+	
+	\addplot+[color=black,
+	boxplot prepared={
+		lower whisker=5251,
+		lower quartile=5268,
+		median=5276,
+		upper quartile=5290,
+		upper whisker=5323,
+	},
+	] coordinates {}; % RS SET4
+	
+	\addplot+[color=green,
+	boxplot prepared={
+		lower whisker=5257,
+		lower quartile=5283,
+		median=5291,
+		upper quartile=5299,
+		upper whisker=5324,
+	},
+	] coordinates {}; % MD SET4
+	
+	\addplot+[color=black,
+	boxplot prepared={
+		lower whisker=5277,
+		lower quartile=5293,
+		median=5302,
+		upper quartile=5309,
+		upper whisker=5331,
+	},
+	] coordinates {}; % MDRS SET4
+	\end{axis}				
+	\end{tikzpicture}
+	\caption{Podovnání algoritmu IPHash a MDHas spolu s jejich náhodnými algernativami (IPRS resp. MDRS). Jednotlivé grafy ukazují výsledky napříč datasety
+		jedna (vlevho nahoře), dvě (vpravo nahoře), tři (vlevo dole) a čtyři (vpravo dole).}
+	\label{fig:conclusion_boxplot_1}
+\end{figure}
+%%%%%%%%%%%%% CONCLUSION BOXPLOT 1 %%%%%%%%%%%%%%%
+
+Na grafech na obrázku \ref{fig:conclusion_boxplot_1} můžeme vidět srovnání algoritmů IPHash a MDHash spole s jejich alternativami náhodného prohledávání
+IPRS repspektive MDRS. Zde můžeme podrobně pozorovat závislosti, které byly patrné již v předchozích sekcích. Na prvních dvou datasetech si nejlépe vedl
+algoritmus IPHash následovaný algoritmem náhodného prohledávání ve variantě Merkle-Damg\r{a}rdova schématu. Na prvním datasetu je algoritmus MDHash
+nejstabilnější a to i co se nejlepšího a nejhoršího nalezeného řešení týká. Na druhém datasetu je stabilní pouze v mezích prvního a třetího kvartilu. Co se nejlepšího
+nalezeného řešení týká, dokázal najit podobně dobré řešení jako algoritmus IPHash.
+
+Datasety tři a čtyři jsou z pohledu algoritmu IPHash problematické. Na obou dvou jsme zaznamenali znatelný pokles v hodnotě fitnes a to na úrověň korespondujícího
+náhodného prohledávání v případě datasetu tři a pod jeho úroveň v případě datasetu čtyři. Dobrou stabilitu nad těmito dvěma datasety prokázal algoritmus MDHash, který
+sice vždy v nepřekonal korespondující náhodné prohledávání, ale dokázal se vyrovnat se změnou stavového prostoru a naopak dokázal svou hodnotu fitnes ještě navýšit. 
+
+Musíme však podotknout, že řešení vyevolvovaná algoritmem MDHash (MDRS) jsou složitější, než v případě algoritmu IPHash. Každé řešení se skládá ze čtyř samostatných
+hašovacích funkcí, pro každou mixovací komponentu Merkle-Damg\r{a}rdova schématu jedna. Taková řešení mohou být porovnatelná s výstupy algoritmu IPHash co se
+odolnosti vůči kolizím týče, ale jeji rychlost  bude nižíší nebo rozloha implementace přímo na čipu bude větší. Algoritmus MDHash se tedy nejeví jako dobré východisko pro
+evoluční návrh hašovacích funckí. 
+
+%%%%%%%%%%%%% CONCLUSION BOXPLOT 2 %%%%%%%%%%%%%%%
+\begin{figure}[!ht]
+	\centering
+	\begin{tikzpicture}
+	\begin{axis}
+	[ boxplot/draw direction=y
+	, name=plot1	
+	, grid=major
+	, xtick={1,2,3}
+	, xticklabels={,,}
+	, ymin=5000
+	, ymax=7000
+	, ytick={5500, 6000, 6500, 7000}
+	, ylabel=Úspěšně nahašováno		
+	]
+	\addplot+[color=red,
+	boxplot prepared={
+		lower whisker=5279,
+		lower quartile=5292,
+		median=5301,
+		upper quartile=5315,
+		upper whisker=5352,
+	},
+	] coordinates {}; % IPHash SET1
+	
+	\addplot+[color=green,
 	boxplot prepared={
 		lower whisker=5268,
 		lower quartile=5282,
@@ -2747,7 +3068,7 @@ vpravo, který ukazuje na dobrou stabilitu algoritmu, která je srovnatelná s a
 	},
 	] coordinates {}; % MD SET1
 				
-	\addplot+[
+	\addplot+[color=blue,
 	boxplot prepared={
 		lower whisker=6853,
 		lower quartile=6861.91,
@@ -2761,12 +3082,14 @@ vpravo, který ukazuje na dobrou stabilitu algoritmu, která je srovnatelná s a
 \begin{axis}
 [ boxplot/draw direction=y
 , name=plot2
+, grid=major
 , at=(plot1.right of south east)
 , xtick={1,2,3}
 , xticklabels={,,}
 , yticklabels={,,}
-%	, ymin=5200
-%	, ymax=5360
+	, ytick={5000, 5500, 6000, 6500, 7000}		
+	, ymin=5000
+	, ymax=7000
 ]
 	\addplot+[color=red,
 	boxplot prepared={
@@ -2778,7 +3101,7 @@ vpravo, který ukazuje na dobrou stabilitu algoritmu, která je srovnatelná s a
 	},
 	] coordinates {}; % IPHash
 
-\addplot+[
+\addplot+[color=green,
 boxplot prepared={
 	lower whisker=5270,
 	lower quartile=5288,
@@ -2788,7 +3111,7 @@ boxplot prepared={
 },
 ] coordinates {}; % MD SET2
 
-\addplot+[
+\addplot+[color=blue,
 boxplot prepared={
 	lower whisker=6843,
 	lower quartile=6858,
@@ -2802,15 +3125,17 @@ boxplot prepared={
 \begin{axis}
 [ boxplot/draw direction=y
 , name=plot3
+, grid=major
 , anchor=north west
 , at=(plot1.below south west)
 , xtick={1,2,3}
 , xticklabels={IPHash, MDHash, CuckooHash}
-% , yticklabels={,,}
-%	, ymin=5200
-%	, ymax=5360
+	, ytick={5000, 5500, 6000, 6500, 7000}		
+	, ymin=5000
+	, ymax=7000
+	, ylabel=Úspěšně nahašováno
 ]
-	\addplot+[
+	\addplot+[color=red,
 	boxplot prepared={
 		lower whisker=5242,
 		lower quartile=5261,
@@ -2820,7 +3145,7 @@ boxplot prepared={
 	},
 ] coordinates {}; % IPHash SET3
 
-\addplot+[
+\addplot+[color=green,
 boxplot prepared={
 	lower whisker=5262,
 	lower quartile=5284,
@@ -2830,7 +3155,7 @@ boxplot prepared={
 },
 ] coordinates {}; % MD SET3
 
-\addplot+[
+\addplot+[color=blue,
 boxplot prepared={
 	lower whisker=6838,
 	lower quartile=6858,
@@ -2844,15 +3169,17 @@ boxplot prepared={
 \begin{axis}
 [ boxplot/draw direction=y
 , name=plot4
+, grid=major
 , anchor=north west
 , at=(plot2.below south west)
 , xtick={1,2,3}
 , xticklabels={IPHash, MDHash, CuckooHash}
 , yticklabels={,,}
-%	, ymin=5200
-%	, ymax=5360
+	, ytick={5000, 5500, 6000, 6500, 7000}		
+, ymin=5000
+, ymax=7000
 ]
-\addplot+[
+\addplot+[color=red,
 boxplot prepared={
 		lower whisker=5252,
 		lower quartile=5264,
@@ -2862,7 +3189,7 @@ boxplot prepared={
 },
 ] coordinates {}; % IPHash SET4
 
-\addplot+[
+\addplot+[color=green,
 boxplot prepared={
 	lower whisker=5257,
 	lower quartile=5283,
@@ -2872,7 +3199,7 @@ boxplot prepared={
 },
 ] coordinates {}; % MD SET4
 
-\addplot+[
+\addplot+[color=blue,
 boxplot prepared={
 	lower whisker=6817,
 	lower quartile=6866,
@@ -2883,10 +3210,23 @@ boxplot prepared={
 ] coordinates {}; % CUCKOO SET4
 \end{axis}				
 	\end{tikzpicture}
-	\caption{Cuckoo}
+	\caption{Finální porovnání všech navržených algoritmů napříč datasety jedna (vlevho nahoře), dvě (vpravo nahoře), tři (vlevo dole) a čtyři (vpravo dole).}
 	\label{fig:conclusion_boxplot_2}
 \end{figure}
-%%%%%%%%%%%%% CUCKOO BOXPLOT %%%%%%%%%%%%%%%
+%%%%%%%%%%%%% CONCLUSION BOXPLOT 2 %%%%%%%%%%%%%%%
+
+Nyní porovnejme výsledky dosažené všemi navrženými algoritmy. Výsledky jejich náhodných alternativ pro tentokrát vynecháme, neboť jsme jejich výsledky již
+zkoumali a v porovnání s jiným algoritmem nedávají smysl. Na grafech na obrázku \ref{fig:conclusion_boxplot_2}. můžeme vidět srovnání všech navržených 
+algoritmů napříč datasety jedna až čtyři. Na první pohled je patrné, že algoritmus CuckooHash výrazně předstihl své konkurenty co se odolnosti vůči kolizím 
+týče. Na všech datasetech dokázal nahašovat výrazně více adres. Z tohoto pohledu se rozdíl mezi algoritmy IPHash a MDHash úplně ztrácejí. Algoritmus
+CuckooHash je navíc vhodnou volbou pro použití v reálných aplikacích. Veškeré vyevolvované hašovací funkce by museli být v reálné aplikaci jako součást
+hašovací tabulky vybaveny nějakou formou řešení kolizí. Navržením skupiny hašovacích funkcí přímo na míru kukaččímu hašování je dobrá volba a to s ohledem
+na fakt, že kukaččí hašování je velmi dobrou a populární metodou pro řešení kolizí.
+
+Rychlost hašovacích funkcí algoritmu CuckooHash je navíc zabezpečena omezením na maximální hloubku abstraktního stromu. Celková rychlost hašovací tabulky
+je opět zabezpečena tentokrát však konstantou $MaxLoop$ funkce na maximální počet po sobě jdoucích vložení do tabulky. Algoritmus CuckooHash je dobře škálovatelný.
+Bylo ukázáno, že v případě potřeby lze konstantu $MaxLoop$ snížit a dostat tak velmi rychlé hašovací tabulky, nebo naopak zvýšit a dostat tak hašovací tabulky s velmi
+vysokým faktorem zatížení $\alpha$.
 
 \chapter{Závěr}
 \input{conclusion}
