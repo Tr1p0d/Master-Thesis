@@ -32,27 +32,28 @@ operace:
 		tedy operaci \newline $Search(S,k) : 
 			\begin{cases}
 				x 	: x.k = k \\
-				nil : jinak 
+				\bot : jinak 
 			\end{cases} $
 \end{enumerate}
 
 Operace vyhledávání není totální, musíme tedy explicitně vhodně ošetřit
-případy, kdy se prvek $x=(k,v)$ v tabulce nevyskytuje.
+případy, kdy se prvek $x=(k,v)$ v tabulce nevyskytuje. Neúspěch operace značíme symbolem
+$\bot$ (bottom).
 
 Nejjedodušší implementací je \textit{tabulka s přímým přístupem} za
 předpokladů, že $|U|$ je přijatelná. Uvažme například univerzum
-klíču $U = \{0,1,2,3,\ldots,m-1\}$, a tabulku $T$ reprezentující
+klíčů $U = \{0,1,2,3,\ldots,m-1\}$, a tabulku $T$ reprezentující
 dynamickou množinu $S$, pak nejjednodušším přístupem je použít jako
 klíče přímo prvky množiny $U$. Pak operace vyhledávání je rovna operaci
 přístupu do tabulky na zadanou lokaci, například $Search(T,k) = T[k]$
 pro nějaký klíč $k \in U$.
 
-Může však nastat případ, kdy $m$ bude příiš velké číslo. Typickým příkladem
+Může však nastat případ, kdy $m$ bude příliš velké číslo. Typickým příkladem
 jsou klíče množiny všech možných řetězců. Pak by tabulka s přímým přístupem
 byla příliš velká a nevhodná pro moderní počítače. Pokud potřebujeme 
-vyhledávat pouze v nějaké podmnožině $K \subset U$, kde $|K| << |U|$, je 
-vhodné použít hašovací funkci. Zjevnou výhodou tabulek s přímým přistupem je složitost
-, která je $\theta (1)$ v nejhorším případě. Nevýhodou je paměťová náročnost
+vyhledávat pouze v nějaké podmnožině $K \subset U$, kde $|K| \ll |U|$, je 
+vhodné použít hašovací funkci. Zjevnou výhodou tabulek s přímým přistupem je časová složitost, která je $\theta (1)$
+v nejhorším případě pro všechny výše zmíněné operace. Nevýhodou je paměťová náročnost
 pro velká univerza $U$, kdy velká část tabulky zůstane prázdná.
 
 \subsection{Hašovací funkce}
@@ -74,14 +75,15 @@ viz. \ref{fig:hash_table_example}.
 %%%%%%%%%%%%% HASH TABLE EXAMPLE %%%%%%%%%%%%%%%
  
 Vzhledem k tomu, že velikost tabulky je menší, než velikost univerza $|U|$,
-budou nastávat kolize. Kolize je případ kdy, dva různé prvky univerza
-$k_{1}, k_{2} \in U$ budou zobrazeny na stejný slot : 
+budou nastávat kolize. Kolize je případ kdy, dva různé prvky $k_{1}, k_{2}$ nějakého univerza
+ $U$ budou zobrazeny na stejný slot : 
 $f_{hash} (k_{1}) = f_{hash} (k_{2})$. S tímto neduhem se dá vypořádat mnoha 
 způsoby, jak uvidíme dále v sekci \ref{sec:collisions}.
 
 \section{Kritéria kvality hašovacích funkcí}
 
-Shrňme si nyní základní kritéria, která jsou důležiá pro hašovací funkce.
+Shrňme si nyní základní kritéria, která jsou důležitá pro hašovací funkce a podle kterých můžeme hašovací funkce
+porovnávat navzájem a třídit.
 
 \subsection{Uniformní rozložení výstupů}
 
@@ -90,16 +92,15 @@ generátor a i kdybychom nějaký měli k dispozici, pak by sice dobře dokázal
 rozprostřít jednotlivé prvky do hašovací tabulky, nicméně vzhledem k jeho náhodné 
 povaze bychom je jen těžko zpět dohledávali. Musíme tedy zvolit jinou 
 alternativu. Hašovací funkce musí být deterministická a musí dobře aproximovat
-uniformní rozložení. Uniformní rozložení výstupů je předpokladem pro
-nízkou časovou složitost hašovacích algoritmů, jak je vidět z příkladu
-v sekci \ref{se:hash_function_design}.
+uniformní rozložení. Uniformní rozložení výstupů je předpokladem pro časovou nenáročnost operací nad hašovacími tabulekami,
+jak je vidět z příkladu v sekci \ref{se:hash_function_design}. 
 
 \subsection{Odolnost proti kolizím}
 
 Uvažujeme-li uniformní rozložení hašovací funkce, pak dva klíče u univerza
 $U$ budou kolizní (dle \textit{birthday attack}) asi po $2^{\frac{m}{2}}$ 
 operacích vložení\cite{NCHF_auto_design}. Pokud však hašovací funkce nebude
-uniformě distribuovat výsledky, pravděpodobnost kolize se rapidně zvýší.
+uniformě distribuovat výsledky, pravděpodobnost kolize se rapidně zvýší. PRIDELAT
 
 \subsection{Lavinový efekt}
 
@@ -107,7 +108,7 @@ Lavinový efekt (angl. Avalanche effect) je vlastnost hašovací funkce, při
 které se rapidně mění výstup hašovací funkce pro malou změnu vstupu. 
 Funkce které mají vysoký lavinový efekt mohou odolávat problému shlukování,
 při kterém se některé části univerza mají tendenci shlukovat na výstupu
-do skupin.
+do skupin. PRIDELAT.
 
 \subsection{Rychlost}
 
@@ -115,7 +116,7 @@ Nesporná výhoda hašovacích tabulek je jejich rychlost. Dobře navržená ha�
 tabulka dosahuje za určitých okolností složitosti $\theta (1)$. Pokud je však
 výpočetní algoritmus příliš složitý, může daná funkce být pomalá. Je proto
 nutné dbát na to, že příliš pomalý, i když dobrý algoritmus nemusí být
-vždy ten nejlepší. 
+vždy ten nejlepší. PRIDELAT.
 
 \section{Návrh hašovací funkce}
 \label{se:hash_function_design}
@@ -123,7 +124,7 @@ vždy ten nejlepší.
 V praxi je často slyšet názor, že hašovací funkce pracují v konstantním čase.
 To však není pravda, neboť výkon hašovací funkce záleží jednak na faktoru
 zatížení hašovací tabulky a uniformnosti, s jakou dokáže hašovací funkce
-přířazovat klíče do slotů.
+přířazovat klíče do slotů. NO TOTO JE KRAVINA.
 
 Zaměřme se nejprve na zatížení tabulky a uvažme nějakou podmnožinu univerza
 všech klíčů $K \in U$, hašovací tabulku $T$ s $m$ sloty a označme $n = |K|$.
