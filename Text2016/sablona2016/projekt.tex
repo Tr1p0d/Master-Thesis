@@ -125,14 +125,14 @@
   }, %klicova slova v anglickem jazyce
   %Abstract
   abstract.cs={
-  	Hašovací tabulky jsou rychlé vyhledávaci struktury, které se staly součástí
+  	Hašovací tabulky jsou rychlé vyhledávací struktury, které se staly součástí
   	moderního světa výpočetních technologií a svou snadnou implementací si získali
   	mnoho příznivců v řadách programátorů. Volba vhodné hašovací funkce je klíčová.
   	Nevhodně zvolená hašovací funkce může mít za následek špatný výkon hašovací tabulky
   	a aplikace na ní navázanou. 
   	% continue
   	V současné době existují velmi dobré implementace obecných hašovacích funkcí, tedy
-  	takových, jejichž vstup není omezen na konkrétrní doménu. Na druhé straně, pokud
+  	takových, jejichž vstup není omezen na konkrétní doménu. Na druhé straně, pokud
   	známe vstupní doménu, můžeme navrhnout hašovací funkcí na míru dané aplikaci a tím
   	dosáhnout výrazně lepších výsledků než v případě hašovací funkce obecné.
   	% problem
@@ -142,23 +142,22 @@
   	zkušenosti, vynalézavost a intuici. 
   	% approach
   	V případě takto komplikovaných úloh je někdy vhodné se uchýlit k méně tradičním 
-  	technikám návrhu jako jsou evoluční algoritmy. Evoluční algoritmy jsou jednou z
-  	nejúspěšnějších aplikací počítání podle přírody, tedy přístupu k řešení problémů,
-  	který se inspiruje v přírodních procesech, kdy v případě evolučních algoritmů se jedná 
-  	o proces reproduce druhů. 
+  	technikám návrhu jako jsou evoluční algoritmy. Evoluční algoritmy přistupují k 
+  	k řešení problémů způsobem prohledávání stavového prostoru,
+  	který se inspiruje v přírodních procesech, a to konkrétně v Darwinistické reprodukci druhů. 
   	% solution design
   	V této práci se budeme zabývat evolučním návrhem hašovacích funkcí pro doménu
-  	\texttt{IP} adres, unikátních identifikátorů síťového rozhraní v sítích řízených
-  	internetovým protokolem. Vzhledem k tomu, že známe konkrétní doménu, kterou budeme
-  	hašovat, můžeme parametry evolučního algoritmu přizpůsobit tak, aby generované funkce
-  	byly nejvýkonější. Vybraným evolučním algoritmem je genetické programování, velmi
+  	\textit{IP} adres, unikátních identifikátorů síťového rozhraní v sítích řízených
+  	internetovým protokolem. Vybraným evolučním algoritmem je genetické programování, velmi
   	specifická podskupina počítání podle přírody, která svými vlastnosmi umožňuje 
   	navrhnovat skutečně kvalitní hašovací funkce.
   	% results
-  	% conclusion
+  	Evolučně navržené hašovací funkce nabízejí velmi dobré vlastnosti s ohledem na 
+  	specifickou aplikaci. A předčí své \textit{state-of-the-art} obecné, člověkem navržené
+  	protějšky co se rychlosti i odolnosti vůči kolizím týče.
   }, % abstrakt v ceskem jazyce
   abstract.en={ % motivation
-  	Hash tables are fast associative array implementations, which became part of modern
+  	Hash tables are fast associative array implementations which became part of modern
   	world of information technology and thanks to its simplicity became very popular 
   	among computer programmers. The choice of proper hash function is very important.
   	Improperly selected hash function can result in poor hash table performance and its
@@ -176,17 +175,18 @@
   	intuition.  
   	% approach
   	In case of such complicated tasks there is sometimes advantageous to choose a different
-  	path and use techniques such as evolution algorithms. Evolution algorithms are one of 
-  	the most successful application of natural computing. Natural computing is an approach
-  	of certain problem solutions that are inspired by some natural processes. In case of
-  	evolution algorithms the inspiration was the process of species reproduction.
+  	path and use techniques such as evolution algorithms. Natural computing is an approach
+  	of certain problem solutions that are inspired by the process of species reproduction as
+  	defined by Charles Darwin.
   	% solution design
-  	In this thesis we will design hash functions for the domain of \texttt{IP} addresses,
-  	that serve as unique network device interface identifier in internet protocol networks.
-  	Since we know the exact hashing domain, we can very accurately choose evolution algorithm
-  	parameters so the evolved function will perform on its best. Tho chosen subset of 
-  	natural computing is genetic programming, a very specific technique that is an adequate 
-  	approach to our problem thanks to its properties. \newpage				 
+  	In this thesis we will design hash functions for the domain of \textit{IP} addresses,
+  	that serve as an unique network device interface identifier in internet protocol networks.
+  	Tho chosen subset of 
+  	natural computing is the genetic programming, a very specific technique that is an adequate 
+  	approach to our problem thanks to its properties. 
+  	% results
+  	Evolutionary designed hash functions offer good properties. They outperform state-of-the-art
+  	generic, human-created hash functions in terms of speed and collision resistance.\newpage				 
   }, % abstrakt v anglickem jazyce
   %abstract.cs={Výtah (abstrakt) práce v českém jazyce.}, % abstrakt v ceskem ci slovenskem jazyce
   %abstract.en={Výtah (abstrakt) práce v anglickém jazyce.}, % abstrakt v anglickem jazyce

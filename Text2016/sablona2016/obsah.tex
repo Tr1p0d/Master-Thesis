@@ -6,29 +6,29 @@
 \chapter{Hašování}
 \label{sec:hashing}
 Hašovací tabulky jsou důležitou součástí moderního světa informačních 
-technologíí. Jsou to vyhledávací datové struktury, které nám za určitých
-okolností umožní vyhledávat, vkládat a mazat uložené položky s konstantní
+technologií. Jsou to vyhledávací datové struktury, které nám v případě
+správně zvoleného přstupu k řešení kolizí umožní vyhledávat, vkládat a mazat uložené položky s konstantní
 časovou složitostí. Jedná se o jednu z několika možných implementací
 asociativního pole. Ty další jsou například stromové implementace, 
-implementace vázaným seznamem s lineáním průchodem a další. Žádnými
-z těchto implementací se zde zabývat nebudeme \cite{art_of_programming}.
+implementace vázaným seznamem s lineárním průchodem a další \cite{art_of_programming}. 
+Nás bude zajímat pouze implmentace za použítí hašovacích funkcí.
 
 \section{Princip}
 Mějme dané univerzum klíčů $U$, kde některé klíče $k \in U$ si přejeme
-asociovat s nějakými satelitnímy daty $v$, jejichž povaha není pro nás v
-tuto chvíli důležitá. Dále máme dynamickou množinu $S = \{(k,v) | k \in u\}$
+asociovat s nějakými satelitními daty $d$, jejichž povaha může být libovolného rázu.
+Dále máme dynamickou množinu $S = \{(k,v) | k \in u\}$
 uchovávající klíče s jejich satelitními daty. Pak nad množinou $S$ chceme
-pro nějaký klíč $k$ a některé její položky $x=(k, v)$ provádět následující 
+pro nějaký klíč $k$ a některé její položky $x=(k, d)$ provádět následující 
 operace: 
 
 \begin{enumerate}
-	\item \textit{vkládání} dat, tedy operaci 
-		$Insert(S,x) : S \to S \cup \{(k, v)\} $,
+	\item vkládání dat, tedy operaci 
+		$Insert(S,x) : S \to S \cup \{(k, d)\} $,
 
-	\item \textit{mazání} dat, tedy operaci 
-		$Delete(S,x) : S \to S - \{(k, v)\}$
+	\item mazání dat, tedy operaci 
+		$Delete(S,x) : S \to S - \{(k, d)\}$,
 
-	\item \textit{výhledávání} satelitních dat podle zadaného klíče,
+	\item vyhledávání satelitních dat podle zadaného klíče,
 		tedy operaci \newline $Search(S,k) : 
 			\begin{cases}
 				x 	: x.k = k \\
@@ -37,10 +37,9 @@ operace:
 \end{enumerate}
 
 Operace vyhledávání není totální, musíme tedy explicitně vhodně ošetřit
-případy, kdy se prvek $x=(k,v)$ v tabulce nevyskytuje. Neúspěch operace značíme symbolem
+případy, kdy se prvek $x=(k,d)$ v tabulce nevyskytuje. Neúspěch operace značíme symbolem
 $\bot$ (bottom).
-
-Nejjedodušší implementací je \textit{tabulka s přímým přístupem} za
+Nejjednodušší implementací je \textit{tabulka s přímým přístupem} za
 předpokladů, že $|U|$ je přijatelná. Uvažme například univerzum
 klíčů $U = \{0,1,2,3,\ldots,m-1\}$, a tabulku $T$ reprezentující
 dynamickou množinu $S$, pak nejjednodušším přístupem je použít jako
@@ -52,18 +51,17 @@ Může však nastat případ, kdy $m$ bude příliš velké číslo. Typickým p
 jsou klíče množiny všech možných řetězců. Pak by tabulka s přímým přístupem
 byla příliš velká a nevhodná pro moderní počítače. Pokud potřebujeme 
 vyhledávat pouze v nějaké podmnožině $K \subset U$, kde $|K| \ll |U|$, je 
-vhodné použít hašovací funkci. Zjevnou výhodou tabulek s přímým přistupem je časová složitost, která je $\theta (1)$
+vhodné použít hašovací funkci. Zjevnou výhodou tabulek s přímým přístupem je jejich časová složitost, která je $\theta (1)$
 v nejhorším případě pro všechny výše zmíněné operace. Nevýhodou je paměťová náročnost
 pro velká univerza $U$, kdy velká část tabulky zůstane prázdná.
 
-\subsection{Hašovací funkce}
 Hašovací funkce je zobrazení, mapující prvky množiny $U$ na jednotlivé 
 sloty (indexy) tabulky $T$ :
 $$ f_{hash} : U \to (0,1,\ldots,m-1)$$
 za předpokladu, že tabulka má právě $m-1$ slotů. Vyhledávací struktura 
 složená z dynamické množiny $S$ reprezentovanou tabulkou $T$ a hašovací 
 funkcí $f_{hash}$ se nazývá \textit{hašovací tabulka} 
-viz. \ref{fig:hash_table_example}.
+viz. obrázek \ref{fig:hash_table_example}.
 
 %%%%%%%%%%%%% HASH TABLE EXAMPLE %%%%%%%%%%%%%%%
 \begin{figure}[!ht]
@@ -74,16 +72,17 @@ viz. \ref{fig:hash_table_example}.
 \end{figure}
 %%%%%%%%%%%%% HASH TABLE EXAMPLE %%%%%%%%%%%%%%%
  
-Vzhledem k tomu, že velikost tabulky je menší, než velikost univerza $|U|$,
+Vzhledem k tomu, že velikost tabulky je menší, než mocnost univerza $|U|$,
 budou nastávat kolize. Kolize je případ kdy, dva různé prvky $k_{1}, k_{2}$ nějakého univerza
  $U$ budou zobrazeny na stejný slot : 
 $f_{hash} (k_{1}) = f_{hash} (k_{2})$. S tímto neduhem se dá vypořádat mnoha 
-způsoby, jak uvidíme dále v sekci \ref{sec:collisions}.
+způsoby, jak uvidíme dále v podkapitole \ref{sec:collisions}.
 
 \section{Kritéria kvality hašovacích funkcí}
 
-Shrňme si nyní základní kritéria, která jsou důležitá pro hašovací funkce a podle kterých můžeme hašovací funkce
-porovnávat navzájem a třídit.
+Základní kritéria, která jsou důležitá pro hašovací funkce a podle kterých můžeme hašovací funkce
+porovnávat navzájem a třídit jsou uniformní distribuce výstupu, odolnost proti kolizím, lavinový efekt
+a rychlost. Těmto kritériím se budeme věnovat v této podkapitole. 
 
 \subsection{Uniformní rozložení výstupů}
 
@@ -92,102 +91,104 @@ generátor a i kdybychom nějaký měli k dispozici, pak by sice dobře dokázal
 rozprostřít jednotlivé prvky do hašovací tabulky, nicméně vzhledem k jeho náhodné 
 povaze bychom je jen těžko zpět dohledávali. Musíme tedy zvolit jinou 
 alternativu. Hašovací funkce musí být deterministická a musí dobře aproximovat
-uniformní rozložení. Uniformní rozložení výstupů je předpokladem pro časovou nenáročnost operací nad hašovacími tabulekami,
-jak je vidět z příkladu v sekci \ref{se:hash_function_design}. 
+uniformní rozložení. Uniformní rozložení výstupů je předpokladem pro časovou nenáročnost operací nad hašovacími tabulkami,
+jak je vidět z příkladu v podkapitole \ref{se:hash_function_design}. 
 
 \subsection{Odolnost proti kolizím}
 
 Uvažujeme-li uniformní rozložení hašovací funkce, pak dva klíče u univerza
 $U$ budou kolizní (dle \textit{birthday attack}) asi po $2^{\frac{m}{2}}$ 
-operacích vložení\cite{NCHF_auto_design}. Pokud však hašovací funkce nebude
+operacích vložení \cite{NCHF_auto_design}. Pokud však hašovací funkce nebude
 uniformě distribuovat výsledky, pravděpodobnost kolize se rapidně zvýší. PRIDELAT
 
 \subsection{Lavinový efekt}
 
-Lavinový efekt (angl. Avalanche effect) je vlastnost hašovací funkce, při
-které se rapidně mění výstup hašovací funkce pro malou změnu vstupu. 
-Funkce které mají vysoký lavinový efekt mohou odolávat problému shlukování,
-při kterém se některé části univerza mají tendenci shlukovat na výstupu
-do skupin. PRIDELAT.
+Lavinový efekt (angl. \textit{Avalanche effect}) je vlastnost hašovací funkce, značící míru změny výstupu
+pro malou změnu vstupu. 
+Funkce které mají vysoký lavinový efekt mohou lépe odolávat problému shlukování,
+při kterém se některé části hašovaného univerza klíčů mají tendenci shlukovat na výstupu
+do skupin. Lavinový efekt je zároveň vhodné kritérium pro návrh obecných hašovacích funkcí,
+protože není závislý na vstupu. 
 
 \subsection{Rychlost}
 
 Nesporná výhoda hašovacích tabulek je jejich rychlost. Dobře navržená hašovací
-tabulka dosahuje za určitých okolností složitosti $\theta (1)$. Pokud je však
-výpočetní algoritmus příliš složitý, může daná funkce být pomalá. Je proto
-nutné dbát na to, že příliš pomalý, i když dobrý algoritmus nemusí být
-vždy ten nejlepší. PRIDELAT.
+tabulka dosahuje při správně zvolené metodě řešení kolizí okolností časové složitosti $\theta (1)$. Pokud je však
+výpočetní algoritmus příliš složitý nebo funkce špatně uniformě distribuuje svoje výstupy, může daná
+funkce být i přes to pomalá. Je proto nutné dbát na to, že příliš pomalý i když své výstupy dobře distribuující
+algoritmus nemusí být vždy ta správná volba.
 
 \section{Návrh hašovací funkce}
 \label{se:hash_function_design}
 
-V praxi je často slyšet názor, že hašovací funkce pracují v konstantním čase.
-To však není pravda, neboť výkon hašovací funkce záleží jednak na faktoru
-zatížení hašovací tabulky a uniformnosti, s jakou dokáže hašovací funkce
-přířazovat klíče do slotů. NO TOTO JE KRAVINA.
+V praxi je často slyšet názor, že hašovací tabulky vyhledávají v konstantním čase.
+To však není úplně pravda, neboť záleží na přístupu k řešení kolizí, který má na
+časovou složitost největší dopad a konstantní časová složitost nemusí implikovat
+rychlou hašovací tabulku. To naopak záleží na správně volbě hašovací funkce a
+jejích vlastností.
 
-Zaměřme se nejprve na zatížení tabulky a uvažme nějakou podmnožinu univerza
+Pro dobré pochopení problematiky je nezbytné uvést míru zaplnění hašovací tabulky
+neboli takzvaný faktor zatížení $\alpha$ definovaný vztahem $\alpha = \frac{n}{m}$.
+Uvažme nějakou podmnožinu univerza
 všech klíčů $K \in U$, hašovací tabulku $T$ s $m$ sloty a označme $n = |K|$.
 Pokud $n$ bude menší než $m$, pak hašovací tabulka bude skutečně pracovat v 
 $\theta (1)$, za předpokladu uniformního rozložení hašovací funkce. Pokud ale
 bude $m$ menší než $n$, faktor zatížení bude větší než jedna a hašovací tabulka
 v konstantním čase pracovat nebude. Uvažme $m=4$ a $n=5$. Pak za předpokladu
 uniformního rozložení hašovací funkce, s vložením pátého prvku bude hašovací 
-tabulka plná a nám nezbude než vkládaný prvek zařadit na začátek jednosměrně
-vázaného seznamu.
+tabulka plná a nám nezbude než vkládaný prvek vložit do již obsazeného slotu.
+Opětovné vyhledání pátého prvku si pak vynutí dodatečné časové prostředky.
 
 Existuje mnoho metod pro konstrukci hašovací funkce, jako jsou například
 \textit{metoda násobení}, \textit{metoda dělení} a další komplikovanější
-přístupy. V současné době existují velmi dobré implementace obecných hašovacích funkcí.
+přístupy. V současné době existují velmi dobré implementace obecných hašovacích funkcí 
+\cite{murmurhash2,murmurhash3,cityhash_slides}.
 Avšak žádná hašovací funkce nemůže pracovat pro všechna možná univerza stejně
-dobře. Jako příklad uvažujme hašovací funkci navrženou metodou dělení :
+dobře. Jako příklad uvažujme hašovací funkci navrženou metodou dělení:
 $$ f_{hash}(k) = k \text{ mod } 8 $$ 
 a dále uvažujme univerzum $U = \mathbb{N}$ a jeho
 podmnožinu $K = \{1,2,3,4,8,13,22,71\}$, kterou budeme vkládat do tabulky.
-Hašovací funkce je schopna uložit $8$ ruzných hodnot a v případě 
+Hašovací funkce je schopna uložit $8$ různých hodnot a v případě 
 našeho výběru množiny $K$, se nám podaří uložit všechny, aniž by došlo ke kolizi.
 Co by se ale stalo, pokud bychom byli omezení na univerzum pouze těch
-přirozených čisel, která jsou dělitelné osmi $U = \{x \in \mathbb{N}
+přirozených čísel, která jsou dělitelné osmi $U = \{x \in \mathbb{N}
 \land x \text{ mod } 8 = 0\}$? Nemohli bychom vybrat žádnou podmnožinu 
 $F \in U$ takovou, kterou by funkce $f_{hash}$ nezobrazila pouze na jeden
 slot.
 
 Je vidět, že pokud máme informace o univerzu možných klíčů, můžeme navrhnout
-hašovací funkci 'na míru' tak, aby měla lepší vlastnosti, než obecná
-hašovací funkce. Tento úkol je však obtížný a neexistuj pro něj obecný
+hašovací funkci ``na míru'' tak, aby měla lepší vlastnosti, než obecná
+hašovací funkce. Tento úkol je však obtížný a neexistuje pro něj obecný
 návod jak toho docílit. Musíme se spolehnout na zkušenosti, znalosti a v 
 neposlední řadě také na intuici. Nebo můžeme zvolit úplně jiný přístup
-jak napovídá kapitola \ref{sec:evolution_design}.
+který je přiblížen dále.
 
-\subsection{Merkle-Damg\r{a}rdovo konstrukční schéma}
-V oblasti kryptografických hašovacích funkcí se Merkle-Damg\r{a}rdovo schéma \cite{merkle0} jedním ze základních
+V oblasti kryptografických hašovacích funkcí je Merkle-Damg\r{a}rdovo schéma \cite{merkle0} jedním ze základních
 stavebních kamenů moderních kryptografických hašovacích funkcí.
-Dokazují to nesčetné implementace state of the art hašovacích funkcí na něm založené. Jako
-přklad můžeme uvést algoritmy \textit{MD5} \cite{rfc1321}, \textit{SHA-1} \cite{rfc3174},
+Dokazují to nesčetné implementace \textit{state-of-the-art} kryptografických hašovacích funkcí na něm založené. Jako
+příklad můžeme uvést algoritmy \textit{MD5} \cite{rfc1321}, \textit{SHA-1} \cite{rfc3174},
 \textit{SHA-2} \cite{rfc4634} nebo \textit{Tiger} \cite{tiger}.
 
-Jedná se o obecné schéma pro výstavbu hašovacích funkcí odolných proti kolizím z jednosměrně
+Jedná se o obecné schéma (znázorněné na obrázku \ref{fig:merkle_damgard}) pro výstavbu hašovacích funkcí odolných proti kolizím z jednosměrné
 kompresní funkce. Schéma se skládá z $n$ bloků pevné délky reprezentující vstupní zprávu.
 K nim korespondují jednosměrné kompresní funkce. Každá kompresní funkce má na vstupu blok vstupních dat,
 výstup předchozí kompresní funkce a produkuje výstup. Velikosti obou vstupu a výstupu jsou totožné,
 proto nazýváme funkce kompresní. Poslední článek v řetězu kompresních funkcí představuje vhodné 
-zarovnání. Někdy se také používá volitelna finalizační komponenta. Schéma blíže ilustruje obrázek 
-\ref{fig:merkle_damgard}.
+zarovnání. Někdy se také používá volitelna finalizační komponenta.
 
-Bylo nezávisle ukázáno, že pokud je použitá vhodná 'vata'
-(angl. \textit{padding}) pro zarovnání na správnou velikost a kompresní funkce jsou odolné
+Bylo nezávisle ukázáno, že pokud je použité vhodné zarovnání
+(angl. \textit{padding}) na správnou velikost a kompresní funkce jsou odolné
 proti kolizím, pak vzniknuvší hašovací funkce je také odolná proti kolizím \cite{damgard0}.
-
 Důvodem, proč se zde zabýváme kryptografickým schématem je, že jej používají i mnohé nekryptografické
 hašovací funkce. I přes to, že tyto funkce nejsou kryptograficky bezpečné (což ani není účelem zavedení
 Merkle-Damg\r{a}rdova shématu), použití kryptografického schématu dodá do hašovací funkce dodatečnou 
-náhodnost. Použitím schématu docílíme v evolučním algoritmu značného zmenšení prohledávaného prostoru
-a tedy lepší a rychlejší konvergence algoritmu viz. dále kapitola \ref{sec:evolution_design}.
+náhodnost.
 
 Kromě Merkle-Damg\r{a}rdova schémata, exitují i jiná konstrukční schémata, například Merkleho strom 
 \cite{merkle1}, často používaný v \textit{P2P} sítích,
 struktura \textit{HAIFA} \cite{haifa} použitá v rodině kryptografických hašovacích funkcí \textit{BLAKE}
-nebo funkce \textit{Sponge} \cite{sponge}. Těmito se zde však zabývat nebudeme.
+nebo funkce \textit{Sponge} \cite{sponge}. My se však budeme zajímat výhradně Merkle-Damg\r{a}rdovým
+schématem, protože jeho funkce je dobře prověřená.
 
 \begin{figure}
 	\centering
@@ -201,19 +202,18 @@ nebo funkce \textit{Sponge} \cite{sponge}. Těmito se zde však zabývat nebudem
 
 Situaci, kdy hašovací funkce zobrazí dva různé klíče na tentýž slot:
 $f_{hash} (k_{1}) = f_{hash} (k_{2})$ nazýváme hašovací kolize nebo jen kolize. 
-Kolize jsou nežádoucím důsledkem použití hašovacích funkcí
-a chceme se jim pokud možno vyhnout, neboť zásadním způsoben negativně ovlivňují 
-časovou složitost asociativních polí, které jsou na hašovacích funkcích postavené. 
-Pro dobré pochopení kolizí je nezbytné uvést míru zaplnění hašovací tabulky
-neboli takzvaný faktor zatížení $\alpha$ definovaný vztahem $\alpha = \frac{n}{m}$.
-Právě časová složitost tabulky záleží za předpokladu uniformního rozložení 
-hašovací funkce právě na \textit{faktoru zatížení}. 
+Kolize jsou přirozeným důsledkem použití hašovacích funkcí, protože platí podmínka o
+mocnostech množiny klíčů a množiny slotů.
+My se jim chceme pokud možno vyhnout, neboť zásadním způsoben negativně ovlivňují 
+časovou náročnost asociativních polí, které jsou na hašovacích funkcích postavené. 
+Právě časová náročnost tabulky záleží za předpokladu uniformního rozložení 
+hašovací funkce právě na faktoru zatížení. 
 
 Použitím kvalitní hašovací funkce můžeme riziko kolizí do jisté míry minimalizovat, ale
 s narůstajícím faktorem zatížení $\alpha$ roste i riziko kolize, které dosáhne 
 určitosti při $\alpha = 1$, tedy v hašovací tabulce není již žádný volný slot.
-V takovém případě musíme kolizi vhodným způsobem řešit. Způsobů jak takovou sitaci
-řešit je mnoho. My si v této sekci uvedeme ty, které jsou pro naši práci podstatné.
+V takovém případě musíme kolizi vhodným způsobem řešit. Způsobů jak takovou situaci
+řešit je mnoho. My si v této podkapitole uvedeme zřetězené hašování a kukaččí hašování.
 
 \subsection{Zřetězené hašování}
 
@@ -245,36 +245,35 @@ s klíčem. Časová složiost takové implementace je:
 Časovou složitost lze vylepšit vhodnou heuristikou, jakou může být například sledování
 četnosti vyhledávání daných klíčů s následným vhodným přeuspořádáním jednosměrně vázaného
 seznamu. Prostorová složitost této implementace také narůstá, neboť součástí každé položky jednosměrně
-vázaného seznamu \textit{ll} je i ukazatel na další prvek potřebný pro získání
-dalšího prvku seznamu \textit{next(ll)}. Řešení kolizí zřetězením kolidovaných 
+vázaného seznamu je i ukazatel na další prvek potřebný pro získání
+dalšího prvku seznamu. Řešení kolizí zřetězením kolidovaných 
 položek do jednosměrně vázaného seznamu poskytuje za předpokladu uniformního rozložení dobré
-výsledky a je výrazně rychlejší než samotný jednosměrně vázaný seznam. Existují však i jiné
-přístupy, nabízející lepší vlastnosti.
+výsledky a je výrazně rychlejší než vyhledávání v samotném jednosměrně vázaném seznamu. Existují však i jiné
+přístupy jako například kukaččí hašování, které nabízí lepší vlastnosti.
 
 \subsection{Kukaččí hašování}
-
 Kukaččí hašování je moderní přístup k řešení hašovacích kolizí, za použití dvou a více hašovacích
-funkci a dvou nebo více tabulek \cite{Cuckoo_hashing}. Častá implementace zahruje pouze jednu
+funkcí a stejného počtu tabulek \cite{Cuckoo_hashing}. Častá implementace zahrnuje pouze jednu
 tabulku, v níž má každá hašovací funkce vyhrazena vlastní prostor. Uvažujme univerzum klíčů $U$
 a velikosti hašovací tabulky $m$. Pak na příklad pro dvě hašovací funkce 
 $h_1, h_2$, kde $h_1 : U \rightarrow \{0,\ldots,r_1-1\}$ a $h_2 : U \leftarrow \{r_1,\ldots,r_2-1\}$ musí platit
-$|\{0,\ldots,r_1-1\} \cup \{r_1,\ldots,r_2-1\}| = m$ a celkový počet slotů hašovací tabulky je $m$.
+$|\{0,\ldots,r_1-1\} \cup \{r_1,\ldots,r_2-1\}| = m$. Indexy $r_i$ označují konkrétní sloty tabulky.
 
-Opakem je implementace, kdy každá každá hašovací fukce obsluhuje dedikovanou tabulku. Zde pro
+Opakem je implementace, kdy každá hašovací funkce obsluhuje dedikovanou tabulku. Zde pro
 jiné dvě funkce $h_3, h_4$ tvaru $h_3 : U \rightarrow \{0,\ldots,r_1-1\}$ a $h_4 : U \leftarrow \{0,\ldots,r_1-1\}$
 musí opět platit $|\{0,\ldots,r_1-1\} \cup \{0,\ldots,r_1-1\}| = m$. Tedy že hašovací funkce musí dokonale pokrýt
 celou hašovací tabulku.
 
-Název Kukaččí hašování je odvozen z chování některých druhů kukaček, kdy kukačky vytlačují vejce nebo své mladé
-z hnízda. Toto chování je velmi podobné operaci vkládání. I přes to, že se rozhraní operace $Insert(S,x)$ nemění 
-, výrazně se mění její vnitřní implementace. Operace vložení prvku do tabulky, vybere jednu z dostupných hašovacích
+Název Kukaččí hašování je odvozen z chování některých druhů kukaček, kdy kukačky vytlačují vejce nebo mladé jiných druhů
+z jejich hnízd. Toto chování je velmi podobné operaci vkládání. I přes to, že se rozhraní operace $Insert(S,x)$ nemění,
+výrazně se mění její vnitřní implementace. Operace vložení prvku do tabulky, vybere jednu z dostupných hašovacích
 funkcí a pokusí se vložit prvek na příslušné místo. Dojde-li ke kolizi, původní prvek je vytlačen a nahrazen prvkem novým.
 Vytlačený prvek je znovu vložen do tabulky, avšak za použití jiné hašovací funkce. Tento postup se opakuje tak dlouho, dokud
 dochází při vkládání ke kolizím. Zřejmě tímto způsobem může docházet k cyklům. Maximální počet po sobě jdoucích vložení je tedy
 omezen konstantou. Celý proces blíže demonstruje algoritmus \ref{alg:cuckoo_hashing} a obrázek \ref{fig:cuckoo_hashing}.
 
-Podotkňeme, že není nezbytně nutné omezovat počet po sobě jdoucích vložení konstantou $MaxLoop$. Neúspěšnost je 
-možné detekovat cyklením operace \Call{Insert}{}. Tu je možné modelovat v teoríí grafů jako bipartitní graf $G=(U,V,E)$, 
+Podotkněme, že není nezbytně nutné omezovat počet po sobě jdoucích vložení konstantou $MaxLoop$. Neúspěšnost je 
+možné detekovat cyklením operace \Call{Insert}{}. Tu je možné modelovat jako bipartitní graf $G=(U,V,E)$, 
 kde $U$ je množina vrcholú, zde slotů první hašovací tabulky, $V$ je opět množína vrcholů, zde slotů tentokrát však druhé
 hašovací tabulky a $E \subset (U \times V) \cup (V \times U)$ je množina hran představující jednotlivá vytlačení původních
 klíčů operace \Call{Insert}{}. Pak platí následující tvrzení:
@@ -282,12 +281,12 @@ klíčů operace \Call{Insert}{}. Pak platí následující tvrzení:
 	\item Klíč $x \in U$ nelze do hašovací tabulky vložit, jestliže souvislá komponenta grafu indukovaná operací
 		\Call{INSERT}{} $G$ obsahuje dva a více cyklů
 		\cite{standford1}. 
-	\item Naproti tomu Klíč $x \in U$ lze do hašovací tabulky vložit, jestliže souvislá komponenta grafu indukovaná operací
+	\item Naproti tomu klíč $x \in U$ lze do hašovací tabulky vložit, jestliže souvislá komponenta grafu indukovaná operací
 		\Call{INSERT}{} $G$ obsahuje žadný
-		a nebo maximálně jeden cyklus \cite{standford1}.
+		a nebo maximálně jeden cyklus~\cite{standford1}.
 \end{itemize}
-Přesto omezení konstantou $MaxLoop$ může být vhodné z několika důvodů. Jedním z důvodů je zjednodušení celého algoritmu
-další pak nárůstající výpočetní a paměťová náročnost (složinosti se nemění), kterou s sebou nese detekce cyklu.
+Přesto omezení konstantou $MaxLoop$ může být vhodné z několika důvodů. Jedním z důvodů je zjednodušení celého algoritmu,
+další pak narůstající výpočetní a paměťová náročnost (složitosti se nemění), kterou s sebou nese detekce cyklu.
 
 \begin{figure}[!ht]
 	\centering
@@ -303,12 +302,12 @@ další pak nárůstající výpočetní a paměťová náročnost (složinosti 
 	\label{fig:cuckoo_hashing}
 \end{figure}
 
-Pokud v průběhu operace dosaženo mezní hodnoty $MaxLoop$, předpokládejme tedy, že jsme narazili na cyklus. V takovém případě 
-provedeme nejprve operaci \Call{rehash}{} a poté zkusíme prvek vložit opětovným zavoláním funkce \Call{insert}{x}.
+Pokud je v průběhu operace \Call{Insert}{} dosaženo mezní hodnoty $MaxLoop$, předpokládejme tedy, že jsme narazili na cyklus. V takovém případě 
+provedeme nejprve operaci \Call{rehash}{} a poté zkusíme prvek vložit opětovným zavoláním funkce \Call{insert}{S,x}.
 Funkce \Call{rehash}{} zajišťuje, aby při opětovném vložení prvku do tabulky znovu nevzniknul cyklus. Toho se dá
 dosáhnout například použitím jiných hašovacích funkci \cite{Cuckoo_hashing}. Není třeba znovu vytvářet hašovací tabulku,
-postačí hašovací tabulku projít a na každý prvek uplatnit nejprve operace \Call{delete}{x}, která jej z tabulky odstraní 
-a následně jej znovu vložit za použití operace \Call{insert}{x}.
+postačí hašovací tabulku projít a na každý prvek uplatnit nejprve operace \Call{delete}{S,x}, která jej z tabulky odstraní 
+a následně jej znovu vložit za použití operace \Call{insert}{S,x}.
 
 \begin{algorithm}
 \begin{algorithmic}
@@ -326,9 +325,8 @@ a následně jej znovu vložit za použití operace \Call{insert}{x}.
 \label{alg:cuckoo_hashing}
 \end{algorithm}
 
-Časová složitost výhledávání v tabulce za použití Kukaččího hašování je v průměru $\theta(1)$. Pro nás je ale
-důležitější, že časová složitost v nejhorším případě zustává také konstantní. Je však důležité zohlednit 
-následující faktory:
+Časová složitost výhledávání v tabulce za použití kukaččího hašování je v průměru i nejhorším případě $\theta(1)$. Pro nás je ale
+Je však důležité zohlednit následující faktory ovlivňující rychlost celé metody:
 \begin{itemize}
 	\item Je nutné použít takové hašovací funkce, které dobře uniformě distribuují svoje výstupy. Pokud by tento
 	předpoklad nebyl splněn, může být (a pravděpodobně bude) často volána nákladná operace \Call{REHASH}{}.
@@ -344,24 +342,24 @@ následující faktory:
 \end{itemize}
 
 \section{Analýza existujících řešení}
-Cílem této sekce je podat přehled o existujících state of the art obecných hašovacích funkcích, protože některými z těchto
-funkcí budeme porovnávat námi navržené hašovací funkce. Také budeme analyzovat, z jakých elementárních operací se 
-dané hašovací funkce skládají, což nám poslouží především pro návrh množiny funkcí dále viz. kapitola  
-\ref{sec:solution_design}. Nejprve se zaměříme na krátký popis vybraných hašovacích funkcí a poté na samotný rozbor.
+Cílem této podkapitoly je podat přehled o existujících \textit{state-of-the-art} obecných hašovacích funkcích a hlouběji
+porozumět dané problematice. Také budeme analyzovat, z jakých elementárních operací se 
+dané hašovací funkce skládají, což nám se nám bude hodit při návrhu našich doménově specifických hašovacích funkcí.
+Nejprve se zaměříme na krátký popis vybraných hašovacích funkcí a poté na samotný rozbor.
 
 \begin{itemize}
 	\item \textit{MurmurHash2} \cite{murmurhash2} je druhou funkcí z rodiny hašovacích funkcí \textit{Murmur} vytvořenou
 		Austinem Appleby v roce 2008. Tato funkce se těší velké oblibě mezi hašovacími experty. V průběhu let se však 
 		ukázalo, že trpí závažnou bezpečnostní chybou zahlcení hašovací funkce (angl. \textit{Hash-Flooding}), kdy správnou
 		volbou hašovaných klíčů dojde ke klastrování výstupů na jeden slot. Tato chyba má za následek extrémní zpomalení 
-		hašovací tabulky vystavěné nad touto funkcí a odepření služby (angl. Denial-of-Service) celé aplikace. 
+		hašovací tabulky vystavěné nad touto funkcí a odepření služby (angl. \textit{Denial-of-Service}) celé aplikace[DODELAT]. 
 		
 		Tato hašovací funkce je použita v mnohých \textit{open-source} projektech, mezi něž patří i Apache Hadoop. 
 		
 	\item \textit{MurmurHash3} \cite{murmurhash3} je již třetím pokračovatelem funkcí z rodiny \textit{Murmur}. Dle
 		autora se v nové generaci jedná o rychlejší a robustnější funkci. Je postavena na stejném základu a nese si 
 		s sebou jednoduchost a dobré výkon stejně jako předchozí verze. Bohužel stále trpí výše zmíněnou bezpečnostní
-		chybou.
+		chybou[DODELAT].
 	
 	\item \textit{CityHash} \cite{cityhash_slides} je rodina hašovacích funkcí, primárně určená pro hašování řetězců. 
 		Vznikla ve společnosti Google (Geoff Pike a  Jyrki Alakuijala, 2011) a je silně optimalizována pro použití na
@@ -385,18 +383,17 @@ dané hašovací funkce skládají, což nám poslouží především pro návrh
 		některých verzí bývalého produktu \textit{Flash Player} firmy \textit{Macromedia}. Při vývoji byl kladen
 		důraz na vysokou míru lavinového efektu a rychlost. 
 		
-	\item \textit{SpookyHash} \cite{Jenkins2012} je další funkce vytvořená Robertem Jenkinse mv roce 2011. Její doménou by měla být dle autora
+	\item \textit{SpookyHash} \cite{Jenkins2012} je další funkce vytvořená Robertem Jenkinsem v roce 2011. Její doménou by měla být dle autora
 		rychlost a vyniká v lavinovém efektu. 
 \end{itemize}
 
 Výše zmíněné hašovací funkce lze považovat za state-of-the art hašovací funkce. Jsou vytvořeny největšímy odborníky v daném
 oboru s praxí přesahující někdy i desítky let. Většina z nich je použita v projektech velkého významu, ať už se jedná o
-projekty s otevřeným zdrojovým kódem či o uzavřené projekty. Námi navržené hašovací funkce budeme chtít s těmito
-funkcemi srovnat a ukázat tak, relevantnost (či nerelevantnost) našich výsledků.
+projekty s otevřeným zdrojovým kódem či o uzavřené projekty.
 
 Zaměřme se nyní na to, které elementární operace jsou využívání v těchto hašovacích funkcích. Tato informace nám pomůže se
 zorientovat v problematice návrhu a umožní nám dobře zvolit funkce i terminály v námi navržených hašovacích funkcí. Některé
-hašovací funkce pracují nejen s elementárními hašovacími funkcemi, ale i s jejich vysokoúrovnovými kombinacemi. Tyto
+hašovací funkce pracují nejen s elementárními hašovacími funkcemi, ale i s jejich vysokoúrovňovými kombinacemi. Tyto
 takzvané \textit{mixovací komponenty} nebudeme chápat jako samostatné operace, ale rozložíme je v naší analýze na
 elementární operace. Pro lepší orientaci v problematice poslouží přehledová tabulka \ref{tab:generic_hashes_analysis}.
 Rozbor byl prováděn z referenčních implementací, které jsou všechny kromě funkce \textit{FarmHash} obsaženy v balíku
@@ -406,8 +403,8 @@ funkcí obsahují opravdu široké spektrum operátorů. Nás budou zajímat pou
 výstupu. Nesmí nás tedy zmást například použití logického součtu nebo součinu v řidících konstrukcích nebo operace
 sčítání a odčítání použíté pro krokování vstupu po blocích určité velikosti. 
 
-Ve zdrojových kódech referenčních implementací jednotlivých hašovacích funkcí můžeme vidět některé opakující se vzory.
-Vždy je použita jedna nebo více aritmetických operací. V našem výběru se vždy jedná o sčítání ($+$) , násobení  ($*$) nebo
+Z analýzy dostupných zdrojových kódech referenčních implementací vyplívají některé opakující se vzory.
+Vždy je použita jedna nebo více aritmetických operací. V našem výběru se vždy jedná o sčítání ($+$), násobení  ($*$) nebo
 jejich společnou kombinaci. Další nedílnou součástí dobré hašovací funkce je volba posunu nebo rotace. Většína vybraných
 funkcí spoléhá na rotace, menšina poté na posuny. Najdou se i takové implementace, které používají obě dvě, ale za
 primární operaci lze považovat jen rotaci. Posuny jsou v takovém případě použity jako součást vysokoúrovňové 
@@ -415,6 +412,7 @@ primární operaci lze považovat jen rotaci. Posuny jsou v takovém případě 
 
 \begin{table}[!ht]
 	\centering
+	\label{tab:generic_hashes_analysis}
 	\begin{tabular}{lccccccccccc}
 		\hline
 		Operace            & $*$ & $/$ & $+$ & $-$ & Posuny & Rotace & AND & OR & XOR & $\neg$ & Konstanty \\
@@ -428,7 +426,6 @@ primární operaci lze považovat jen rotaci. Posuny jsou v takovém případě 
 		SuperFastHash & & & \checkmark & & \checkmark & & & & \checkmark & & \\
 		\hline		
 	\end{tabular}
-	\label{tab:generic_hashes_analysis}
 	\caption{Analýza existujících hašovacích funkcí z pohledu použitých elementarních operací.}
 \end{table}
 
@@ -453,12 +450,12 @@ prohledávání prostoru kandidátních řešení.
 % Section Natural computing
 \section{Počítání podle přírody}
 \label{sec:natural_computing}
-Počítání podle přírody (Natural computing) je sohrný termín pro tvorbu 
+Počítání podle přírody (angl. \textit{natural computing}) je souhrnný termín pro tvorbu 
 inteligentních strojů napodobováním biologických procesů, chování živých 
 tvorů nebo jejich mechanismů. Řadíme sem také výpočetní paradigmata, která 
 svoji inspiraci nalezla v přírodních procesech nebo použití organismů a 
 jiných netradičních materiálů jako výpočetních platforem. Míra do jaké je 
-přírodní fenomén napodoben se různí. Od Téměř úplného napodobení až po 
+přírodní fenomén napodoben se různí. Od téměř úplného napodobení až po 
 inspiraci. 
 
 Jedním z motivů pro vznik alternativních výpočetních přístupů a počítání 
@@ -473,24 +470,24 @@ procesy zejména fylogeneze, ontogeneze a epigeneze. Fylogeneze označuje proces
 evoluce druhů, ontogeneze proces vývoje mnohobuněčného organismu a epigeneze
 je nějaký proces, který nastává v již složitějším organismu 
 (sem řadíme například neuronové sítě).
-Dále se se počítání podle příody inspirovalo procesy vznikajícími ve společnosti, 
-v usuzování jedinců apodobně. My se zde budeme zabývat hlouběji pouze fylogenezí, neboť 
+Dále se se počítání podle přírody inspirovalo procesy vznikajícími ve společnosti, 
+v usuzování jedinců a podobně. My se zde budeme zabývat hlouběji pouze fylogenezí, neboť 
 právě na ní je založena myšlenka evolučních algoritmů.
 
 \section{Evoluční algoritmy}
 
 Fylogeneze je proces evoluce druhů. Evoluce je umožněna schopností reprodukce jednotlivých
-jedinců, kdy potomkové se od svých rodučů liší jen velmi málo. Při reprodukci však dochází také
-k náhodným občasným mutacím, které zabezpečují dostatečnou diferzitu a vzniká tak nový
-genetický materiál. Na fylogenezi jsou založené evoluční algoritmy. 
+jedinců, kdy potomkové se od svých rodičů liší jen velmi málo. Při reprodukci však dochází také
+k náhodným občasným mutacím, které zabezpečují dostatečnou diverzitu a vzniká tak nový
+genetický materiál. Evoluční algoritmy jsou založené na fylogenezi. 
 
 Evoluční algoritmy lze chápat jako speciální optimalizační metodu nad prostorem 
-$$U = D_{1} \times D_{2} \times D_{3} \times \ldots \times D_{n}$$
-všech kandidátních řešení. Takový prostor je pak kartézský součin domén, kde
-jednotlivé domény univerza mohou nabývat
+$$U_{cs} = D_{1} \times D_{2} \times D_{3} \times \ldots \times D_{n}$$
+všech dostupných kandidátních řešení. Takový prostor je pak kartézský součin domén
+$D_{1}, D_{2}$ až $D_{n}$, kde jednotlivé domény univerza mohou nabývat
 hodnot z předem známých, často nějak omezených intervalů \cite{evolution_hardware}.  
 
-V matematické optimalizaci, bychom se snažili hledat hodnoty $x \in U$ takové,
+V matematické optimalizaci, bychom se snažili hledat hodnoty $x \in U_{cs}$ takové,
 pro které je hodnota účelové funkce
 $$ f : U \to \mathcal{R} $$
 minimální (hledání maxima lze úpravou účelové funkce převést na hledání minima).
@@ -505,18 +502,17 @@ takový, že $f(x)$ splní nějaké předem dáné ukončovací podmínky.
 \subsection{Princip}
 Evoluční algoritmy jsou inspirované procesem reprodukce jedinců napříč generacemi.
 Na začátku výpočtu algoritmu vytvoříme počáteční populaci $P_{0}$, tj.
-populaci generace nula o předem známé velikosti $n$.
+populaci generace nula o předem známé velikosti.
 Volba jedinců do počáteční populace jsou různé, můžeme například sáhnout po náhodném 
 výběru nebo volit jedince za použití vhodné heuristiky.
 
-%$$ \mathcal{P}_{0} = \{x|x \in U \land vyber\_do\_počáteční\_populace(x) \} $$
-
 V každém dalším kroku evolučního algoritmu, který nazýváme generace, je nejprve vybráno
-$m$ vhodných jedinců z generace předchozí $P_{t - 1}$, kteří nám tvoří množinu rodičů. Aplikací
-genetických operátorů nad množinou rodičů vznikne množina potomků, Následně se z obou
-množin vybere nová generace $P_{t}$ o velikosti $n$ a celý process (znázorněn na diagramu \ref{fig:eaflow})
-se opakuje. Způsoby výběru rodiču jsou různé stejně
-tak jako možné genetické operátory. Oběma se budeme zabývat později.
+několik vhodných jedinců z generace předchozí $P_{t - 1}$, kteří nám tvoří množinu rodičů. Aplikací
+genetických operátorů nad množinou rodičů vznikne množina potomků a následně se z obou
+množin vybere nová generace $P_{t}$ o velikosti stejné velikosti jako rodičovská populace $P_{t - 1}$
+(celý proces je znázorněn na obrázku \ref{fig:eaflow}). Tato série kroků se iterativně opakuje.
+Způsoby výběru rodiču jsou různé stejně
+tak jako možné genetické operátory. Oběma se budeme zabývat později v této kapitole.
 
 %%%%%%%%%%%%% EVOLUTION ALGORITHM FLOWCHART %%%%%%%%%%%%%%%
 \begin{figure}[!ht]
@@ -529,19 +525,19 @@ tak jako možné genetické operátory. Oběma se budeme zabývat později.
 
 \subsection{Fitness funkce}
 Fitness funkce je obdoba účelové funkce z oboru matematické optimalizace. Název fitness
-pochází z oboru evoluční biologie, kde hodnota fitness popisuje biologickou zdatnost jedince
-\cite{evolution_hardware}. Vstupem fitness funkce je (v jednodušším případě) jedinec
+pochází z oboru evoluční biologie, kde hodnota fitness popisuje biologickou zdatnost jedince~\cite{evolution_hardware}.
+Vstupem fitness funkce je (v jednodušším případě) jedinec
 reprezentovaný chromozomem a výstupem je hodnota reprezentující zdatnost jedince.
 
 Ve složitějších případech je nutné rozlišovat mezi prostorem genotypů a fenotypů. Genotypem
 nazýváme v kontextu evolučních algoritmů prostor všech možných řešení, tedy 
 všech možných chromozomů. Fenotyp je soubor charakteristik, projevů a chování,
 jimiž se daný jedinec reprezentovaný určitým chromozomem projevuje.
-Zobrazení z prostoru genotypů do prostoru fenotypů lze potom vyjádřít následovně:
+Zobrazení z prostoru genotypů do prostoru fenotypů $f_{phenotype}$ lze potom vyjádřit následovně:
 $$ f_{phenotype} : U \to \mathcal{F}, $$
-Potom je však nutné modifikovat naši fitness funkci následovně :
+Potom je však nutné modifikovat naši fitness funkci následovně:
 $$ f : \mathcal{F} \to \mathcal{R} $$
-a celý proces evaluace jedince bude poté kompizice těchto dvou funkcí :
+a celý proces evaluace jedince bude poté kompozice těchto dvou funkcí:
 $$ f_{eval} = f \circ f_{phenotype}$$
 
 Volba potažmo návrh vhodné fitness funkce je značně obtížná. Neexistuje žádný obecný
@@ -552,11 +548,11 @@ vhodně zvolená fitness funkce má značný dopad na kvalitu výsledného řeš
 
 \subsection{Způsoby selekce}
 Způsoby selekce jsou důležitým faktorem při návrhu evolučního algoritmu. Selekce
-je proces, při němž se vybýrají rodiče z aktuální populace určení k reprodukci. 
+je proces, při němž se vybírají jedinci (rodiče) z aktuální populace k reprodukci. 
 Dobrý selekční algoritmus musí být schopen upřednostňovat jedince s vysokou hodnotou
 fitness funkce, na druhou stranu musí zajistit dostatečné množství genetického 
-materiálů pro dalši generace. Často využívané selekční mechanismy, zejména v kontextu
-genetických algoritmů jsou například \cite{selection_schemes_comparison} :
+materiálů pro další generace. Často využívané selekční mechanismy, zejména v kontextu
+genetických algoritmů jsou například \cite{selection_schemes_comparison}:
 
 \begin{itemize}
 	\item \textit{deterministická selekce}, kde se do množiny rodičů vybere $k$
@@ -567,8 +563,8 @@ genetických algoritmů jsou například \cite{selection_schemes_comparison} :
 		
 	\item \textit{turnajová selekce}, kdy je v několika kolech turnaje postupně 
 		porovnáno několik náhodně vybraných jedinců a vítěz turnaje je zařazen
-		do množiny rodičů. Turnaj provedeme $n$-krát, kde $n$ je požadovaná mohutnost
-		množiny rodičů. 
+		do množiny rodičů. Turnaj provedeme tolikrát, kolik potřebujeme rodičů
+		ke křížení.
 \end{itemize}
 
 \subsection{Genetické operátory}
@@ -577,20 +573,20 @@ oboru buněčné biologie, kde se uplatňují v procesu redukčního dělení bu
 
 Operátor mutace se aplikuje na potomka
 a vytvoří z něj potomka mutovaného. Stejně jako v biologii, mutace se vyskytuje
-pouze v malém počtu případů. Našim cílem je prozkoumat prostor $U$ postupně a
+pouze v malém počtu případů. Našim cílem je prozkoumat prostor $U_{cs}$ postupně a
 konvergovat k dobrým řešením. V případě vysoké pravděpodobnosti mutace se již
-nejedná o algorigmus \textbf{evoluční}, nýbrž \textbf{revoluční} a algoritmus připomíná 
+nejedná o algoritmus \textbf{evoluční}, nýbrž \textbf{revoluční} a algoritmus připomíná 
 spíše náhodné prohledávání. Operátor mutace je velmi důležitý, neboť zanesení
-náhodne mutace zajišťuje nový genetický materiál, čímž je algoritmus jednou za
-čas nucen prozkoumat vzdálenější bod prostoru. Neuvázne tak v lokálních extrémech.
+náhodné mutace zajišťuje nový genetický materiál, čímž je algoritmus jednou za
+čas nucen prozkoumat vzdálenější bod prostoru a neuvázne tak v lokálních extrémech.
 
 Při křížení dochází k přenosu částí chromozomů rodičů na potomka. Způsobů křížení
-existuje celá řada. Obecně však platí, že způsob křížení je závislý na zvolené 
+existuje celá řada[]. Obecně však platí, že způsob křížení je závislý na zvolené 
 reprezentaci. Pokud máme jedince reprezentovaného grafem, operátor křížení 
 se bude značně odlišovat od případu, kdy máme jedince reprezentovaného binárním
 vektorem. 
 
-Uveďmě si zde alespoň nejznámější druhy křížení nad binární reprezentaci, jimiž jsou:
+Uveďme si zde alespoň nejznámější druhy křížení nad binární reprezentaci, jimiž jsou:
 \begin{itemize}
 	\item \textit{jednobodové křížení}, kdy se určí místo křížení určující,
 		která část chromozomu doputuje do potomka.
@@ -598,12 +594,12 @@ Uveďmě si zde alespoň nejznámější druhy křížení nad binární repreze
 	\item \textit{dvoubodové křížení} je obdobou výše zmíněného, avšak pro dva body
 		křížení a
 	\item \textit{uniformní křížení}, které je do značné míry zobecněním výše zmíněných.
-		 Určí $n$ genů v chromozomu, jejichž hodnoty jsou vystřídány.
+		 Náhodně se určí několik genů v chromozomu, jejichž hodnoty jsou vystřídány.
 \end{itemize}
 
 \subsection{Návrh evolučního algoritmu}
 
-Kvalita námi navrženého evolučního algoritmu, je zejména závislá na následujících faktorech:
+Kvalita navrženého evolučního algoritmu, je zejména závislá na následujících faktorech:
 \begin{enumerate}
 	\item reprezentace problémů a jeho kódování,
 	\item použitá fitness funkce,
@@ -615,15 +611,15 @@ Kvalita námi navrženého evolučního algoritmu, je zejména závislá na nás
 Prostor každého problému řešitelného evolučnímy algoritmy je jiný. Neexistuje tedy obecný
 evoluční algoritmus, který by kvalitně řešil všechny problémy. Toto tvrzení podporuje takzvaný
 \textit{No Free Lunch} teorém. Pokud uvážíme dostatečně velký počet optimalizačních problémů,
-neexistuje žádný optimalizační algoritmus, který projde každý bod prostoru $U$ právě jednou
+neexistuje žádný optimalizační algoritmus, který projde každý bod prostoru $U_{cs}$ právě jednou
 a v průměru bude efektivnější než ostatní optimalizační algoritmy \cite{nflteorem, evolution_hardware}. 
-Z tohoto tvrzení plyne, že chceme-li řešit optimalizační problém skutečně efektnivně, musíme 
-do našeho evolučního algoritmu \textbf{vložit co nejvíce informací} o problému prostřednictvím 
+Z tohoto tvrzení plyne, že chceme-li řešit optimalizační problém skutečně efektivně, musíme 
+do evolučního algoritmu \textbf{vložit co nejvíce informací} o problému prostřednictvím 
 zejména položek zmíněných výše.
 
 \subsection{Genetické algoritmy}
 
-Evoluční algoritmy popisují množinu algoritmů, jejichž činnost je určena procesem Darwinovské
+Evoluční algoritmy popisují množinu algoritmů, jejichž činnost je určena procesem Darwinistické
 evoluce. Na druhé straně je však neomezuje natolik, aby se od sebe nemohly (někdy i velmi
 významně) lišit.
 
@@ -631,7 +627,8 @@ Asi nejvýznamějším žástupcem evolučních algoritmů jsou genetické algor
 jsou reprezentovány řetězcem (chromozomem) binárních, celočíselných nebo i reálných hodnot.
 Iniciální populace vzniká buď náhodně nebo za použití vhodné heuristiky. Uplatňují se zde všechny
 běžné selekční mechanismy a stejně tak zde najdeme použity všechny druhy metod křížení.
-Mutace se taktéž používá. Nevýhodou mohou někdy být chromozomý pevné délky.
+Mutace se taktéž používá. Nevýhodou mohou někdy být chromozomy pevné délky. Ty lze jen obtížně
+použít např. pro návrh antén nebo hašovacích funkcí. 
 
 \subsection{Evoluční strategie}
 
@@ -642,7 +639,7 @@ $x' = x + \mathcal{N}(0, \sigma)$
 střední hodnotou. Rozptyl $\sigma$ se mění na základě toho, jak dobře algoritmus aktuálně
 konverguje. Jako selekční mechanismy se užívá totální elitismus ve variantách $(\mu + \lambda)$
 a $(\mu, \lambda)$ \cite{ES}. Uvažujeme-li $\mu$ množinu rodičů a $\lambda$ množinu jejich
-potomků, pak :
+potomků, pak:
 
 \begin{itemize}
 	\item $(\mu + \lambda)$ vybere do další generace nejlepší jedince z množiny
@@ -652,11 +649,6 @@ potomků, pak :
 \end{itemize} 
 
 \section{Genetické programování}
-
-Pro naší práce je zejména zajímavé genetické programování, neboť právě to jsme zvolili 
-jako evoluční algoritmus pro řešení našeho problémů. Seznámíme se s ním podrobněji a 
-proto mu věnujme celou sekci.
-
 Genetické programování je speciálním druhem evolučního algoritmu, kde jednotlivce a 
 celé populace tvoří počítačové programy. Výpočet iterativně transformuje počítačové
 programy na jiné počítačové programy aplikací genetických operátorů, které jsou 
@@ -667,27 +659,25 @@ je v případě, že uspěje, nějaký program.
 Evolvované programy musíme vhodně reprezentovat. Musíme pří tom klást důraz na to,
 že programy je mezi sebou třeba křížit, mutovat a obecně na nich provádět nutné
 genetické operace. Na druhé straně však chceme volit takovou reprezentaci, která
-nám umožní programy evaluovat, tudíž vykonávat je nad zadaným vstupem. 
+nám umožní programy vykonávat nad zadaným vstupem. 
 
 Jedinci v populaci jsou reprezentování raději jako \textit{abstraktní syntaktické stromy}
-\cite{GPTutorial} než jako řádky programu. Ukázka jedince v geneticém programování je na
-diagramu \ref{fig:exampletree1} a zobrazuje jedince reprezentovaného programem
+\cite{GPTutorial} než jako řádky programu. Ukázka jedince v genetickém programování je na
+obrázku \ref{fig:exampletree1} a zobrazuje jedince reprezentovaného programem
 \texttt{max(min(x,y), 5 + z)}. Stromy se skládají z uzlů a listů. Listy jsou
 reprezentovány terminálním symbolem z množiny terminálů $T$ a uzly jsou reprezentovány
-funkcí z množiny $F$. Na diagramu \ref{fig:exampletree1} množinu funkcí tvoří 
-$F = \{max, min, +\}$ a množinu terminálu $T = \{5, x, y, z\}$. Množiny povolených
+funkcí (neterminálem) z množiny $NT$. Na obrázku \ref{fig:exampletree1} množinu funkcí tvoří 
+$NT = \{max, min, +\}$ a množinu terminálu $T = \{5, x, y, z\}$. Množiny povolených
 funkcí a terminálů dohromady tvoří primitivní množinu systému. Prostor možných 
 řešení můžeme tedy definovat jako množinu všech možných stromů, které mohou vzniknout
-kombinací funkcí a terminálů :
-
-$$ U = \{t | t=(FT)^{n}, 0 \leq n \leq max\_depth \}$$
+kombinací funkcí a terminálů.
 
 Programová reprezentace stromů se liší v závislosti na použitém programovacího jazyku.
 Platí však, že 
-v prosředích náročných na výpočetní výkon je paměťová náročnost grafové reprezentace
+v prostředích náročných na výpočetní výkon je paměťová náročnost grafové reprezentace
 neefektnivní. Stromové reprezentace lze užít i nepřímo za použití prefixové notace.
 Pří použití prefixové notace se závorky stanou nadbytečnými a program lze v paměti
-uložit jako \textit{lineární sekvenci symbolů}. Jako příklad poslouží diagram 
+uložit jako \textit{lineární sekvenci symbolů}. Jako příklad poslouží obrázek 
 \ref{fig:exampletree1}, tedy \texttt{max min x y + 5 z}. Volba reprezentace tedy
 v konečném důsledků záleží na uživateli a jeho preferencích, požadavcích a prostředí. 
 
@@ -703,31 +693,31 @@ v konečném důsledků záleží na uživateli a jeho preferencích, požadavc�
 \subsection{Inicializace nulté populace}
 
 Pro inicializaci nulté populace platí obecná pravidla. Můžeme ji buď volit náhodně
-nebo použít nějakou vhodnou heuristiku. Je zde však specifická vlastnost, kterou 
-musíme vzít do úvahy. Naše programy nemají pevně omezenou velikost (délka
+nebo použít již známá řešení. Je zde však specifická vlastnost, kterou 
+musíme vzít do úvahy. Programy nemají pevně omezenou velikost (délka
 chromozomu je proměnná). Jak velké náhodné programy tedy generovat? Existují tři
 základní přístupy:
 
 \begin{enumerate}
-	\item \textit{Full} metoda, kdy náhodně vygenerujeme strom do maximální povolené
+	\item metoda \textit{Full} , kdy náhodně vygenerujeme strom do maximální povolené
 		hloubky,
-	\item \textit{Grow} metoda, generujeme stromy proměnlivé délky a tvaru (maximální
+	\item metoda \textit{Grow} , generujeme stromy proměnlivé délky a tvaru (maximální
 		hloubka je omezena) a
-	\item \textit{Ramped half-and-half}, kdy polovina populace je generována metodou
+	\item metoda \textit{Ramped half-and-half}, kdy polovina populace je generována metodou
 		\textit{Grow} a druhá metodou \textit{Full}, za proměnlivé maximální hloubky.
 \end{enumerate}
 
 Metoda Full vždy a za všech okolností generuje plné stromy. V uzlech jsou funkce
-vybírány náhodně z množíny $F$ a jakmile algoritmus dosáhne maximální hloubky,
+vybírány náhodně z množíny $NT$ a jakmile algoritmus dosáhne maximální hloubky,
 nageneruje terminály z množiny $T$ a skončí.
 
-Grow metoda naproti tomu generuje v uzlech s určitou pravděpodobností i terminály, čímž
-je schopna vytvářet stromy různých délek i tvarů. Je však velmi závisla na velikostech
-množin $F$ a $T$. Pokud $|T| << |F|$ algoritmus degraduje na metodu Full. Pokud
-na druhé straně $|T| >> |F|$, algoritmus bude generovat jen velmi malé stromy.
+Metoda Grow naproti tomu generuje v uzlech s určitou pravděpodobností i terminály, čímž
+je schopna vytvářet stromy různých délek i tvarů. Je však velmi závislá na velikostech
+množin $NT$ a $T$. Pokud $|T| \ll |NT|$ algoritmus degraduje na metodu Full. Pokud
+na druhé straně $|T| \gg |NT|$, algoritmus bude generovat jen velmi malé stromy.
 
-Aby se omezil dopad rozdílných velikostí množin $T$ a $F$, John Koza navrhl alternativu
-v podobě algoritmu ramped half-and-half. Ten používá obě metody současně na polovinu 
+Aby se omezil dopad rozdílných velikostí množin $T$ a $NT$, John Koza navrhl alternativu
+v podobě algoritmu ramped half-and-half[]. Ten používá obě metody současně na polovinu 
 jedinců populace a maximální hloubku stromu volí náhodně, čímž zajišťuje proměnlivou
 velikost i tvar stromů.
 
@@ -735,13 +725,13 @@ velikost i tvar stromů.
 
 V případě selekce do množiny rodičů, se využívají všechny běžné selekční mechanismy
 známé z evolučních algoritmů, avšak nejčastěji se využívá turnajová selekce následovaná
-proporcionální selekcí.
+proporcionální selekcí \cite{GPTutorial}.
 
 Zajímavější je to v případě genetických operátorů křížení a mutace. Nejčastější formou
 křížení je \textit{podstromové křížení}. U rodičů vybraných k reprodukci se se náhodně 
 vybere bod křížení, který v genetickém programování zastupují větve stromu. Potomek
 vznikne umístěním podstromu prvního rodiče na prázdnou větev druhého rodiče (rodiče
-implicitně zachováváme). Celý proces blíže ilustruje diagram \ref{fig:tree_crossover}
+implicitně zachováváme). Celý proces blíže ilustruje obrázek \ref{fig:tree_crossover}
 
 %%%%%%%%%%%%% TREE CROSSOVER EXAMPLE 1 %%%%%%%%%%%%%%%
 \begin{figure}[!ht]
@@ -755,18 +745,17 @@ implicitně zachováváme). Celý proces blíže ilustruje diagram \ref{fig:tree
 Je vidět, že křížení vytvoří pouze jednoho potomka. Pro více potomků celý proces 
 opakujeme. Dale existuje specializace podstromového křížení, obdoba jednobodového
 křžení, kdy se určí v obou rodičích stejný bod křížení a přehození korespondujících
-podstromů. Je však potřeba oba strommy projít a najít společný region, tedy část stromu,
+podstromů. Je však potřeba oba stromy projít a najít společný region, tedy část stromu,
 kde je možné křížit. Existují další varianty jako je křížení se zachováním kontextu, 
-velikost zachovávající křížení a uniformní křížení. Těmito se zde zatím blíže zabývat
-nebudeme.
+velikost zachovávající křížení a uniformní křížení.
 
 Nejběžnější druh mutace je podstromová mutace. Algoritmus podstromové mutace ve stromu
-náhodně zvolí větev z níž náhodně vygeneruje nový podstrom, jak ilustruje diagram
+náhodně zvolí větev z níž náhodně vygeneruje nový podstrom, jak ilustruje obrázek
 \ref{fig:subtree_mutation}. V případě tohoto algoritmu jde v podstatě o alternativu k
 podstromovému křížení s jedním rodičem a jedním náhodně generovaným stromem.
 
-Další variantou mutace v genickém programování je uzlová nutace, kdy na každý
-uzel stromu je s určitou nizkou pravděpodobností mutace aplikována. Staré uzly
+Další variantou mutace v genetickém programování je uzlová nutace, kdy na každý
+uzel stromu je s určitou nízkou pravděpodobností mutace aplikována. Staré uzly
 se nahrazují novými se stejnou aritou.
 
 %%%%%%%%%%%%% SUBTREE MUTATION EXAMPLE 1 %%%%%%%%%%%%%%%
@@ -834,52 +823,60 @@ fitness.
 \chapter{Návrh metod pro evoluční návrh hašovacích funkcí}
 \label{sec:solution_design}
 
-Jak již bylo řečeno v kapitole \ref{sec:hashing}, navrhujeme-li hašovací funkci ``na
+Cílem práce je navrhnout hašovací funkci ``na
 míru'' nějakému konkrétnímu univerzu klíčů, můžeme dosáhnout podstatně lepší 
 výkonnosti hašovací funkce, než je tomu v případě obecných hašovacích funkcí.
 
-\section{Definice problému}
+\section{Návrh hašovacích funkci pro IP adresy}
+Jednou z oblastí, kde se uplatní specifické hašovací funkce jsou počítačové sítě,
+kde je třeba rychle vyhledávat informace například v síťových směrovačích a
+klíčem k hledané informaci je adresa IP.
 Našim problémem bude navrhnout konkrétní hašovací funkci pro hašování domény
-\texttt{IP} adres. Adresa \texttt{IP} je číslo, jednoznačně identifikující síťové
-rozhraní v síti, která používá internetový protokol \texttt{IP}. Vzhledem k tomu,
+\texttt{IP} adres. Adresa IP je číslo, jednoznačně identifikující síťové
+rozhraní v síti, která používá internetový protokol IP. Vzhledem k tomu,
 že budeme hašovat čísla, nabízí se otázka, zda by nebylo vhodné použít tabulku
-s přímým přístupem, tedy použít \texttt{IP} adresy pro přístup do tabulky
+s přímým přístupem, tedy použít IP adresy pro přístup do tabulky
 přímo bez využití hašování. Bohužel neznáme konkrétní interval nebo podmnožinu
 univerza \texttt{IP} adres a celé univerzum je příliš velké na to, aby jeho 
 prvky mohly sloužit jako čísla slotů do tabulky. Ve verzi 4 se jedná o 32 
 bitové číslo a verzi 6 dokonce o velikosti 128 bitů. Tabulka by tedy musela
-mít $2^{32} = 4 294 967 296$ slotů v případě  \texttt{IP} verze 4 a ve verzi 6
+mít $2^{32} = 4 294 967 296$ slotů v případě IP verze 4 a ve verzi 6
 dokonce $2^{128} \approx 3 \times 10^{38}$
 slotů. Je vidět, že tabulky by byly opravdu velké a jejich paměťová náročnost
 by byla nedostupná i pro specializované počítače, uvažujeme-li, že by takový
 stroj měl dělat i něco jiného, než uchovávat tak ohromnou tabulku. Musíme se
-tedy uchílit k návrhu hašovací funkce.
+tedy uchýlit k návrhu hašovací funkce.
 
-Pracujeme nad čtyřmi datasety, kde každý dataset obsahuje právě 8192 různých 
-IP adres. Pro každý dataset bude nutno navrhnout zvláštní hašovací funkci a tu
-na dané vstupy ``natrénovat''. Nenavrhujeme obecnější hašovací funkci, která by dobře
+Nenavrhujeme obecnější hašovací funkci, která by dobře
 pracovala nad libovolnou podmnožinou celého univerza IP adres, ale velmi
 specifické funkce, které budou dobře pracovat právě nad zvoleným datasetem.
 Protože celý hašovaný prostor je předem znám, snažíme se najít takové hašovací
-funkce, které pojmou co nejvíce z dané podmnožiny. State-of-the-art řešení je v
+funkce, které pojmou co nejvíce z dané podmnožiny. \textit{State-of-the-art} řešení je v
 tomto případě taková hašovací funkce, která pojme celý podprostor, její 
 faktor zatížení bude roven právě jedné ($\alpha = 1$). Taková řešení však
 bude těžké najít. Pro naše účely postačí, nalezneme-li takové, které budou
 pracovat lépe, než obecné hašovací funkce, vytvořené člověkem. Je zde samozřejmě
 možnost použít metody perfektního hašovaní \cite{perfect_hashing}, ale to nemusí
 být ve všech případech například z důvodů použití na specializovaném hardware
-dostupná možnost. Zabývat se jí tedy nebudeme.
+dostupná možnost.
 
-\section{Princip}
-Hašovací funkce budeme navrhovat evolučními algoritmy, a to konkrétně za použití 
-genetického programování, popsaného v předchozí kapitole \ref{sec:evolution_design}.
-Zvoleno bylo genetické programování, protože 
-jedince populace reprezentuje abstraktními syntaktickými stromy. Jenotlivé syntaktické 
+Naskýtá se jednoduché řešení použít již nějakou existující hašovací funkci. To má však
+několik nevýhod. Člověkem navržené hašovací funkce jsou obecné, budou mít tudíž vysokou
+míru kolizí, které by zpomalovali naši aplikaci. Další věcí je, že jsou často velké
+a pomalé, což je pro nás nepřípustné, ať už je hašovací funkce implementována v hardware
+či software. Návrh hašovací funkce je obtížná záležitost. Neexistují žádné standardy normy ani 
+návody pro jejich tvorbu. A právě zde se otevírá možnost pro evoluční návrh. Cílem práce
+bude navrhnout evolučně hašovací funkce pro množinu IP adres tak, aby její vlastnosti
+byly lepší než u \textit{state-of-the-art} obecných hašovacích funkcí co se do
+odolnosti vůči kolizím a rychlosti týče.
+
+Jako genetický algoritmus bylo zvoleno genetické programování, protože 
+jedince populace reprezentuje abstraktními syntaktickými stromy. Jednotlivé syntaktické 
 stromy budou reprezentovat přímo hašovací funkce a ty budeme interpretovat nad zadanými vstupy.
 Ohodnocení konkrétního jedince bude spočívat v nahašování jednoho celé subsetu a na výstupu budeme
 měřit počet kolizí, tedy kolik různých klíčů zobrazilo kandidátní řešení na stejný slot.
 
-\section{Přinos práce}
+\section{Porovnání s existujícími řešeními}
 Evoluční návrh hašovacích funkcí se ukázalo jako zajímavé téma v posledním 
 desetiletí \cite{dobai0,NCHF_auto_design,grammar_evolution,safdari}.
 Naprostá většina prací se se zaměrovala na návrh obecných hašovacích
@@ -889,30 +886,30 @@ avšak autor zde použil evoluční optimalizaci namísto návrhu. Autor optimal
 parametry $a,b$ následující hašovací funkce:
 $$h_{a,b}(k) = ((ak + b) \; mod \; p) \; mod \; N$$
 kde $p$ je nějaké prvočíslo a $N - 1$ je největší index slotu hašovací tabulky.
-``Výsledky jsou slibné, ale použitá metodika je sporná'' \cite{NCHF_auto_design}.
-Protože množina klíčů obsahuje celá čís	la a je volena náhodně (pseudonáhodně), náskýta se otázka,
+``Výsledky jsou slibné, ale použitá metodika je sporná'' \cite{NCHF_auto_design},
+protože množina klíčů obsahuje celá čísla a je volena náhodně (pseudonáhodně), naskýtá se otázka,
 proč vůbec evolvovat hašovací funkci, když mohou být použity její prvky k indexování
-napřímo. Druhá věc je, že autor používa jako primární metriku fitness funkce odolnost
+přímo. Druhá věc je, že autor používá jako primární metriku fitness funkce odolnost
 vůči kolizím, která je silně závislá na vstupní množině. Funkce tedy nemusí dobře 
 zobecňovat.
 
 Vhodnější metrikou pro návrh obecných hašovacích funkcí je lavinový efekt, který 
 není závislý na vstupu. Tohoto faktu využili autoři další podobné práce \cite{NCHF_auto_design}
-zabývající se návrhem hašovacích funckí. Tato práce je pravděpodobně nejblíže té 
+zabývající se návrhem hašovacích funkcí. Tato práce je pravděpodobně nejblíže té 
 naší ale s rozdílem, že my nenavrhujeme obecné hašovací funkce. Autoři stejně jako my,
 zvolili genetické programování jako evoluční platformu a volili i podobné parametry.
-Jako základ pro svoji fitnes funkci zvolili lavinový efekt, který není
+Jako základ pro svoji fitness funkci zvolili lavinový efekt, který není
 závislý na vstupu. Funkce navržené jejich systémem otestovali na různých vstupních třídách
-a dosáhli slibných výsledků. Tvrdí, že jeji algoritmus je velice robustní, protože změny
+a dosáhli slibných výsledků. Tvrdí, že její algoritmus je velice robustní, protože změny
 klíčových parametrů mají jen velmi nízký nebo žádný dopad na výsledné funkce. Bohužel
 součástí jejich experimentu není porovnání s algoritmem náhodného prohledávání, ke 
 kterému mohl jejich systém nedopatřením degradovat a který je z povahy věci také 
 velmi robustní. Autoři také tvrdí, že evolučně navrhují hašovací funkce, což 
-vzhledem k tomu, že navrhují kompresní funkce Merkle-Damg\r{a}rdova schémata
-není ůplně pravda. Takový přístup se nachází na pomezí evolučního návrhu a optimalizace.
+vzhledem k tomu, že navrhují pouze kompresní funkce Merkle-Damg\r{a}rdova schémata
+není úplně přesné, protože takový přístup se nachází na pomezí evolučního návrhu a optimalizace.
 
-Zajímavou prací, která se vydala přístupem kartézského genetického programování je
-\cite{dobai0}. Kartézské genetické programování je zejména vhodné pro aplikace blízké
+Další práce využívá kartézské genetického programování \cite{dobai0}.
+Kartézské genetické programování je zejména vhodné pro aplikace blízké
 hardwarové vrstvě, takže jeho volba se zdá velmi dobrá vzhledem k cílové aplikační doméně,
 kterou jsou síťové prvky. Nesporný přínos práce spočívá v použití Kukaččího hašování, které
 je použito za účelem zvýšení faktoru zatížení výsledné hašovací tabulky a práce tak dosáhla velmi
@@ -932,24 +929,21 @@ pomezí evolučního návrhu a evoluční optimalizace.
 V naší práce navrhujeme specifickou
 hašovací funkci pro specifické univerzum hodnot. Proto můžeme použít jako kritérium
 kvality odolnost vůči kolizím, které je nepřímým ukazatelem toho, jak dobře funkce
-náhodně distribuuje své výstupy. Evaluovanou hašovací
-funkci budeme testoat nad všemi prvky univerza. To znamená, že budeme navrhovat
-celkem ctyři hašovací funkce, pro každý vsupní dataset jednu. Kdybychom pro všechny čtyři
-datasety navrhovali jednu jedinou, nedostali bychom dobré výsledky. Výsledná hašovací tabulka
-by měla 8192 slotů, ale byla by ``natrénována'' nad všemi adresami ze všech datasetů, které mají dohromady mnohem více 
-různých klíčů. Navic 
-bychom se museli zabývat vhodnou volbou trénovacích dat, což je obtížný úkol a navíc přídat
-kritérim, které by bralo v úvahu zobecňování. Výsledná hašovací funkce by již nebyla čistě jednoúčelová, ale
-někde ``na půl cesty'' mezi obecnou a velmi specifickou hašovací funkci.
+náhodně distribuuje své výstupy. Evaluovaná kandidátní řešení
+budeme hodnotit nad všemi prvky trénovací sady a měřit celkovou míru kolizí, která je definována:
+$$f_fitness = \frac{n - nahašováno}{n}$$,
+kde $n$ je velikost trénovací množiny a $nahašováno$, je počet různých slotů, na které hašovací
+funkce zobrazila své výstupy.  
 
 Neméně důležitým kritériem je rychlost hašovací funkce a to obzvláště v aplikacích jako jsou
-síťové směrovače nebo jiná uplatňění náročná na rychlost a odezvu. Jak uvidíme později v této
+síťové směrovače nebo jiná uplatnění náročná na rychlost a odezvu. Jak uvidíme později v této
 kapitole, veškeré námi navržené funkce jsou implicitně rychlé, protože explicitně omezíme hloubku
 abstraktních syntaktických stromů a vhodně zvolíme množinu terminálů a neterminálů. 
 
 \section{Zvolené parametry genetického programování}
 
-V této sekci uvedeme, jaké parametry jsme zvolili parametry pro geneticé programování.
+V této sekci uvedeme, další zvolené parametry naší metody. Jedná se o volbu genetických operátorů
+,metodu selekce, množiny funkčních a terminálních symbolů. 
 
 \subsection{Genetické operátory a metoda selekce}
 
@@ -960,32 +954,33 @@ genetického programování \cite{GPTutorial} operátor mutace vynechávaly úpl
 Budeme raději volit cestu postupné pomaleji konvergující evoluce, než abychom 
 nějaká řešení minuli. 
 
-Co se křížení týka, opět použíjeme dobře pracující základní formu tedy podstromové křížení. Důležitá jsou zde parametry pro výběr kříženého uzlu. 
+Co se křížení týka, opět použíjeme dobře pracující základní formu, tedy podstromové křížení. Důležitá jsou zde parametry pro výběr kříženého uzlu. 
 Kořen abstraktních syntaktických stromů pro křížení nemá smysl volit, neboť by křížení degradovalo na operaci prohození. Malý vliv na konvergenci
 má  pro křížení i volba terminálních uzlů. V našem případě také budeme omezovat maximální hloubku kandidátních řešení a volba terminálního uzlu
-by mohla vyústila v neúspěšné křížení. Vyběr uzlů pro křížení budemep provádět tedy se nulovou pravděpodobností pro kořen, 10\% pravděpodobností
+by mohla vyústila v neúspěšné křížení. Vyběr uzlů pro křížení budeme provádět tedy se nulovou pravděpodobností pro kořen, 10\% pravděpodobností
 pro terminální uzel a 90\% pravděpodobností pro ostatní uzly.
 
-Selekci použijeme turnajovou a to zejména kvůli své determinitičnosti (jedince sice musíme volit náhodně, ale nemusíme se mezi nimi stochastiky rozhodovat).
-Dalším důvodem je dobrá škálovatelnost selekčního tlaku. Velikost turnaje zvolíme standartně na hodnotu sedm.
+Selekci použijeme turnajovou a to zejména kvůli své jednoznačnosti (jedince sice musíme volit náhodně, ale nemusíme se mezi nimi stochasticky rozhodovat).
+Dalším důvodem je dobrá škálovatelnost selekčního tlaku. Velikost turnaje zvolíme standardně na hodnotu sedm.
 
-Počáteční populaci budeme generovat náhodně bez použití jakýchkoli heuristik a to metodou ramped-half-and-half, která zajišťuje pro start algoritmu
-kvalitní populaci co se různorodosti verlikostí a tvarů jedinců týká. S 50\% pravděpodobností budeme generovat plný strom.
+Počáteční populaci budeme generovat náhodně bez použití jakýchkoli heuristik a to metodou \textit{ramped-half-and-half}, která zajišťuje pro start algoritmu
+kvalitní populaci co se různorodosti velikostí a tvarů jedinců týká. S 50\% pravděpodobností budeme generovat plný strom.
 
 \subsection{Množina terminálů a funkčních symbolů}
 
 Množinu vstupů zkonstruujeme z konstant a vstupních proměnných. Vstupní
-proměnné vyrobíme z jednotlivých oktetů adres a budeme požadovat, aby každý
-vstupní program obsahoval všechny proměnné alespoň jednou, tedy aby pracoval
+proměnné vyrobíme z jednotlivých oktetů IP adres a budeme požadovat, aby každý
+náhodně vygenerovaný program v počáteční generaci obsahoval všechny proměnné
+alespoň jednou, tedy aby pracoval
 s celou adresou. Jako konstanty budeme volit prvočísla. 
 
 Prvočísla hrají důležitou roli u aritmetických operací. Pokud volíme jako argument nějaké
-násobky malých čísel jako je například čislo dvě, může se stát, že funkce bude
+násobky malých čísel jako je například číslo dvě, může se stát, že funkce bude
 mít tendenci seskupovat čísla dělitelná dvěmi. Jako konstanty budeme volit
 prvočísla z rozsahu $\langle 2, 2N \rangle$, kde $N$ je velikost datasetu. Prvočísla
 budeme implementovat ve formě \textit{pomíjivé náhodné konstanty} (angl. \textit{ephemeral
-random constant}, zkr. \textit{ERC}), kterou budeme značit $\Re$. Tento přístup nám
-zajistí vhodné chování konstany s ohledem na operátory křížení a mutace a také při
+random constant}, kterou budeme značit $\Re$. Tento přístup nám
+zajistí vhodné chování konstanty s ohledem na operátory křížení a mutace a také při
 evaluaci. Taková konstanta pokud je vygenerována bude při každém ohodnocení 
 nabývat stejné hodnoty, ale v mutaci jej bude měnit s určitou pravděpodobností na
 nějaké nejbližší prvočíslo. 
@@ -999,10 +994,12 @@ Budeme-li uvažovat Merkle-Damg\r{a}rdovo schéma, musíme reprezentovat v naš�
 množině terminálů mezivýsledky kompresní funkce. I když se jedná obecně o iterativní
 schéma pracující nad libovolnou délkou vstupu, my si vzhledem k předem pevně 
 dané délce 32 bitů vystačíme se čtyřmi kompresními jednotkami, jejichž mezivýsledky
-budeme značit $a_0, a_1, a_2$ (pozn. v případě $a_3 $ se jedná o výstup). 
+budeme značit $a_0, a_1, a_2$ (pozn. v případě $a_3 $ se jedná o výstup). Celá množina
+terminálních symbolů, z kterých si budeme v našich experimentech vybírat je:
+$$ T=\{o_0 \ldots o_3, a_0, a_1, a_2, \Re\}$$.
 
 Množinu funkcí zvolíme z běžných operací. Ve volbě vhodných operací nám pomůže
-rozbor state-of-the-art hašovacích funkcí provedený v kapitole \ref{sec:hashing}.
+rozbor \textit{state-of-the-art} hašovacích funkcí provedený v kapitole \ref{sec:hashing}.
 Vyhneme se cyklům a jiným složitým
 řídícím konstrukcím, neboť ty by vzhledem ke stochastické povaze algoritmu mohly
 vyústit ve velmi pomalé hašovací funkce. Další nevítanou skupinou operací jsou operace
@@ -1013,51 +1010,26 @@ násobení ($*$), sčítání ($+$). Ostatním běžným operacím jako  odčít
 se vyhneme.
 
 Používat budeme také logické operace,
-kam zahrneme logický součet ($OR$), logický součin ($AND$) a jedničkový doplňek ($\neg$), který 
-je důležitá zejmána proto, protože umožňuje vytvořit úplnou bázi a logické funkce mohou
+kam zahrneme logický součet ($OR$), logický součin ($AND$) a jedničkový doplněk ($\neg$), který 
+je důležitá zejména proto, protože umožňuje vytvořit úplnou bázi a logické funkce mohou
 tedy zkonstruovat libovolnou logickou funkci. Poslední skupinu budou tvořit funkce bitové.
 Zde zahrneme pravou ($\ggg$) a levou ($\lll$) rotaci. Které jsou důležité pro výběr 
-jednotlivých bitů ze vstupních argumentů. Výčet použitých funkcí a terminálů
-popisují tabulky \ref{tab:function_set_design} a \ref{tab:terminal_set_design}.
+jednotlivých bitů ze vstupních argumentů. Kompletní výčet funkčních symbolů použitých v našich 
+experimentech shrnuje množina NT:
+$$NT=\{AND, OR, XOR, \neg, \lll, \ggg, +, *\}$$.
 
-%%%%%%%%%%%%% FUNCTION AND TERMINAL SETS %%%%%%%%%%%%%%%
-\begin{table}
-\begin{center}
-\begin{tabular}{ |l|c| }
-	\hline
-   	Kategorie & Zástupci \\
-  	\hline
-  	Aritmetické celočíselné  & $\{ +,-,*,/,mo	d \}$ \\
-  	Aritmetické                     & $\{\}$ \\
-  	Booleovské				      & $\{AND, OR, NOT\}$ \\
-  	Bitové					          & $\{ \lll, \ggg \}$ \\ 	 
-  	\hline
-\end{tabular}
-\caption{Zvolená množina funkcí}
-\label{tab:function_set_design}
-\end{center}
-\end{table}
-
-\begin{table}
-\begin{center}
-\begin{tabular}{ |l|c| }
-	\hline
-   	Kategorie & Zástupci \\
-  	\hline
-  	Proměnné       & $\{o_0, o_1, o_2, o_3, a_0, a_1, a_2\}$ \\
-  	Funkce arity 0 & $\{ \Re \}$ \\	 
-  	\hline
-\end{tabular}
-\caption{Zvolená množina terminálů}
-\label{tab:terminal_set_design}
-\end{center}
-\end{table}
-%%%%%%%%%%%%% FUNCTION AND TERMINAL SETS %%%%%%%%%%%%%%%
 
 \section{Evoluční návrh hašovacích funkcí}
-V této sekci představíme princip metody a konkrétní podobu navrženého řešení pro přímý evoluční 
+
+Celkem budeme navrhovat hašovací funkce třemi různými metodami. První z nich je přímý návrh
+, druhou poté optimalizace Merkle-Damg\r{a}rdova schématu. Třetí a poslední potom návrh hašovacích
+funkcí pro kukaččí hašování. 
+
+\subsection{Evoluční návrh hašovacích funkcí přímou metodou}
+
+Nejjednodušším přístupem k řešení problematiky je takzvaný přimý přístup nebo přímý evoluční 
 návrh hašovacích funkcí. Přímý proto, protože zde nebudeme uvažovat žádné schéma ani koncept
-jehož části bychom evolvovali. Hašovací funkce zde budou reprezentovat přímo abstraktní syntaktické
+jehož části bychom optimalizovali. Hašovací funkce zde budou reprezentovat přímo abstraktní syntaktické
 stromy, s kterými pracuje algoritmus genetického programování. Funkce navržené touto metodou 
 budeme označovat \textit{IPHash}. Každý jedinec bude pracovat se všemi oktety IP adresy.
 Merkle-Damg\r{a}rdovo schéma zde nepoužíváme, takže do množiny terminálů není třeba zahrnovat
@@ -1065,9 +1037,8 @@ Merkle-Damg\r{a}rdovo schéma zde nepoužíváme, takže do množiny terminálů
 křážení zvolíme v podstromové variantě a operátor mutace taktéž. Hloubku jednotlivých jedinců omezíme
 na hodnotu šest a to ze dvou důvodu. Jednak protože očekáváme od našich hašovacích funkcí aby byly
 rychlé a také proto, že algoritmus genetického programování je paměťově náročný a s rostoucí hloubkou
-stromů roste exponenciálně paměťová náročnost, což klade neúnosné nároky na výpočetní zařízení 
-(servery \textit{edesign1} \ldots \textit{edesign4}). Parametry této metody shrnuje 
-tabulka \ref{tab:IPHash_params}.
+stromů roste exponenciálně paměťová náročnost, což klade neúnosné nároky na výpočetní zařízení.
+Parametry této metody shrnuje tabulka \ref{tab:IPHash_params}.
 
 \begin{table}[!ht]
 	\centering
@@ -1104,7 +1075,7 @@ tabulka \ref{tab:IPHash_params}.
 	\label{tab:IPHash_params}
 \end{table}
 
-\section{Optimalizace za použití Merkle-Damg\r{a}rdova schématu}
+\subsection{Optimalizace za použití Merkle-Damg\r{a}rdova schématu}
 
 Dále se budeme zabývat evolučním návrhem kompresních funkcí pro Merkle-Damg\r{a}rdovo schéma.
 K optimalizaci mixovacích komponent budeme přistupovat z úplně jiného úhlu. Upravíme  Merkle-Damg\r{a}rdovo
@@ -1113,10 +1084,7 @@ jedna mixovací funkce používá iterativně. My máme tu výhodu, že známe v
 si tedy dovolit navrhnout pro každou mixovací komponentu samostatnou hašovací funkci, pro každý oktet
 hašovací funkce jednu. A protože je velikost vstupu násobek osmi, nemusíme poslední oktet doplňovat o ohraničující vatu. Dále
 nám nezáleží na kryptografické bezpečnosti, můžeme tedy vzpostit poslední kompresní komponentu
-pro délkové ohraničení. Ani dobrovolnou finalizační komponentu nevyužijeme. Výsledná hašovací funkce
-bude tvaru
-$$f_{Merkle-Damgard} : X \to \{0,1,2 \ldots 8192\}$$,
-kde $IV$ je nějaké celé číslo a $X$ je vstupní IP adresa.
+pro délkové ohraničení. Ani dobrovolnou finalizační komponentu nevyužijeme. 
 
 Tento přístup bude vyžadovat zásadní změnu v reprezentaci jedinců. Každý jedinec se bude skládat ze čtyř 
 různých abstraktních syntaktickách stromů reprezentující jednotlivé kompresní funkce. Genetické operátory
@@ -1128,18 +1096,18 @@ syntaktické stromy vybírány náhodně.
 
 \begin{figure}[!ht]
 	\includegraphics[width=\textwidth]{fig/merkle_damgard_design2}
-	\caption{Námi upravené Merkle-Damg\r{a}rdovo schéma používá zřetězení několika různých kompresních funkcí.}
+	\caption{Upravené Merkle-Damg\r{a}rdovo schéma používá zřetězení několika různých kompresních funkcí.}
+	\label{fig:merkle_damgard_2}
 \end{figure}
 
 Poslední změnu musí prodělat ještě množina terminálních symbolu, do které je nutné zavést příslušné symboly reprezentující
 konkrétní mezivýsledky $a_0, a_1, a_2$. Ostatní parametry se oproti metodě v předchozí sekci neliší.
 
-\section{Evoluční návrh za použití kukaččího hašování}
+\subsection{Evoluční návrh za použití kukaččího hašování}
 
-V poslední sérii experimentů se budeme zabývat návrhem hašovacích funkcí pro Kukaččí hašování.
-Kukaččí hašování bylo popsáno v kapitole \ref{sec:hashing}, nás však bude zajímat pouze jeho
-zjednodušená podoba. Provedeme stejný základní set experimentů jako v předchozích dvou případech
-a vyhodnotíme výsledky.
+V poslední sérii experimentů se budeme zabývat návrhem hašovacích funkcí pro kukaččí hašování. 
+Nás však bude zajímat pouze jeho zjednodušená podoba. Provedeme stejný základní set experimentů
+jako v předchozích dvou případech a vyhodnotíme výsledky.
 
 Vzhledem k tomu, že zde pracujeme již přímo s návrhem hašovací tabulky, kdy používáme metodu pro
 řešení kolizí, očekáváme výrazně lepší výsledky, než v předchozích případech. Musíme však pamatovat
@@ -1149,58 +1117,61 @@ stav může nastat v případě, že jsou jednotlivé klíče často vytlačová
 algoritmu \ref{alg:cuckoo_hashing}) nebo není možné vložit klíč do tabulky vůbec a je nutné
 volat \Call{REHASH}{}. 
 
-Funkci \Call{REHASH} nebudeme v našem návrhu vůbec uvažovat, protože její funkce spočívá v nalezení
+Funkci \Call{REHASH}{} nebudeme v našem návrhu vůbec uvažovat, protože její funkce spočívá v nalezení
 nových hašovacích funkcí a znovu vytvoření hašovací tabulky. Tato operace je jedna velice časově
 náročná, což by zpomalovalo výslednou hašovací tabulku a navíc bychom museli zajistit vhodné nalezení
 nových hašovacích funkcí, což lze řešit například genetickým algoritmem, který však už nesmí být
 součástí výsledku.
 
-Druhým faktorem mající významný dopad na ryhlost je počet iterací vnější smyčky v operaci
+Druhým faktorem mající významný dopad na rychlost je počet iterací vnější smyčky v operaci
 \Call{INSERT}{}. S vzrůstajícím počtem iterací roste také počet volání hašovacích funkcí, které
 i přes to, že jsou inherentně rychlé mohou hašovací tabulku zpomalit.
 
-Množinu termínálních
-symbolů ponecháme stejno jako v předchozích případech, stejně tak i množinu funkcí a ostatní parametry
+Množinu terminálních
+symbolů ponecháme stejnou jako v předchozích případech, stejně tak i množinu funkcí a ostatní parametry
 genetického programování. Jedinou změnou bude reprezentace jedince. Ten bude tentokrát reprezentován
-dvěma abstraktními syntaktickými stromy. Každý strom bude reprezentovat jednu hašovací funkci, oboum
+dvěma abstraktními syntaktickými stromy. Každý strom bude reprezentovat jednu hašovací funkci, obou
 hašovacím funkcím bude přidělena jedna polovina hašovací tabulky. Počet generací ponecháme na 100000,
 neboť touto volbou fitness funkce zásadně zmenšíme prohledávací prostor.
 
 \chapter{Experimenty s navrženými metodami}
 
 %%%%%%%%%%%%% EXPERIMENTS WITH VARIOUS FUNCTIONS %%%%%%%%%%%%%%%
-V této kapitole provedeme experimenty v nichž nejprve ověříme, zda navržené řešení poskytuje očekávané
-výsledky. Poté provedeme další sérii experimentů, v níchž budeme postupně měnit parametry navrženého
+V této kapitole provedeme experimenty v nichž nejprve ověříme, zda metoda přímého návrhu poskytuje očekávané
+výsledky. Poté provedeme další sérii experimentů, v nichž budeme postupně měnit parametry navrženého
 řešení a vyhodnotíme výsledky. Měnit budeme jak samotné parametry algoritmu genetického
 programování, tak i množiny terminálních a neterminálních symbolů. Budeme provádět vždy pouze
 jednu změnu v každém experimentu, abychom zachovali jejich věrohodnost a správnou korespondenci
 mezi změnou parametru a důsledkem, jaký má na výsledné řešení.
 
 V následující sekci budeme experimentovat s evolvovanými hašovacími funkcemi, do kterých zahrneme
-Merkle-Damg\r{a}rdovo schéma popsané v kapitole \ref{sec:hashing}. Krátce popíšeme změny v našem
-evolučním algoritmu a provedeme příslušné experimenty.
+Merkle-Damg\r{a}rdovo schéma. Krátce popíšeme změny v našem evolučním algoritmu a provedeme příslušné
+experimenty.
 
-V poslední sekci této kapitoly uvedeme do námi navrženého řešení kukaččí schéma jak bylo popsané
-v kapitole \ref{sec:hashing}. Opět shrneme změny v genetickém algoritmu, provedeme a vyhodnotíme
-příslušné experimenty.
+V poslední sekci této kapitoly uvedeme do námi navrženého řešení kukaččí schéma. Provedeme experimenty
+v nichž ověříme úspěšnost metody.
 
 Ve všech experimentech budeme měřit míru odolnosti proti kolizím, konkrétně tedy kolik je daná hašovací 
-funkce schopna nahašovat různých IP adres. Další, neméně důležitou roli hraje u hašovacích funkcí jejich
+funkce schopna hašovat různých IP adres. Další, neméně důležitou roli hraje u hašovacích funkcí jejich
 rychlost. Provedeme tedy i experimenty, které odhalí rychlost s jakou jednotlivé hašovací funkce provádí svou
-činnost. 
+činnost. Experimenty budeme provádět na čtyřmi testovacími sadami, každá o 8192 IP adresách. Adresy jsou
+získané ze směrovačů sdružení CESNET. Jedná se tedy o reálná data.
 
 \section{Experimenty s funkcemi navrženými přímou metodou}
 Nejprve se tedy budeme zkoumat výsledky, jaké poskytuje námi navržené řešení ve své přímé podobě z kapitoly
- \ref{sec:solution_design}. Námi navržený algoritmus porovnáme s náhodným prohledáváním.
- Jedná se o náhodné prohledávání s elitismem. Ta je realizována jako úprava stávajícího algoritmu tak, aby pouze mutoval.
- Mutovaným uzlem bude vždy kořen, čímž zajistíme znovuvygenerování celého kandidátního řešení.
+\ref{sec:solution_design}. Hašovací funkce jsou reprezentované jedním abstraktním syntaktickým stromem, není
+použito žádné obecné konstrukční schéma ani neřešíme nastalé kolize.
  
- Do grafu zahrneme i jednu variantu človekem vytvořené obecné hašovací funkce, konkrétně hašovací funkci \textit{Murmurhash3} představenou
- v sekci \ref{sec:evolution_design}. Běhy námi navrženého řešení jsme promítli do grafů, kde každému
- datasetu odpovída jeden graf. Na levé straně grafu můžeme vidět průběhy námi navrženého systémů
- algoritmus náhodného prohledávání. Každá křivka je výsledkem mediánu z padesáti nezávislých běhů. Na pravé
- straně můžeme pozotovat medián systémů IPHash a u něj ještě interval spolehlivosti. Interval spolehlivosti
- je zaznačen dvěma ohraničujícímy křivkami, kde spodní značí první a horní třetí kvartil.
+Námi navržený algoritmus porovnáme s náhodným prohledáváním.
+Jedná se o náhodné prohledávání s elitismem. Ta je realizována jako úprava stávajícího algoritmu tak, aby pouze mutoval.
+Mutovaným uzlem bude vždy kořen, čímž zajistíme znovu-vygenerování celého kandidátního řešení.
+ 
+Do grafů zahrneme i jednu variantu člověkem vytvořené obecné hašovací funkce, konkrétně hašovací funkci
+\textit{Murmurhash3}. Běhy námi navrženého řešení jsme promítli do grafů, kde každému
+datasetu odpovídá jeden graf. Na levé straně grafu můžeme vidět průběhy námi navrženého systémů
+algoritmus náhodného prohledávání. Každá křivka je výsledkem mediánu z padesáti nezávislých běhů. Na pravé
+straně můžeme pozorovat medián naší metody (budeme ji nazývat IPHash) a u něj ještě interval spolehlivosti.
+Interval spolehlivosti je zaznačen dvěma ohraničujícími křivkami, kde spodní značí první a horní třetí kvartil.
 
 %%%%%%%%%%%%% IPHASH AVG Population SET #1 %%%%%%%%%%%%%%%
 \begin{figure*}[!ht]
@@ -1211,23 +1182,23 @@ Nejprve se tedy budeme zkoumat výsledky, jaké poskytuje námi navržené řeš
 	, height=8cm
 	, width=0.50\textwidth
 	, grid=major
-	, xlabel=Generation
+	, xlabel=Generace
 	, ymin=5180
 	, ymax=5320
-	, ylabel=Successfully hashed
+	, ylabel=Nahašováno
 	, legend style=
 	{ at={(1.0, 0.3)}
 		, anchor=east
 	}
 	]
 	\addplot[color=black, dashdotted, thick, mark=none] table {graph/IPHash/Set1/ElitistRandomRun_1.dat};
-	\addlegendentry{Elitist Random Search}
+	\addlegendentry{Náhodné prohledávání}
 	
 	\addplot[color=green, solid, thick, mark=none] coordinates {(0,5190) (194, 5190)};
 	\addlegendentry{MurmurHash3}
 	
 	\addplot[color=red, mark=none, dashed, thick] table {graph/IPHash/Set1/IPHashMedian_1.dat}; 
-	\addlegendentry{Proposed IPHash}
+	\addlegendentry{IPHash}
 	
 	\end{axis}
 	
@@ -1240,7 +1211,7 @@ Nejprve se tedy budeme zkoumat výsledky, jaké poskytuje námi navržené řeš
 	, height=8cm
 	, width=0.50\textwidth
 	, grid=major
-	, xlabel=Generation
+	, xlabel=Generace
 	%%	, ylabel=Successfully hashed
 	, yticklabels={,,}
 	%%	, legend pos=outer north east
@@ -1250,26 +1221,27 @@ Nejprve se tedy budeme zkoumat výsledky, jaké poskytuje námi navržené řeš
 	}
 	]
 	\addplot[color=red, mark=none, dashed,thick] table {graph/IPHash/Set1/IPHashMedian_1.dat}; 
-	\addlegendentry{Proposed IPHash}
+	\addlegendentry{IPHash}
 	\addplot[color=red, mark=none, dotted] table {graph/IPHash/Set1/IPHashReliab1_1.dat}; 
 	%\addlegendentry{Proposed IPHash RR1}
 	\addplot[color=red, mark=none, dotted] table {graph/IPHash/Set1/IPHashReliab3_1.dat}; 
-	\addlegendentry{Diversity of runs}
+	\addlegendentry{Diverzita běhů}
 	\end{axis}
 	\end{tikzpicture}
-	\caption{Evolvované hašovací funkce a jejich fitnes hodnota nad data setem číslo 1. TODO: FIX THIS}
+	\caption{Evolvované hašovací funkce a jejich fitness hodnota nad data setem číslo 1.}
 	\label{fig:basicComparison1}
 \end{figure*}
 %%%%%%%%%%%%% IPHASH AVG Population SET #1 %%%%%%%%%%%%%%%
 
-Na obrázku \ref{fig:basicComparison1} můžeme vidět vidět porovnání běhů a jejich výsledků obou algoritmů.
+Na obrázku \ref{fig:basicComparison1} můžeme vidět porovnání běhů a jejich výsledků obou algoritmů.
 Je patrné, že nad prvním datasetem, navržené řešení jasně dominuje nad náhodným prohledáváním. IPHash
 nahašoval o 25 IP adres více než druhý nejůspěšnější algoritmus náhodného prohledávání. Nejhůře si vedl
 člověkem vytvořený algoritmus \textit{MurmurHash3}, který nahašoval o celých 111 IP adres méně. 
 
-Z intervalu spolehlivost můžeme usoudit, že námi navržený algoritmus skutečně dobře a rozptyly jeho
-řešení nejsou příliš signifikantní, ale je zde prostor pro zlepšení . Nalezené řešení není tedy dílem čísté náhody. Z grafu můžeme vyčíst, že 
-algoritmus v prních několika generacích rapidně konverguje a s postupným příbýváním generací se jeho 
+Z intervalu spolehlivosti můžeme usoudit, že námi navržený algoritmus pracuje skutečně dobře a rozptyly jeho
+řešení nejsou příliš signifikantní, ale je zde prostor pro zlepšení. Nalezené řešení není tedy dílem čisté
+náhody. Z grafu můžeme přečíst číst, že 
+algoritmus v prvních několika generacích rapidně konverguje a s postupným přibýváním generací se jeho 
 konvergence zpomaluje. Jedná se o téměř ukázkový běh algoritmu genetického programování \cite{GPTutorial}.
 
 %%%%%%%%%%%%% IPHASH AVG Population SET #2 %%%%%%%%%%%%%%%
@@ -1281,23 +1253,23 @@ konvergence zpomaluje. Jedná se o téměř ukázkový běh algoritmu genetické
 	, height=8cm
 	, width=0.50\textwidth
 	, grid=major
-	, xlabel=Generation
+	, xlabel=Generace
 	, ymin=5180
 	, ymax=5330
-	, ylabel=Successfully hashed
+	, ylabel=Nahašováno
 	, legend style=
 	{ at={(1.0, 0.3)}
 		, anchor=east
 	}
 	]
 	\addplot[color=black, dashdotted, thick, mark=none] table {graph/IPHash/Set2/ElitistRandomRun_2.dat};
-	\addlegendentry{Elitist Random Search}
+	\addlegendentry{Náhodné prohledávání}
 	
 	\addplot[color=green, solid, thick, mark=none] coordinates {(0,5190) (194, 5190)};
 	\addlegendentry{MurmurHash3}
 	
 	\addplot[color=red, mark=none, dashed, thick] table {graph/IPHash/Set2/IPHashMedian_2.dat}; 
-	\addlegendentry{Proposed IPHash}
+	\addlegendentry{IPHash}
 	
 	\end{axis}
 	
@@ -1310,7 +1282,7 @@ konvergence zpomaluje. Jedná se o téměř ukázkový běh algoritmu genetické
 	, height=8cm
 	, width=0.50\textwidth
 	, grid=major
-	, xlabel=Generation
+	, xlabel=Generace
 	%%	, ylabel=Successfully hashed
 	, yticklabels={,,}
 	%%	, legend pos=outer north east
@@ -1320,11 +1292,11 @@ konvergence zpomaluje. Jedná se o téměř ukázkový běh algoritmu genetické
 	}
 	]
 	\addplot[color=red, mark=none, dashed,thick] table {graph/IPHash/Set2/IPHashMedian_2.dat}; 
-	\addlegendentry{Proposed IPHash}
+	\addlegendentry{IPHash}
 	\addplot[color=red, mark=none, dotted] table {graph/IPHash/Set2/IPHash1stQ_2.dat}; 
 	%\addlegendentry{Proposed IPHash RR1}
 	\addplot[color=red, mark=none, dotted] table {graph/IPHash/Set2/IPHash3rdQ_2.dat}; 
-	\addlegendentry{Diversity of runs}
+	\addlegendentry{Diverzita běhů}
 	\end{axis}
 	\end{tikzpicture}
 	\caption{Evolvované hašovací funkce a jejich fitnes hodnota nad data setem číslo 2.}
@@ -1332,7 +1304,8 @@ konvergence zpomaluje. Jedná se o téměř ukázkový běh algoritmu genetické
 \end{figure*}
 %%%%%%%%%%%%% IPHASH AVG Population SET #2 %%%%%%%%%%%%%%%
 
-V případě druhého datasetu jsou dosažené výsledky (\ref{fig:basicComparison2}) ještě lepší. IPHash dosáhl vyššího mediánu
+V případě druhého datasetu jsou dosažené výsledky (znázorněného na obrázku \ref{fig:basicComparison2})
+ještě lepší. IPHash dosáhl vyššího mediánu
 a opět výrazně převýšil jak náhodné prohledávání, tak \textit{MurmurHash3}. Nahašoval o 24
 IP adres více než náhodné prohledávání a o 115 IP adres více, než \textit{MurmurHash3}. 
 Interval spolehlivosti je s výjimkou posledních několika generací více sevřený kolem křivky
@@ -1358,13 +1331,13 @@ konverguje v prvních několika generacích. Poté jeho nástup ustává.
 	}
 	]
 	\addplot[color=black, dashdotted, thick, mark=none] table {graph/IPHash/Set3/ElitistRandomRun_3.dat};
-	\addlegendentry{Elitist Random Search}
+	\addlegendentry{Náhodné prohledávání}
 	
 	\addplot[color=green, solid, thick, mark=none] coordinates {(0,5206) (194, 5206)};
 	\addlegendentry{MurmurHash3}
 	
 	\addplot[color=red, mark=none, dashed, thick] table {graph/IPHash/Set3/IPHashMedian_3.dat}; 
-	\addlegendentry{Proposed IPHash}
+	\addlegendentry{IPHash}
 	
 	\end{axis}
 	
@@ -1387,24 +1360,25 @@ konverguje v prvních několika generacích. Poté jeho nástup ustává.
 	}
 	]
 	\addplot[color=red, mark=none, dashed,thick] table {graph/IPHash/Set3/IPHashMedian_3.dat}; 
-	\addlegendentry{Proposed IPHash}
+	\addlegendentry{IPHash}
 	\addplot[color=red, mark=none, dotted] table {graph/IPHash/Set3/IPHash1stQ_3.dat}; 
 	%\addlegendentry{Proposed IPHash RR1}
 	\addplot[color=red, mark=none, dotted] table {graph/IPHash/Set3/IPHash3rdQ_3.dat}; 
-	\addlegendentry{Diversity of runs}
+	\addlegendentry{Diverzita běhů}
 	\end{axis}
 	\end{tikzpicture}
-	\caption{Evolvované hašovací funkce a jejich fitnes hodnota nad data setem číslo 3.}
+	\caption{Evolvované hašovací funkce a jejich fitness hodnota nad data setem číslo 3.}
 	\label{fig:basicComparison3}
 \end{figure*}
 %%%%%%%%%%%%% IPHASH AVG Population SET #3 %%%%%%%%%%%%%%%
 
-Zajímavá situace nastala v případě třetího datasetu \ref{fig:basicComparison3}. Na první pohled je patrné,
-že oba iterační algoritmy zde řešení s obdobnou hodnotou fitnes. Dále je vidět,
-že mediánová hodnota fitnes se nám znatelně a to o více než dvacet nahašovaných 
+Zajímavá situace nastala v případě třetího datasetu na obrázku \ref{fig:basicComparison3}.
+Na první pohled je patrné,
+že oba iterační algoritmy zde nalezly řešení s obdobnou hodnotou fitnes. Dále je vidět,
+že mediánová hodnota fitnes nám znatelně poklesla a to o více než dvacet nahašovaných 
 adres v případě algoritmu IPHash. Výsledná řešení náhodného prohledávání našla
 řešení s obdobnou hodnotou fitnes jako v předchozím případě. Naopak se zvýšila 
-hodnota u algoritmu \textit{MurmurHash3}, a to o celýh 15 nahašovaných adres.
+hodnota u algoritmu \textit{MurmurHash3} a to o celýh 15 nahašovaných adres.
 
 Z intervalu spolehlivosti můžeme vyčíst, mnohem větší rozptyl než v předchozích
 případech. IPHash algoritmus produkuje mnohem větší diverzitu v nalezených řešeních.
@@ -1412,7 +1386,7 @@ Tento fakt ve spojení s obdobnou hodnotou fitnes funkce jako má náhodné proh
 značí, že stavový prostor tak jak modelován třetím datasetem je vhodný spíše pro 
 algoritmus náhodného prohledávání, než pro evoluční algoritmus. Evoluční algoritmus
 se v prostoru dostupných řešení ``nemá čeho chytit''. Proto špatně konverguje a jeho
-průběh připomíná náhodné prohledávání. Na počátku algoritmus konverguje velmi rychle
+průběh připomíná náhodné prohledávání. Na počátku algoritmus konverguje velmi rychle,
 velmi rychle však ztrácí veškerý progres a téměř úplně staguje.
 
 %%%%%%%%%%%%% IPHASH AVG Population SET #4 %%%%%%%%%%%%%%%
@@ -1424,23 +1398,23 @@ velmi rychle však ztrácí veškerý progres a téměř úplně staguje.
 	, height=8cm
 	, width=0.50\textwidth
 	, grid=major
-	, xlabel=Generation
+	, xlabel=Generace
 	, ymin=5180
 	, ymax=5320
-	, ylabel=Successfully hashed
+	, ylabel=Nahašováno
 	, legend style=
 	{ at={(1.0, 0.3)}
 		, anchor=east
 	}
 	]
 	\addplot[color=black, dashdotted, thick, mark=none] table {graph/IPHash/Set4/ElitistRandomSearch_4.dat};
-	\addlegendentry{Elitist Random Search}
+	\addlegendentry{Náhodné prohledávání}
 	
 	\addplot[color=green, solid, thick, mark=none] coordinates {(0,5206) (194, 5206)};
 	\addlegendentry{MurmurHash3}
 	
 	\addplot[color=red, mark=none, dashed, thick] table {graph/IPHash/Set4/IPHashMedian_4.dat}; 
-	\addlegendentry{Proposed IPHash}
+	\addlegendentry{IPHash}
 	
 	\end{axis}
 	
@@ -1453,7 +1427,7 @@ velmi rychle však ztrácí veškerý progres a téměř úplně staguje.
 	, height=8cm
 	, width=0.50\textwidth
 	, grid=major
-	, xlabel=Generation
+	, xlabel=Generace
 	%%	, ylabel=Successfully hashed
 	, yticklabels={,,}
 	%%	, legend pos=outer north east
@@ -1463,11 +1437,11 @@ velmi rychle však ztrácí veškerý progres a téměř úplně staguje.
 	}
 	]
 	\addplot[color=red, mark=none, dashed,thick] table {graph/IPHash/Set4/IPHashMedian_4.dat}; 
-	\addlegendentry{Proposed IPHash}
+	\addlegendentry{IPHash}
 	\addplot[color=red, mark=none, dotted] table {graph/IPHash/Set4/IPHash1stQ_4.dat}; 
 	%\addlegendentry{Proposed IPHash RR1}
 	\addplot[color=red, mark=none, dotted] table {graph/IPHash/Set4/IPHash3rdQ_4.dat}; 
-	\addlegendentry{Diversity of runs}
+	\addlegendentry{Diverzita běhů}
 	\end{axis}
 	\end{tikzpicture}
 	\caption{Evolvované hašovací funkce a jejich fitnes hodnota nad data setem číslo 4.}
@@ -1475,21 +1449,22 @@ velmi rychle však ztrácí veškerý progres a téměř úplně staguje.
 \end{figure*}
 %%%%%%%%%%%%% IPHASH AVG Population SET #4 %%%%%%%%%%%%%%%
 
-Zdá se, že stejně jako v předchozím případě, se IPHash chová i nad posledním datasetem čtyři (\ref{fig:basicComparison4}).
+Zdá se, že stejně jako v předchozím případě, se IPHash chová i nad posledním datasetem čtyři
+(obrázek \ref{fig:basicComparison4}).
 Mediánová hodnota je opět nižší než v případě náhodného prohledávání. Je však vyšší, než v případě
-\textit{MurmurHash3}. Stavový prostor, zda se, má opět náhodnou charakteristiku a algoritmus spatně
+\textit{MurmurHash3}. Stavový prostor, zdá se má opět náhodnou charakteristiku a algoritmus spatně
 koverguje. Rozptyl je opět větší než v prvních dvou případech. Algoritmus rychle konverguje v prvních
 několika generacích. Brzy však přejde ve stagnaci.
 
-Dříve, než se pustíme dále je vhodné se zamyslet na doposud dosaženými výsledky algoritmem náhodného
-prohledávání. Teoreticky algoritmus náhodného prohledávání je takový, který náhodně vybírá body
+Dříve než se pustíme dále je vhodné se zamyslet na doposud dosaženými výsledky algoritmem náhodného
+prohledávání. Formálně je algoritmus náhodného prohledávání takový, který náhodně vybírá body
 daného stavového prostoru. Součástí každého evolučního algoritmu je však také reprezentace problému,
-která modeluje stavový prostor. V našem případě bylo náhodné proheldávání velmi silně ovlivněno 
-reprezentací jednců jako abstraktních syntaktických stromů a použitými terminálními a funkčními symboly.
+která modeluje stavový prostor. V našem případě bylo náhodné prohledávání velmi silně ovlivněno 
+reprezentací jedinců jako abstraktních syntaktických stromů a použitými terminálními a funkčními symboly.
 Lze tedy stále mluvit o algoritmu náhodného prohledávání, mějme však na paměti, že výsledky jím
-dosaženou jsou velkou měrou způsobené právě námi vhodně zvolenou reprezentací.
+dosažené jsou velkou měrou způsobené právě námi vhodně zvolenou reprezentací.
 
-Jedna ze zajímavých vlastostí společnou pro všechny grafy je fakt, že v iniciálních populacích obou
+Jedna ze zajímavých vlastností společnou pro všechny grafy je fakt, že v iniciálních populacích obou
 iteračních algoritmů jsme nalezli řešení, která převyšovala člověkem vytvořené hašovací funkce. Toto
 je velmi zajímavý poznatek. Důvodem je, že velikost populace jsme zvolili poměrně velkou. I přes to
 však z toho plyne, že po několika málo pokusech s náhodným generováním abstraktních syntaktických 
@@ -1513,15 +1488,14 @@ stromů můžeme nalézt řešení, která převyšují ta člověkem vytvořen�
 \end{table}
 
 Ve shrnující tabulkce \ref{tab:IPHash_conclusion} můzeme vidět výsledky algoritmu náhodného prohledávání
-a algoritmu IPHash v kontrastu s člověkem vytvořenými hašovacími funkcemi z kapitoly \ref{sec:hashing}.
-Nad prvními dvěma má nejlepší mediánovou hodnotu fitnes IPHash. Nad druhými dvěma naopak náhodné prohledávání.
-Člověkem vytvořené algoritmy ani v jednom případě napřekonaly IPHash. Naopak IPHash nad obecnými hašovacími
-funkcemi jasně dominuje. Rozdíl je nejvíce znát v v případě funkce \textit{CityHash} nad datasetem dva, kde se rozdíl
+a algoritmu IPHash v porovnání s člověkem vytvořenými hašovacími funkcemi z kapitoly \ref{sec:hashing}.
+Nad prvními dvěma má nejlepší mediánovou hodnotu fitness IPHash. Nad druhými dvěma naopak náhodné prohledávání.
+Člověkem vytvořené algoritmy ani v jednom případě nepřekonaly IPHash. Naopak IPHash nad obecnými hašovacími
+funkcemi jasně dominuje. Rozdíl je nejvíce znát v případě funkce \textit{CityHash} nad datasetem dva, kde se rozdíl
 rovná hodnotě 150 nahašovaných funkcí. Nejméně je to naopak v případě funkce \textit{FarmHash} nad datasetem tři,
 kde se rozdíl zmenšil na 71 nahašovaných adres.
  
-Nyní se budeme podrobněji zabývat rozptylem nejlepšího nalezeného řešení (ekvivalent
-hodnoty poslední generace algoritmu), které  nalezne náhodné prohledávání a IPHash v porovnání s
+Nyní se budeme podrobněji zabývat rozptylem nejlepšího nalezeného řešení, které  nalezne náhodné prohledávání a IPHash v porovnání s
 algoritmem náhodného prohledávání.
 
 %%%%%%%%%%%%% IPHASH BOXPLOT %%%%%%%%%%%%%%%
@@ -1531,22 +1505,12 @@ algoritmem náhodného prohledávání.
 	\begin{axis}
 	[ boxplot/draw direction=y
 	, name=plot1
-	, xtick={1,2,3}
-	, xticklabels={RS, IPHash, Náhodné prohledávání}
+	, xtick={1,2}
+	, xticklabels={IPHash, Náhodné prohledávání}
 	, ymin=5200
 	, ymax=5360
 	]
-	\addplot+[
-	boxplot prepared={
-		lower whisker=5250,
-		lower quartile=5266,
-		median=5276,
-		upper quartile=5286,
-		upper whisker=5311,
-	},
-	] coordinates {}; % RS
-	
-	\addplot+[
+	\addplot+[color=red,
 	boxplot prepared={
 		lower whisker=5279,
 		lower quartile=5292,
@@ -1556,7 +1520,7 @@ algoritmem náhodného prohledávání.
 	},
 	] coordinates {}; % IPHash
 	
-	\addplot+[
+	\addplot+[color=black,
 	boxplot prepared={
 		lower whisker=5242,
 		lower quartile=5265,
@@ -1571,21 +1535,12 @@ algoritmem náhodného prohledávání.
 	[ boxplot/draw direction=y
 	, name=plot2
 	, at=(plot1.right of south east)
-	, xtick={1,2,3}
-	, xticklabels={RS, IPHash, Náhodné prohledávání}
+	, xtick={1,2}
+	, xticklabels={IPHash, Náhodné prohledávání}
 	, ymin=5200
 	, ymax=5360
 	, yticklabels={,,}
 	]		
-	\addplot+[color=blue,
-		boxplot prepared={
-		lower whisker=5255,
-		lower quartile=5270,
-		median=5281,
-		upper quartile=5290,
-		upper whisker=5331,
-	},
-	] coordinates {}; % RS
 	
 	\addplot+[color=red,
 		boxplot prepared={
@@ -1597,7 +1552,7 @@ algoritmem náhodného prohledávání.
 		},
 		] coordinates {}; % IPHash
 		
-	\addplot+[
+	\addplot+[color=black,
 	boxplot prepared={
 		lower whisker=5251,
 		lower quartile=5270,
@@ -1613,13 +1568,13 @@ algoritmem náhodného prohledávání.
 \end{figure}
 
 Na dvou krabicových diagramech grafech na obrázku \ref{fig:basic_boxplot_1}, vidíme porovnání
-algoritmů v nad datasety jedna dvě. Nad těmito datasety si algoritmus vedl velmi dobře, a to potvrzují
+algoritmů v nad datasety jedna a dvě. Nad těmito datasety si algoritmus vedl velmi dobře, a to potvrzují
 i krabicové diagramy. V celém rozsahu rozptylu námi navrženého řešení dostáváme lepší výsledky, než u
 algoritmu náhodného prohledávání a to v obou případech. Nejlepší řešení nalezené algoritmem náhodného
 prohledávání je jen nepatrně výše, než horní hranice rozptylu algoritmu IPHash. Nejhorší řešení nalezené
 algoritmem IPHash je v případě prvního datasetu lepší než medián algoritmu náhodného prohledávání a
 v případě druhého datasetu dokonce lepší, než nejlepší řešení rozptylu náhodného prohledávání. Co se týče
-nejlepšího řešení algoritmu IPHash, tak to značně převušuje i to nejlepší řešení nalezené algoritmem
+nejlepšího řešení algoritmu IPHash, tak to značně převyšuje i to nejlepší řešení nalezené algoritmem
 náhodného prohledávání. Je tedy patrné, že ve všech případech algoritmus IPHash dobře konvergoval v daném
 stavovém prostoru popsaném fitnes funkcí a zvolenou reprezentací jedinců.
 
@@ -1712,21 +1667,21 @@ stavovém prostoru popsaném fitnes funkcí a zvolenou reprezentací jedinců.
 \end{figure}
 %%%%%%%%%%%%% IPHASH BOXPLOT %%%%%%%%%%%%%%%
 
-V kontrastu s výsledky nad prvními dvěma datasety jsou výsledky nad druhými dvěma datasety. V obou případech
+V ostrém kontrastu s výsledky nad prvními dvěma datasety jsou výsledky nad druhými dvěma datasety. V obou případech
 si námi navržené řešení nevedlo v průměru lépe, než algorimus náhodného prohledávání. Je vidět, že nejlepší
 nalezená řešení mají obdobný rozptyl. Nad datasetem číslo tři je rozptyl velmi podobný, těsně ve prospěch 
 náhodného prohledávání. Medián lze považovat za totožný. Nejlepší nalezené řešení však jasně mluví ve prospěch
-algoritmu IPHash, kde je rozdíl více než dvacet úspěšně nahašovaných adres. V případě datasetu číslo ctyři náhodné
+algoritmu IPHash, kde je rozdíl více než dvacet úspěšně nahašovaných adres. V případě datasetu číslo čtyři náhodné
 prohledávání jasně předčilo námi navržený algoritmus. I přes to, že je mediánová hodnota náhodného prohledávání
 nepatrně menší, je zanedbatelná a lze ji považovat za nepřesnost měření. Horní i spodní hranice rozptylu náhodného
 prohledávání je položena výše než v případě algoritmu IPHash. Celkem lze pozorovat, že ani jeden algoritmus 
-nenašel řešení, které by mohlo konkurovat nejlepším výslekům dosaženým v nad předešlými datasety. I přes to
+nenašel řešení, které by mohlo konkurovat nejlepším výsledkům dosaženým v nad předešlými datasety. I přes to
 nejlepší nalezené řešení jednoznačně mluví ve prospěch algoritmu náhodného prohledávání.
 
 Nejlepších výsledků bylo dosaženo nad prvními dvěma datasety, kde v obou případech si nejlépe vedl námi navržený
 algoritmus. U třetího datasetu se výsledky zhoršili v porovnání s předchozími a to u obou algoritmů. Oba si byly 
-rovnocéné, ale nejlepší řešení nalezl algoritmus IPHash. V případě posledního datasetu jsou výsledky podobné jako
-v případě datasetu tři. Nejlepší řešení nalezlo náhodné prohledávání, ale i zde můžeme pozorovat zhořšení. 
+rovnocenné, ale nejlepší řešení nalezl algoritmus IPHash. V případě posledního datasetu jsou výsledky podobné jako
+v případě datasetu tři. Nejlepší řešení nalezlo náhodné prohledávání, ale i zde můžeme pozorovat zhoršení. 
 
 Správná volba hloubky abstraktního stromu kandidátního řešení má zásadní vliv jak na kvalitu vyevolvovaných řešení,
 tak i na rychlost. Předpokládáme, že větší hloubka stromu implikuje větší prohledávací prostor algoritmu, v kterém
@@ -1736,8 +1691,8 @@ dobrá volba velikosti počáteční generace. Ta se typicky používá co nejvy
 optimální řešení v prvních padesátí generacích \cite{GPTutorial}.
 
 V následující části tedy prozkoumáme, jaký vliv má na hodnotu fitnes volba maximální hloubky abstraktního syntaktického
-stromu kandidátních řešení v závislosti na velikosti populace. To nám zároveň umožní si ověřit, zda jsme tyto parametry
-zvolili správně v návrhu řešení \ref{sec:solution_design}.
+stromu kandidátních řešení v závislosti na velikosti populace. To nám zároveň umožní si ověřit, zda byly parametry zvolené
+správně.
 
 %%%%%%%%%%%%% IPHASH Population depth %%%%%%%%%%%%%%%
 \begin{figure}[!ht]
@@ -1875,9 +1830,9 @@ zvolili správně v návrhu řešení \ref{sec:solution_design}.
 \end{figure}
 
 Výsledky vidíme zobrazené jako tří rozměrné grafy na obrázku \ref{fig:basicPopulationDepth1}. Na všech čtyřech grafech
-zobrazující výsledky nad jednotlivými datasety je patrné, že pro velmi malé populace (8 a 16 jedinců) nenalezne agoritmus
-IPHash dobré hašovací funkce. Jejich hodnota fitnes je o několik tisíc nahašovaných adres menší (nelze rozumně zobrazit na grafu).
-Pro exponenciálně vzrůstající velikost velikost populace roste však hodnota fitnes jen střídmě. Je vidět, že neustálým zvětšováním
+zobrazující výsledky nad jednotlivými datasety je patrné, že pro velmi malé populace (8 a 16 jedinců) nenalezne algoritmus
+IPHash dobré hašovací funkce. Jejich hodnota fitness je o několik tisíc nahašovaných adres menší (nelze rozumně zobrazit na grafu).
+Pro exponenciálně vzrůstající velikost populace roste však hodnota fitness jen střídmě. Je vidět, že neustálým zvětšováním
 velikosti populace lepších výsledků nedosáhneme, i přes to že se velikost populace o hodnotě 1024 jedinců jeví jako lepší volba.
 
 Obdobně je tomu při zvyšování hloubky stromu. Zde je přírůstek lineární (nikoli exponenciální jako v případě populace). I zde můžeme
@@ -1885,10 +1840,10 @@ pozorovat předpokládanou tendenci algoritmu IPHash zvyšovat hodnotu fitnes s 
 zvětšujícím se prohledávaným prostorem. Zajímavý je fakt, že s přibývající velikostí populace se zvětšuje i hodnota fitnes u mělkých
 abstraktních syntaktických stromů (hloubky 3 a 4). Velké populace tedy dokážou nalézt kvalitní řešení i v relativně mělkých stromech.
 Toto je zásadní poznatek, který nám umožní v případě potřeby rozumně přesunout důraz na rychlost volbou mělčích stromů, aniž by
-zásadně (jedná se přibližně o rozdíl 50 nahašovaných adres) utrpěla hodnota fitnes. Dále můžeme pozorovat některé zajímavé vlastnosti. 
+zásadně (jedná se přibližně o rozdíl 50 nahašovaných adres) utrpěla hodnota fitnes. Dále můžeme pozorovat některé zajímavé vlastnosti:
 
 \begin{itemize}
-	\item První z nich je četnost výstupků na ploše grafu. V případě prvních dvou datasetů jsou plochy grafů relativně ``hladké''. Naproti tomu v
+	\item V případě prvních dvou datasetů jsou plochy grafů relativně ``hladké''. Naproti tomu v
 		případě datasetů tři a čtyři, můžeme pozorovat několik propadlých nebo vystouplých bodů. To může svědčit o deformovaném
 		prohledávaném prostoru kandidátních řešení, jak jsme mohli vidět i v předchozí části této sekce. Může se však jednat i o náhodu.
 		
@@ -1899,7 +1854,9 @@ zásadně (jedná se přibližně o rozdíl 50 nahašovaných adres) utrpěla ho
 
 %%%%%%%%%%%%% IPHASH Population depth %%%%%%%%%%%%%%%
 
-Zkusme si nyní ověřit naši volbu volbu funkčních a terminálních symbolů. To můžeme provést přídáním, či odebraním 
+\subsection{Experimenty s volbou různých terminálních a funkčních množin}
+
+Zkusme si nyní ověřit naši volbu funkčních a terminálních symbolů. To můžeme provést přídáním, či odebraním 
 pouze jednoho neterminálu v každém kroku a sledováním výsledků kvality navržených hašovacích funkcí. Přídáním či
 odebráním více než jednoho terminálu v jednom kroku, bychom nebyly schopni interpretovat dosažené výsledky. V 
 následující sérii experimentů budeme s očekávaným úbytkem hodnoty fitness odebírat funkční a terminální symboly.
