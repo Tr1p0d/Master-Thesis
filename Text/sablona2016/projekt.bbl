@@ -1,0 +1,148 @@
+\begin{thebibliography}{10}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi:\discretionary{}{}{}#1}\else
+  \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
+  \urlstyle{rm}\Url}\fi
+\providecommand{\selectlanguage}[1]{\relax}
+\providecommand{\eprint}[2][]{\url{#2}}
+
+\bibitem{tiger}
+Anderson, R.; Biham, E.: {\selectlanguage{english}Tiger: A Fast New Hash
+  Function}. 1996.
+
+\bibitem{murmurhash2}
+Appleby, A.: MurmurHash2 webpage. 2011,
+  \url{https://sites.google.com/site/murmurhash/}, [Online, accessed:
+  4.~5.~2016].
+\newline\urlprefix\url{https://sites.google.com/site/murmurhash/}
+
+\bibitem{murmurhash3}
+Appleby, A.: SMHasher and MurmurHash3 webpage. 2016,
+  \url{https://github.com/aappleby/smhasher/wiki/}, [Online, accessed:
+  3.~5.~2016].
+\newline\urlprefix\url{https://github.com/aappleby/smhasher/wiki}
+
+\bibitem{appleby2016}
+Appleby, A.: SMHasher wiki page. 2016,
+  \url{https://github.com/aappleby/smhasher/wiki} [Online, accessed:
+  5.~15.~2016].
+
+\bibitem{grammar_evolution}
+Berarducci, P.; Jordan, D.; Martin, D.; aj.: Using Grammar Evolution to
+  Generate Hashing Functions. In \emph{Proceedings of the Fifteenth Midwest
+  Artificial Intelligence and Cognitive Science Conference}.
+
+\bibitem{sponge}
+Bertoni, G.; Daemen, J.; Peeters, M.; aj.: Duplexing the sponge.
+
+\bibitem{haifa}
+Biham, E.; Dunkleman, O.: A Framework for Iterative Hash Functions ? HAIFA.
+  Technická zpráva, Department of Electrical Engineering ESAT/SCD-COSIC, July
+  2006.
+
+\bibitem{selection_schemes_comparison}
+Blickle, T.; Thiele, L.: A Comparison of Selection Schemes used in Genetic
+  Algorithms. Technická zpráva, Computer Engineering and Communication
+  Network Lab, 1995.
+
+\bibitem{damgard0}
+Damg\r{a}rd, I.: {\selectlanguage{english}A design principle for hash
+  functions.} In \emph{CRYPTO ?89: Proceedings of the 9th Annual Inter-
+  national Cryptology Conference on Advances in Cryptology}, Springer, 1989, s.
+  416--427.
+
+\bibitem{dobai0}
+Dobai, R.; Ko{\v{r}}enek, J.: {\selectlanguage{english}Evolution of
+  Non-Cryptographic Hash Function Pairs for FPGA-Based Network Applications}.
+  In \emph{2015 IEEE Symposium Series on Computational Intelligence}, Institute
+  of Electrical and Electronics Engineers, 2015, ISBN 978-1-4799-7560-0, s.
+  1214--1219.
+\newline\urlprefix\url{http://www.fit.vutbr.cz/research/view_pub.php.cs?id=10919}
+
+\bibitem{standford1}
+dontknowyet: Cuckoo Hash, Dont know yet.
+
+\bibitem{rfc3174}
+Eastlake, D.; Jones, P.: US Secure Hash Algorithm 1 (SHA1). RFC 3174, RFC
+  Editor, September 2001.
+
+\bibitem{NCHF_auto_design}
+Esbanez, C.; Saez, Y.; Recio, G.; aj.: Automatic Design of Noncryptographic
+  hash functions using genetic programming. \emph{Computational Intelligence},
+  2014.
+
+\bibitem{Hsieh2004-2008}
+Hsieh, P.: Hash functions. Paul Hsieh's article on SuperFashHash. 2004-2008,
+  \url{http://www.azillionmonkeys.com/qed/hash.html}, [Online, accessed:
+  5.~15.~2016].
+
+\bibitem{rfc4634}
+Jansen, J.: US Secure Hash Algorithm 1 (SHA1). RFC 4634, RFC Editor, July 2006.
+
+\bibitem{Jenkins2012}
+Jenkins, B.: SpookyHash: a 128-bit noncryptographic hash. 2012,
+  \url{http://burtleburtle.net/bob/hash/spooky.html}.
+
+\bibitem{art_of_programming}
+Knuth, D.~E.: \emph{The art of computer programming}. Addison-Wesley, 1998.
+
+\bibitem{GPTutorial}
+Koza, J.~R.; Poli, R.; Langdon, W.~B.; aj.: \emph{Genetic Programming An
+  Introductory Tutorial and a Survey of Techniques and Applications}. 2007.
+
+\bibitem{merkle1}
+Merkle, R.: Method of providing digital signatures. 5 1982.
+\newline\urlprefix\url{http://www.patentlens.net/patentlens/patent/US_4309569/}
+
+\bibitem{merkle0}
+Merkle, R.~C.: \emph{SECRECY, AUTHENTICATION, AND PUBLIC KEY SYSTEMS}.
+  Dizertační práce, Standford University, 1979.
+
+\bibitem{Cuckoo_hashing}
+Pagh, R.; Rodler, F.~F.: Cuckoo hashing. \emph{Journal of Algorithms},
+  ročník~51, č.~2, 2004: s. 122--144.
+
+\bibitem{cityhash_slides}
+Pike, G.: CityHash: Fast Hash Functions for Strings. Standford university class
+  slides, October 2012.
+
+\bibitem{farmhash}
+Pike, G.: Google Open Source Blog. 2014,
+  \url{http://google-opensource.blogspot.cz/2014/03/introducing-farmhash.html},
+  [Online, accessed: 4.~10.~2016].
+\newline\urlprefix\url{http://google-opensource.blogspot.cz/2014/03/introducing-farmhash.html}
+
+\bibitem{nlprog}
+Popela, P.: Nonlinear Programming.
+
+\bibitem{rfc1321}
+Rivest, R.: The MD5 Message-Digest Algorithm. RFC 1321, RFC Editor, April 1992.
+
+\bibitem{safdari}
+Safdari, M.: Evolving Universal Hash Functions using Genetic Algorithms. In
+  \emph{Proceedings of the Tenth Genetic and Evolutionary Computation
+  Conference}.
+
+\bibitem{ES}
+Schwartz, J.: Evolun Strategie, applied evolution algorithms course
+  presentation.
+
+\bibitem{evolution_hardware}
+Sekanina, L.: \emph{Evolun hardware}. Academia, 2009.
+
+\bibitem{Simone2014}
+Simone, S.~D.: InfoQ: Google publishes FarmHash. 2014,
+  \url{http://www.infoq.com/news/2014/04/google_farmhash}, [Online, accessed:
+  5.~15.~2016].
+
+\bibitem{nflteorem}
+Wolpert, D.~H.; Macready, W.~G.: No Free Lunch Theorems for Optimization.
+  \emph{IEEE transactions on evolutionarz computation}, 1997.
+
+\bibitem{perfect_hashing}
+Zbigniew J.~Czech, B. S.~M., George~Havas: Fundamental Study: Perfect Hashing.
+  1997: s. 1--143.
+
+\end{thebibliography}

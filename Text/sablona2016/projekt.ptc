@@ -1,0 +1,63 @@
+\select@language {czech}
+\contentsline {chapter}{\numberline {1}\IeC {\'U}vod}{3}{chapter.1}
+\contentsline {chapter}{\numberline {2}Ha\IeC {\v s}ov\IeC {\'a}n\IeC {\'\i }}{4}{chapter.2}
+\contentsline {section}{\numberline {2.1}Princip}{4}{section.2.1}
+\contentsline {section}{\numberline {2.2}Krit\IeC {\'e}ria kvality ha\IeC {\v s}ovac\IeC {\'\i }ch funkc\IeC {\'\i }}{5}{section.2.2}
+\contentsline {subsection}{\numberline {2.2.1}Uniformn\IeC {\'\i } rozlo\IeC {\v z}en\IeC {\'\i } v\IeC {\'y}stup\IeC {\r u}}{5}{subsection.2.2.1}
+\contentsline {subsection}{\numberline {2.2.2}Odolnost proti koliz\IeC {\'\i }m}{6}{subsection.2.2.2}
+\contentsline {subsection}{\numberline {2.2.3}Lavinov\IeC {\'y} efekt}{6}{subsection.2.2.3}
+\contentsline {subsection}{\numberline {2.2.4}Rychlost}{6}{subsection.2.2.4}
+\contentsline {section}{\numberline {2.3}N\IeC {\'a}vrh ha\IeC {\v s}ovac\IeC {\'\i } funkce}{6}{section.2.3}
+\contentsline {section}{\numberline {2.4}\IeC {\v R}e\IeC {\v s}en\IeC {\'\i } koliz\IeC {\'\i } p\IeC {\v r}i ha\IeC {\v s}ov\IeC {\'a}n\IeC {\'\i }}{8}{section.2.4}
+\contentsline {subsection}{\numberline {2.4.1}Z\IeC {\v r}et\IeC {\v e}zen\IeC {\'e} ha\IeC {\v s}ov\IeC {\'a}n\IeC {\'\i }}{8}{subsection.2.4.1}
+\contentsline {subsection}{\numberline {2.4.2}Kuka\IeC {\v c}\IeC {\v c}\IeC {\'\i } ha\IeC {\v s}ov\IeC {\'a}n\IeC {\'\i }}{8}{subsection.2.4.2}
+\contentsline {section}{\numberline {2.5}Anal\IeC {\'y}za existuj\IeC {\'\i }c\IeC {\'\i }ch \IeC {\v r}e\IeC {\v s}en\IeC {\'\i }}{10}{section.2.5}
+\contentsline {chapter}{\numberline {3}Evolu\IeC {\v c}n\IeC {\'\i } n\IeC {\'a}vrh}{13}{chapter.3}
+\contentsline {section}{\numberline {3.1}Po\IeC {\v c}\IeC {\'\i }t\IeC {\'a}n\IeC {\'\i } podle p\IeC {\v r}\IeC {\'\i }rody}{13}{section.3.1}
+\contentsline {section}{\numberline {3.2}Evolu\IeC {\v c}n\IeC {\'\i } algoritmy}{13}{section.3.2}
+\contentsline {subsection}{\numberline {3.2.1}Princip}{14}{subsection.3.2.1}
+\contentsline {subsection}{\numberline {3.2.2}Fitness funkce}{14}{subsection.3.2.2}
+\contentsline {subsection}{\numberline {3.2.3}Zp\IeC {\r u}soby selekce}{15}{subsection.3.2.3}
+\contentsline {subsection}{\numberline {3.2.4}Genetick\IeC {\'e} oper\IeC {\'a}tory}{16}{subsection.3.2.4}
+\contentsline {subsection}{\numberline {3.2.5}N\IeC {\'a}vrh evolu\IeC {\v c}n\IeC {\'\i }ho algoritmu}{16}{subsection.3.2.5}
+\contentsline {subsection}{\numberline {3.2.6}Genetick\IeC {\'e} algoritmy}{17}{subsection.3.2.6}
+\contentsline {subsection}{\numberline {3.2.7}Evolu\IeC {\v c}n\IeC {\'\i } strategie}{17}{subsection.3.2.7}
+\contentsline {section}{\numberline {3.3}Genetick\IeC {\'e} programov\IeC {\'a}n\IeC {\'\i }}{17}{section.3.3}
+\contentsline {subsection}{\numberline {3.3.1}Reprezentace}{17}{subsection.3.3.1}
+\contentsline {subsection}{\numberline {3.3.2}Inicializace nult\IeC {\'e} populace}{18}{subsection.3.3.2}
+\contentsline {subsection}{\numberline {3.3.3}Genetick\IeC {\'e} oper\IeC {\'a}tory a selekce}{19}{subsection.3.3.3}
+\contentsline {subsection}{\numberline {3.3.4}Fitness funkce}{20}{subsection.3.3.4}
+\contentsline {chapter}{\numberline {4}N\IeC {\'a}vrh metod pro evolu\IeC {\v c}n\IeC {\'\i } n\IeC {\'a}vrh ha\IeC {\v s}ovac\IeC {\'\i }ch funkc\IeC {\'\i }}{22}{chapter.4}
+\contentsline {section}{\numberline {4.1}N\IeC {\'a}vrh ha\IeC {\v s}ovac\IeC {\'\i }ch funkci pro IP adresy}{22}{section.4.1}
+\contentsline {section}{\numberline {4.2}Porovn\IeC {\'a}n\IeC {\'\i } s existuj\IeC {\'\i }c\IeC {\'\i }mi \IeC {\v r}e\IeC {\v s}en\IeC {\'\i }mi}{23}{section.4.2}
+\contentsline {section}{\numberline {4.3}N\IeC {\'a}vrh fitness funkce}{24}{section.4.3}
+\contentsline {section}{\numberline {4.4}Zvolen\IeC {\'e} parametry genetick\IeC {\'e}ho programov\IeC {\'a}n\IeC {\'\i }}{24}{section.4.4}
+\contentsline {subsection}{\numberline {4.4.1}Genetick\IeC {\'e} oper\IeC {\'a}tory a metoda selekce}{24}{subsection.4.4.1}
+\contentsline {subsection}{\numberline {4.4.2}Mno\IeC {\v z}ina termin\IeC {\'a}l\IeC {\r u} a funk\IeC {\v c}n\IeC {\'\i }ch symbol\IeC {\r u}}{25}{subsection.4.4.2}
+\contentsline {section}{\numberline {4.5}Evolu\IeC {\v c}n\IeC {\'\i } n\IeC {\'a}vrh ha\IeC {\v s}ovac\IeC {\'\i }ch funkc\IeC {\'\i }}{26}{section.4.5}
+\contentsline {subsection}{\numberline {4.5.1}Evolu\IeC {\v c}n\IeC {\'\i } n\IeC {\'a}vrh ha\IeC {\v s}ovac\IeC {\'\i }ch funkc\IeC {\'\i } p\IeC {\v r}\IeC {\'\i }mou metodou}{26}{subsection.4.5.1}
+\contentsline {subsection}{\numberline {4.5.2}Optimalizace za pou\IeC {\v z}it\IeC {\'\i } Merkle-Damg\r {a}rdova sch\IeC {\'e}matu}{26}{subsection.4.5.2}
+\contentsline {subsection}{\numberline {4.5.3}Evolu\IeC {\v c}n\IeC {\'\i } n\IeC {\'a}vrh za pou\IeC {\v z}it\IeC {\'\i } kuka\IeC {\v c}\IeC {\v c}\IeC {\'\i }ho ha\IeC {\v s}ov\IeC {\'a}n\IeC {\'\i }}{28}{subsection.4.5.3}
+\contentsline {chapter}{\numberline {5}Experimenty s navr\IeC {\v z}en\IeC {\'y}mi metodami}{29}{chapter.5}
+\contentsline {section}{\numberline {5.1}Experimenty s funkcemi navr\IeC {\v z}en\IeC {\'y}mi p\IeC {\v r}\IeC {\'\i }mou metodou}{29}{section.5.1}
+\contentsline {subsection}{\numberline {5.1.1}Vliv hloubky jedinc\IeC {\r u} a velikosti populace na kvalitu \IeC {\v r}e\IeC {\v s}en\IeC {\'\i }}{34}{subsection.5.1.1}
+\contentsline {subsection}{\numberline {5.1.2}Experimenty s volbou r\IeC {\r u}zn\IeC {\'y}ch termin\IeC {\'a}ln\IeC {\'\i }ch a funk\IeC {\v c}n\IeC {\'\i }ch mno\IeC {\v z}in}{36}{subsection.5.1.2}
+\contentsline {subsection}{\numberline {5.1.3}Porovn\IeC {\'a}n\IeC {\'\i } ryhlosti navr\IeC {\v z}en\IeC {\'y}ch ha\IeC {\v s}ovac\IeC {\'\i }ch funkc\IeC {\'\i } s konven\IeC {\v c}n\IeC {\'\i }mi}{37}{subsection.5.1.3}
+\contentsline {section}{\numberline {5.2}Ha\IeC {\v s}ov\IeC {\'a}n\IeC {\'\i } s Merkle-Damg\r {a}rdovou konstrukc\IeC {\'\i }}{38}{section.5.2}
+\contentsline {section}{\numberline {5.3}Kuka\IeC {\v c}\IeC {\v c}\IeC {\'\i } ha\IeC {\v s}ov\IeC {\'a}n\IeC {\'\i }}{42}{section.5.3}
+\contentsline {subsection}{\numberline {5.3.1}Experimenty s r\IeC {\r u}zn\IeC {\v e} nastaven\IeC {\'y}m omezen\IeC {\'\i }m p\IeC {\v r}i vkl\IeC {\'a}d\IeC {\'a}n\IeC {\'\i } do tabulky}{45}{subsection.5.3.1}
+\contentsline {section}{\numberline {5.4}Shrnut\IeC {\'\i } v\IeC {\'y}sledk\IeC {\r u}}{45}{section.5.4}
+\contentsline {chapter}{\numberline {6}Z\IeC {\'a}v\IeC {\v e}r}{49}{chapter.6}
+\contentsline {chapter}{Literatura}{51}{chapter*.34}
+\select@language {english}
+\select@language {czech}
+\select@language {english}
+\select@language {czech}
+\select@language {english}
+\select@language {czech}
+\contentsline {chapter}{P\IeC {\v r}\IeC {\'\i }lohy}{53}{section*.35}
+\contentsline {section}{Seznam p\IeC {\v r}\IeC {\'\i }loh}{54}{section*.36}
+\ttl@starttoc {chapters@1}
+\contentsline {chapter}{\numberline {A}Obsah CD a manu\IeC {\'a}l pro spu\IeC {\v s}t\IeC {\v e}n\IeC {\'\i } a vyhodnocen\IeC {\'\i } experiment\IeC {\r u}}{55}{appendix.A}
+\contentsline {chapter}{\numberline {B}\IeC {\v C}l\IeC {\'a}nek a plak\IeC {\'a}t na konferenci Excel@FIT 2016}{56}{appendix.B}
+\contentsfinish 

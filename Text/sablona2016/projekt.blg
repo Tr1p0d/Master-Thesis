@@ -1,0 +1,60 @@
+This is BibTeX, Version 0.99d (TeX Live 2014/dev)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: projekt.aux
+The style file: czechiso.bst
+Database file #1: literatura.bib
+Warning--entry type for "tiger" isn't style-file defined
+--line 4 of file literatura.bib
+Warning--entry type for "merkle1" isn't style-file defined
+--line 185 of file literatura.bib
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Warning--empty year in grammar_evolution
+Warning--empty pages in grammar_evolution
+Warning--empty note in standford1
+Warning--missing publisher in GPTutorial
+Warning--empty note in nlprog
+Warning--empty year in safdari
+Warning--empty pages in safdari
+Warning--empty journal in perfect_hashing
+You've used 31 entries,
+            3151 wiz_defined-function locations,
+            820 strings with 9501 characters,
+and the built_in function-call counts, 11531 in all, are:
+= -- 766
+> -- 350
+< -- 9
++ -- 174
+- -- 100
+* -- 555
+:= -- 1395
+add.period$ -- 58
+call.type$ -- 31
+change.case$ -- 126
+chr.to.int$ -- 0
+cite$ -- 39
+duplicate$ -- 1203
+empty$ -- 1110
+format.name$ -- 111
+if$ -- 2417
+int.to.chr$ -- 0
+int.to.str$ -- 31
+missing$ -- 301
+newline$ -- 108
+num.names$ -- 62
+pop$ -- 684
+preamble$ -- 1
+purify$ -- 108
+quote$ -- 0
+skip$ -- 435
+stack$ -- 0
+substring$ -- 294
+swap$ -- 561
+text.length$ -- 9
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 118
+warning$ -- 8
+while$ -- 72
+width$ -- 33
+write$ -- 262
+(There were 10 warnings)
