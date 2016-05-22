@@ -1,22 +1,26 @@
 % This file was created with JabRef 2.9.2.
 % Encoding: UTF-8
 
-@OTHER{tiger,
-  author = {Ross Anderson and Eli Biham},
-  booktitle = {proceedings of Fast Software Encryption 3},
-  language = {english},
-  location = {Cambridge, UK},
-  pages = {??},
-  publisher = {??},
-  title = {Tiger: A Fast New Hash Function},
-  year = {1996}
+@Inbook{tiger,
+	author="Anderson, Ross
+	and Biham, Eli",
+	editor="Gollmann, Dieter",
+	chapter="Tiger: A fast new hash function",
+	title="Fast Software Encryption: Third International Workshop Cambridge, UK, February 21--23 1996 Proceedings",
+	year="1996",
+	publisher="Springer Berlin Heidelberg",
+	address="Berlin, Heidelberg",
+	pages="89--97",
+	isbn="978-3-540-49652-6",
+	doi="10.1007/3-540-60865-6_46",
+	url="http://dx.doi.org/10.1007/3-540-60865-6_46"
 }
 
 @BOOKLET{Appleby2016,
   title = {SMHasher wiki page},
   author = {Austin Appleby},
   year = {2016},
-  note = {\url{https://github.com/aappleby/smhasher/wiki} [Online, accessed:
+  note = {\url{https://github.com/aappleby/smhasher/wiki} [Online, navštíveno:
 	5.~15.~2016]},
   owner = {tripod},
   timestamp = {2016.05.16}
@@ -26,18 +30,16 @@
   title = {SMHasher and MurmurHash3 webpage},
   author = {Austin Appleby},
   year = {2016},
-  note = {\url{https://github.com/aappleby/smhasher/wiki/}, [Online, accessed:
+  note = {\url{https://github.com/aappleby/smhasher/wiki/}, [Online, navštíveno:
 	3.~5.~2016]},
-  url = {https://github.com/aappleby/smhasher/wiki}
 }
 
 @BOOKLET{murmurhash2,
   title = {MurmurHash2 webpage},
   author = {Austin Appleby},
   year = {2011},
-  note = {\url{https://sites.google.com/site/murmurhash/}, [Online, accessed:
+  note = {\url{https://sites.google.com/site/murmurhash/}, [Online, navštíveno:
 	4.~5.~2016]},
-  url = {https://sites.google.com/site/murmurhash/}
 }
 
 @INPROCEEDINGS{grammar_evolution,
@@ -46,29 +48,39 @@
   title = {Using Grammar Evolution to Generate Hashing Functions},
   booktitle = {Proceedings of the Fifteenth Midwest Artificial Intelligence and
 	Cognitive Science Conference},
-  optaddress = {Schaumburg, Illinois},
-  optmonth = {April},
-  optorganization = {Roosevelt University School of Computer Science and Telecommunications},
-  optpages = {31-39},
-  optyear = {2004}
+  address = {Schaumburg, Illinois},
+  month = {Duben},
+  organization = {Roosevelt University School of Computer Science and Telecommunications},
+  pages = {31-39},
+  year = {2004}
 }
 
-@BOOKLET{sponge,
-  title = {Duplexing the sponge},
-  author = {Guido Bertoni and Joan Daemen and Michaďż˝l Peeters and and Gilles
-	Van Assche},
-  date = {tak to vubec netusim},
-  subtitle = {single-pass authenticated encryption and other applications}
+@Inbook{sponge,
+	author="Bertoni, Guido
+	and Daemen, Joan
+	and Peeters, Micha{\"e}l
+	and Van Assche, Gilles",
+	editor="Miri, Ali
+	and Vaudenay, Serge",
+	chapter="Duplexing the Sponge: Single-Pass Authenticated Encryption and Other Applications",
+	title="Selected Areas in Cryptography: 18th International Workshop, SAC 2011, Toronto, ON, Canada, August 11-12, 2011, Revised Selected Papers",
+	year="2012",
+	publisher="Springer Berlin Heidelberg",
+	address="Berlin, Heidelberg",
+	pages="320--337",
+	isbn="978-3-642-28496-0",
+	doi="10.1007/978-3-642-28496-0_19",
+	url="http://dx.doi.org/10.1007/978-3-642-28496-0_19"
 }
 
-@TECHREPORT{haifa,
-  author = {Eli Biham and Orr Dunkleman},
-  title = {A Framework for Iterative Hash Functions ? HAIFA},
-  institution = {Department of Electrical Engineering ESAT/SCD-COSIC},
-  year = {2006},
-  month = {July},
-  howpublished = {Internet Requests for Comments},
-  pages = {1-20},
+@INPROCEEDINGS{haifa,
+	author = {Eli Biham and Orr Dunkelman},
+	title = {A Framework for Iterative Hash Functions: HAIFA},
+	booktitle = {Proceedings of Second NIST Cryptographic Hash Workshop},
+	year = {2006},
+    month = {Červenec},
+    pages = {1-20},
+    howpublished = {Internet Requests for Comments},
   publisher = {RFC Editor}
 }
 
@@ -84,10 +96,10 @@
 @INPROCEEDINGS{damgard0,
   author = {Ivan Damg\r{a}rd},
   title = {A design principle for hash functions.},
-  booktitle = {CRYPTO ?89: Proceedings of the 9th Annual Inter- national Cryptology
+  booktitle = {CRYPTO 89: Proceedings of the 9th Annual Inter- national Cryptology
 	Conference on Advances in Cryptology},
   year = {1989},
-  pages = {416-427},
+  pages = {416--427},
   publisher = {Springer},
   language = {english},
   location = {London, ZA}
@@ -120,24 +132,24 @@
   publisher = {RFC Editor}
 }
 
-@ARTICLE{NCHF_auto_design,
-  author = {Csar Esbanez and Yago Saez and Gustavo Recio and Pedro Isasi},
+@article{NCHF_auto_design,
+  author = {Cesar Esebanez and Yago Saez and Gustavo Recio and Pedro Isasi},
   title = {Automatic Design of Noncryptographic hash functions using genetic
 	programming},
   journal = {Computational Intelligence},
   year = {2014},
-  optnumber = {0},
-  optvolume = {0}
+  number = {4},
+  volume = {30},
+  pages={798-831},
+  published={Blackwell Publishers, Inc. Cambridge, MA, USA}
 }
 
 @BOOKLET{Hsieh2004-2008,
   title = {Hash functions. Paul Hsieh's article on SuperFashHash},
   author = {Paul Hsieh},
   year = {2004-2008},
-  note = {\url{http://www.azillionmonkeys.com/qed/hash.html}, [Online, accessed:
+  note = {\url{http://www.azillionmonkeys.com/qed/hash.html}, [Online, navštíveno:
 	5.~15.~2016]},
-  owner = {tripod},
-  timestamp = {2016.05.15}
 }
 
 @TECHREPORT{rfc4634,
@@ -147,7 +159,7 @@
   year = {2006},
   type = {RFC},
   number = {4634},
-  month = {July},
+  month = {Červenec},
   howpublished = {Internet Requests for Comments},
   pages = {1-14},
   publisher = {RFC Editor}
@@ -164,25 +176,25 @@
 
 @BOOK{art_of_programming,
   title = {The art of computer programming},
-  publisher = {Addison-Wesley},
+  publisher = {Addison Wesley Longman Publishing Co., Inc. Redwood City, CA},
   year = {1998},
   author = {Donald E. Knuth},
-  optmonth = {March},
-  optvolume = {3 / Sorting and Searching}
+  month = {Březen},
+  volume = {3 / Sorting and Searching},
+  isbn={0-201-89685-0 }
 }
 
 @BOOK{GPTutorial,
-  title = {Genetic Programming An Introductory Tutorial and a Survey of Techniques
-	and Applications},
+  title = {A Field Guide to Genetic Programming},
   year = {2007},
   author = {John R. Koza and Riccardo Poli and William B. Langdon and Nicolas
 	F. McPhee},
-  optmonth = {October},
-  optseries = {CES},
-  optvolume = {475}
+  publisher={Lulu Enterprises, UK Ltd},
+  isbn={1409200736},
+  month = {October},
 }
 
-@PATENT{merkle1,
+@misc{merkle1,
   number = {US 4309569},
   year = {1982},
   author = {Ralph Merkle},
@@ -190,7 +202,6 @@
   type = {Patent},
   day = {1},
   month = {5},
-  url = {http://www.patentlens.net/patentlens/patent/US_4309569/},
   filing_num = {19790905},
   location = {US}
 }
@@ -217,23 +228,23 @@
   author = {Geoff Pike},
   year = {2014},
   note = {\url{http://google-opensource.blogspot.cz/2014/03/introducing-farmhash.html},
-	[Online, accessed: 4.~10.~2016]},
-  url = {http://google-opensource.blogspot.cz/2014/03/introducing-farmhash.html}
+	[Online, navštíveno: 4.~10.~2016]},
 }
 
 @MISC{cityhash_slides,
   author = {Geoff Pike},
   title = {CityHash: Fast Hash Functions for Strings},
   howpublished = {Standford university class slides},
-  month = {October},
+  month = {Říjen},
   year = {2012}
 }
 
 @UNPUBLISHED{nlprog,
   author = {Pavel Popela},
   title = {Nonlinear Programming},
-  optmonth = {December},
-  optyear = {2002}
+  month = {Prosinec},
+  year = {2002},
+  note={Studijní opora ke kurzu Optimalizace. Fakulta Strojního Inženýrství, Vysoké Učení Technické v Brně}
 }
 
 @TECHREPORT{rfc1321,
@@ -243,7 +254,7 @@
   year = {1992},
   type = {RFC},
   number = {1321},
-  month = {April},
+  month = {Duben},
   howpublished = {Internet Requests for Comments},
   pages = {1-21},
   publisher = {RFC Editor}
@@ -253,23 +264,24 @@
   author = {Mustafa Safdari},
   title = {Evolving Universal Hash Functions using Genetic Algorithms},
   booktitle = {Proceedings of the Tenth Genetic and Evolutionary Computation Conference},
-  optaddress = {Montrďż˝al Quďż˝bec, Canada},
-  optmonth = {July},
-  optyear = {2009}
+  address = {Montréal Quebec, Canada},
+  month = {Červen},
+  year = {2009},
+  pages={2729--2732}
 }
 
 @UNPUBLISHED{ES,
   author = {Josef Schwartz},
-  title = {Evolun Strategie},
-  note = {applied evolution algorithms course presentation}
+  title = {Evoluční Strategie},
+  note = {Studijní opora ke kurzu Aplikované Evoluční Algorithmy. Fakulta Informačních Technologií, Vysoké Učení Technické v Brně}
 }
 
 @BOOK{evolution_hardware,
-  title = {Evolun hardware},
+  title = {Evoluční hardware},
   publisher = {Academia},
   year = {2009},
-  author = {Luk Sekanina},
-  optedition = {1}
+  author = {Lukáš Sekanina},
+  edition = {1}
 }
 
 @BOOKLET{Simone2014,
@@ -277,7 +289,7 @@
   author = {Sergio De Simone},
   year = {2014},
   note = {\url{http://www.infoq.com/news/2014/04/google_farmhash}, [Online,
-	accessed: 5.~15.~2016]},
+	navštíveno: 5.~15.~2016]},
   owner = {tripod},
   timestamp = {2016.05.15}
 }
@@ -285,28 +297,30 @@
 @ARTICLE{nflteorem,
   author = {David H. Wolpert and William G. Macready},
   title = {No Free Lunch Theorems for Optimization},
-  journal = {IEEE transactions on evolutionarz computation},
+  journal = {IEEE transactions on evolutionary computation},
   year = {1997},
-  optmonth = {April},
-  optnumber = {1},
-  optvolume = {1}
+  month = {Duben},
+  number = {1},
+  volume = {1},
+  pages={67--82}
 }
 
 @ARTICLE{perfect_hashing,
   author = {Zbigniew J. Czech, George Havas, Bohdan S. Majewski},
   title = {Fundamental Study: Perfect Hashing},
   year = {1997},
-  pages = {1-143},
-  journaltitle = {Theoretical Computer Science},
-  optlanguage = {English},
+  pages = {1--143},
+  journal = {Theoretical Computer Science},
+  language = {English},
   series = {182}
 }
 
 @unpublished{standford1,
-	author = {dontknowyet},
+	author = {Autor neznámý},
 	title = {Cuckoo Hash},
-	year = {Dont know yet},
+	year = {rok neznámý},
 	pages = {17-24},
-	optlanguage = {English},
+	language = {English},
+    note={Přednášky ke kurzu o hašovacích funkcích na univerzitě Standford}
 }
 

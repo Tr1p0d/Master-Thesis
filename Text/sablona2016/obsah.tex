@@ -99,13 +99,13 @@ jak je vidět z příkladu v podkapitole \ref{se:hash_function_design}.
 Uvažujeme-li uniformní rozložení hašovací funkce, pak dva klíče u univerza
 $U$ budou kolizní (dle \textit{birthday attack}) asi po $2^{\frac{m}{2}}$ 
 operacích vložení \cite{NCHF_auto_design}. Pokud však hašovací funkce nebude
-uniformě distribuovat výsledky, pravděpodobnost kolize se rapidně zvýší. PRIDELAT
+uniformě distribuovat výsledky, pravděpodobnost kolize se rapidně zvýší.
 
 \subsection{Lavinový efekt}
 
 Lavinový efekt (angl. \textit{Avalanche effect}) je vlastnost hašovací funkce, značící míru změny výstupu
 pro malou změnu vstupu. 
-Funkce které mají vysoký lavinový efekt mohou lépe odolávat problému shlukování,
+Funkce, které mají vysoký lavinový efekt, mohou lépe odolávat problému shlukování,
 při kterém se některé části hašovaného univerza klíčů mají tendenci shlukovat na výstupu
 do skupin. Lavinový efekt je zároveň vhodné kritérium pro návrh obecných hašovacích funkcí,
 protože není závislý na vstupu. 
@@ -135,7 +135,7 @@ Pokud $n$ bude menší než $m$, pak hašovací tabulka bude skutečně pracovat
 $\theta (1)$, za předpokladu uniformního rozložení hašovací funkce. Pokud ale
 bude $m$ menší než $n$, faktor zatížení bude větší než jedna a hašovací tabulka
 v konstantním čase pracovat nebude. Uvažme $m=4$ a $n=5$. Pak za předpokladu
-uniformního rozložení hašovací funkce, s vložením pátého prvku bude hašovací 
+uniformního rozložení hašovací funkce s vložením pátého prvku bude hašovací 
 tabulka plná a nám nezbude než vkládaný prvek vložit do již obsazeného slotu.
 Opětovné vyhledání pátého prvku si pak vynutí dodatečné časové prostředky.
 
@@ -204,7 +204,7 @@ Situaci, kdy hašovací funkce zobrazí dva různé klíče na tentýž slot:
 $f_{hash} (k_{1}) = f_{hash} (k_{2})$ nazýváme hašovací kolize nebo jen kolize. 
 Kolize jsou přirozeným důsledkem použití hašovacích funkcí, protože platí podmínka o
 mocnostech množiny klíčů a množiny slotů.
-My se jim chceme pokud možno vyhnout, neboť zásadním způsoben negativně ovlivňují 
+My se jim chceme pokud možno vyhnout, neboť zásadním způsobem negativně ovlivňují 
 časovou náročnost asociativních polí, které jsou na hašovacích funkcích postavené. 
 Právě časová náročnost tabulky záleží za předpokladu uniformního rozložení 
 hašovací funkce právě na faktoru zatížení. 
@@ -264,7 +264,7 @@ jiné dvě funkce $h_3, h_4$ tvaru $h_3 : U \rightarrow \{0,\ldots,r_1-1\}$ a $h
 musí opět platit $|\{0,\ldots,r_1-1\} \cup \{0,\ldots,r_1-1\}| = m$. Tedy že hašovací funkce musí dokonale pokrýt
 celou hašovací tabulku.
 
-Název Kukaččí hašování je odvozen z chování některých druhů kukaček, kdy kukačky vytlačují vejce nebo mladé jiných druhů
+Název kukaččí hašování je odvozen z chování některých druhů kukaček, kdy kukačky vytlačují vejce nebo mladé jiných druhů
 z jejich hnízd. Toto chování je velmi podobné operaci vkládání. I přes to, že se rozhraní operace $Insert(S,x)$ nemění,
 výrazně se mění její vnitřní implementace. Operace vložení prvku do tabulky, vybere jednu z dostupných hašovacích
 funkcí a pokusí se vložit prvek na příslušné místo. Dojde-li ke kolizi, původní prvek je vytlačen a nahrazen prvkem novým.
