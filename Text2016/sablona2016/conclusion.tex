@@ -3,38 +3,44 @@
 
 V této práci jsme viděli, jak je možné navrhovat hašovací funkce evolučně
 a pak zejména co musíme splnit, aby navržené hašovací funke byly skutečně
-kvalitní. Viděli jsme co je jsou důležité faktory při návrhu hašovací 
+kvalitní. Viděli jsme co jsou důležité faktory při návrhu hašovací 
 funkce, co musí být splnění aby hašovací funkce pracovala dobře a jakým
 okolnostem se máme naopak vyhnout.
 
-V kapitole 2 jsme se zabývali hašováním. Uvedli jsme nezbytné pojmy 
-a pochopili jsme okolnosti, za kterých hašovací tabulka funguje skutečně
-dobře. Vysvětlili jsme si \textit{faktor zatížení} a zdůraznili, jak
-moc důležité je, aby hašovací funkce uniformě distribuovala své výstupy.
-Součástí druhé kapitoly byl také příklad, který demonstroval, jaký dopad
-má nevhodně zvolená doména klíčů na výkon hašovací funkce, která pro 
-vhodně zvolenoudoménu funguje bezchybně. Dále jsme si řekli, jaké jsou
-nejčastější kritéria hodnocení kvality hašovacích funkcí a jak uvedli
-jsme několik obecných metod, jak se hašovací funkce dá navrhnout.
+Navrhnout dobrou hašovací funkci není jednoduchý úkol. Neexistují pevně dané normy,
+standardy ani návody. Autor hašovací funkce se musí spolehnout na svoje schopnosti,
+znalosti nebo intuici.
 
-Kapitola 3 nás ve svém začátku přivedla k myšlence počítání podle přírody
-a k obecným faktům, které u tohoto přístupu platí. Dále se v této kapitole
-zabýváme evolučnímy algoritmy, což je specifická oblast počítání podle
-přírody, která je pro nás důležitá zejména tím, že evolučnímy algoritmy
-budeme hledat naše hašovací funkce. Jsou zde probrané všechny důležité 
-aspekty evolučních algoritmů a jsou zde také uvedení dva zástupci této
-kategorie.
+Právě zde se otevírá prostor pro nekonvenční přístup jakým k řešení
+problémů přistupuje evoluční návrh. Evoluční návrh přistupuje k řešení problému
+modelováním dané problematiky prohledávacím prostorem, ve kterém je možné najít
+kvalitní řešení. Evoluční návrh se inspiruje procesy v přírodě konkřétně Darwinistickou
+evoluční teorií.
 
-V poslední části se zabýváme do hloubky genetickým programováním, protže
-to je náš evoluční algoritmus, který použíjeme pro hledání.
+V této práci jsme navrhovali hašovací funkce pro doménu IP adres. Navrhnutí hašovací funkce 
+``na míru'' konkrétní doméně hodnot může vyústit v lepší vlastnosti hašovacích tabulek, které
+jsou na ních postavené, než v případě použití konvenční, \textit{state-of-the-art}, obecných hašovacích
+funkcí vytvořených člověkem.
 
-Poslední kapitola 4 je věnována návrhu řešení. Je zde prodiskutována 
-reprezentace, proč je vhodné genetické programování a dále vhodné množiny
-terminálů a funkcí. V neposlední řadě se zde bavíme o selekčnich mechanismech a
-inicializaci nulté populace.
+Byly navrženy tři metody pro řešení dané problematiky. Přímý evoluční návrh, evoluční optimalizace upraveného
+Merkle-Damg\r{a}rdova schémata a evoluční návrh hašovacích funkcí na míru kukaččímu hašování.
+Jejich výsledky ukazují, že evoluční návrh
+má v této problematice uplatnění, protože navržené hašovací funkce vykazují lepši výsledky než jejich
+obecné protějšky co se do rychlosti a odolnosti vůči kolizím týče. 
 
-Asi nejdůležitější částí této kapitoly je volba fitness funkce, tedy 
-prostředku ohodnocení kandidátních řešení. Jsou zde rozebrány přístupy
-, které se objevili v předešlých publikacích, rozdíly oproti našemu problému
-a taky odůvodnění proč je naše řešení správné a co přináší nového.
+Předběžné výsledky této práce byly publikovány na konference Excel@FIT 2016. Příspěvek byl vybrán
+odbornou komísí k ústní prezentaci. Práce získala ocenění odborného panelu za nekonvenční přístup k návrhu hašovacích
+funkcí pomocí evolučního algoritmu a ocenění odbornou věřejností za excelentní práci a její prezentaci během přehlídky. Článek
+a poster si je možné prohlédnout v příloze.
+
+V této práci byla provedena celá řada experimentů a díky rozsáhlosti dané problematiky je zde prostor pro další zkoumání
+a provedení dalších experimentů. Předmětem zkoumání může být  vliv parametrů evolučního algoritmu na výsledné hašovací funkce.
+Zejména zajímavé by bylo zkoumat jaký vliv na výsledky májí jiné druhy selekce a genetických operátorů a jejich podrobné nastavení.
+Velmi užitečné
+by bylo provést experimenty s Merkle-Damg\r{a}rdovým schématem v původní podobě. Ty by se daly porovnat s výsledky
+pozměněného Merkle-Damg\r{a}rdova schémata a zároveň ověřit výsledky dosažené stejnou metodou v již existujících
+pracích podobného charakteru. Neméně zajímave by bylo experimentovat s jinými schématy pro výstavbu hašovacích funkcí
+jako je Merkleho strom a podobně. Kukaččí hašování se v součanosti těší velké oblibě a zařazení experimentů s jinými kvalitními
+schématy pro řešení hašovacích kolizí by umožnilo tato schémata porovnávat v kontextu problematiky návrhu specifických hašovacích
+funkcí.
 %=========================================================================

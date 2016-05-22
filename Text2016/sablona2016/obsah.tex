@@ -1690,7 +1690,9 @@ se vyskytují i kvalitní řešení. Musíme však brát v potaz to, že velmi h
 dobrá volba velikosti počáteční generace. Ta se typicky používá co nejvyšší (až tisíce jedinců), aby algoritmus nalezl
 optimální řešení v prvních padesátí generacích \cite{GPTutorial}.
 
-V následující části tedy prozkoumáme, jaký vliv má na hodnotu fitnes volba maximální hloubky abstraktního syntaktického
+
+\subsection{Vliv hloubky jedinců a velikosti populace na kvalitu řešení}
+V této podkapitole prozkoumáme, jaký vliv má na hodnotu fitnes volba maximální hloubky abstraktního syntaktického
 stromu kandidátních řešení v závislosti na velikosti populace. To nám zároveň umožní si ověřit, zda byly parametry zvolené
 správně.
 
@@ -1872,8 +1874,8 @@ signalizující lepší řešení Výsledky experimentů můžeme vidět v tabul
 		   & Terminální množína & Funkční množina & 1 & 2 & 3 & 4 \\ \hline
 		1. & $\{o_{0} .. o_{3}, \Re \}$ & $\{*, +, \wedge, \ggg\}$         & 5307 & 5305     & 5274 & 5278 \\
 		2. & $\{o_{0} .. o_{3}\}$ & $\{*, +, \wedge, \ggg\}$                  & 5291 & 5269    & 5273 & 5270  \\
-		3. & $\{o_{0} .. o_{3}, \Re \}$ & $\{*, +, \wedge, \neg, \ggg\}$ & 5300 & 5274.5 & 5271 &  5269.5 \\
-		4. & $\{o_{0} .. o_{3}, \Re \}$ & $\{*, \wedge, \ggg\}$              & 5306 & 5274.5 & 5270 & 5276 \\
+		3. & $\{o_{0} .. o_{3}, \Re \}$ & $\{*, +, \wedge, \neg, \ggg\}$ & 5300 & 5274,5 & 5271 &  5269,5 \\
+		4. & $\{o_{0} .. o_{3}, \Re \}$ & $\{*, \wedge, \ggg\}$              & 5306 & 5274,5 & 5270 & 5276 \\
 		5. & $\{o_{0} .. o_{3}, \Re \}$ & $\{+, \wedge, \ggg\}$ 			   & 5290 & 5270    & 5269  & 5268 \\
 		6. & $\{o_{0} .. o_{3}, \Re \}$ & $\{*, +, \wedge\}$                   & 5298 & 5269    & 5272 & 5270 \\
 		7. & $\{o_{0} .. o_{3}, \Re \}$ & $\{+, \wedge\}$                      & 5065 & 4962     & 5018 & 4992 \\
@@ -1904,7 +1906,7 @@ můžeme přípsat omezené hloubce navrhovaných funkcí. Jedná se o unární 
 zvětšení maximální hloubky stromu by algoritmus skutečně společně s funkcí XOR vytvořil nějakou užitečnou funkci a
 zvýšil tím hodnotu fitness.
 
-Základ všech state-of-the-art hašovacích funkcí tvoří nějaká aritmetická operace. Často
+Základ všech \textit{state-of-the-art} hašovacích funkcí tvoří nějaká aritmetická operace. Často
 se jedná o násobení $(*)$, sčítání $(+)$ nebo jejich společné použití. My jsme v referenčním experimentu zvolili použití 
 obou, avšak odebrání pouze jedné z nich by nemělo mít dramatický vliv na výslednou hodnotu fitness. Odebrání
 sčítání (řádek 4.) se nezdá mít vliv na výsledné hodnoty fitness s vyjímkou datasetu dvě. Výsledky tohoto
@@ -1922,15 +1924,17 @@ V posledním případě (řádek 7.) odeberem jak násobení tak rotace. Tyto dv
 vliv na hodnotu fitness. Při odebrání obou bychom měli pozorovat markantní propad. Výsledky tohoto experimentu 
 hovoří jasně pro předpoklad. Úbytek je opravdu významný nad všemi čtyřmi datasety o několik set úspěšně nahašovaných adres.
 
-V kapitole o návrhu řešení je řečeno, že všechny námi evolvované hašovací funkce jsou inherentně velmi rychlé. Toto
+
+\subsection{Porovnání ryhlosti navržených hašovacích funkcí s konvenčními}
+Všechny námi evolvované hašovací funkce jsou inherentně velmi rychlé. Toto
 tvrzení si ověříme v následující části této sekce. Rychlost hašovacích funkcí navržených algoritmem IPHash zůstává
 velmi vysoká díky omezení hloubky stromu. Toto omezení má za následek omezený počet použitých hašovacích operátorů v
 dané hašovací funkci, které spotřebovávají drahocený výpočetní výkon. V experimentu porovnáme dvě vybrané námi navržené
-hašovací funkce se state-of-the-art hašovacími funkcemi navrženými člověkem. Veškeré implementace obecných hašovací funkcí
+hašovací funkce se \textit{state-of-the-art} hašovacími funkcemi navrženými člověkem. Veškeré implementace obecných hašovací funkcí
 jsou převzaty z již dříve zmíněného balíku \textit{SMHasher} \cite{appleby2016}. 
 
 Veškeré zdrojové texty součástí tohoto experimentu,
-jsou kompilovány překladačem \texttt{gcc} verze 5.2.0. Bylo použito \texttt{C++} ve verzi 11, neboť poskytuje velmi
+jsou kompilovány překladačem \texttt{gcc} verze 5.2.0. Bylo použito \texttt{C++} ve standartu 11, neboť poskytuje velmi
 přesnou knihovnu pro měření času \texttt{std::chrono}, která byla použita pro měření časových intervalů. Dále byly
 povoleny optimalizace na třetí úrovni (přepínač \texttt{-O3}). Experimenty byly prováděny nad pevně danou množinou
 hašovaných adres o mocnosti sto. Každou hašovací funkcí nahašujeme tuto množinu milionkrát, abychom dostatečně 
@@ -1970,16 +1974,14 @@ Jedinou hašovací funkcí, která dává podobné výsledky, jako funkce algori
 implementaci neobsahuje žádné speciální direktivy pro použití pokročilých instrukčních sad. Je vidět, že zde opravdu
 velmi záleží na optimalizacích, které kompilátor aplikuje. Toto tvrzení podporují i výsledky (nejsou zde uvedené), při
 použití jiných úrovní optimalizace (přepínače \texttt{-O1} a \texttt{-O2}), nebo její úplné vypnutí. Námi navržené hašovací
-funkce zůstavají stále pět až desetkrát rychlejší, než obecné hašovací funkce. 
+funkce zůstavají stále pět až desetkrát rychlejší, než obecné hašovací funkce. Dalším zajímavým kritériem pro měření
+výkonnosti, může být počet instrukcí jednotlivých hašovacích funkcí. 
 
-Dalším zajímavým kritériem pro měření výkonnosti, může být počet instrukcí jednotlivých hašovacích funkcí. Výsledky tohoto
-experimentu jsou k náhlednutí jako součást práce na konference Excel@FIT a která je příložena v Appendixu blabla. 
-
-\newpage
 \section{Hašování s Merkle-Damg\r{a}rdovou konstrukcí}
 
-V této sekci se budeme věnovat optimalizaci kompresních komponent Merkle-Damg\r{a}rdova schématu. Opět podotkněme,
-že se zde nejedná o evoluční návrh, neboť hašovací schéma máme pevně dané. Také uveďme, že se zde nejedná o 
+V této podkapitole se budeme věnovat optimalizaci kompresních komponent Merkle-Damg\r{a}rdova schématu. Nejedná o evoluční návrh,
+neboť hašovací schéma máme pevně dané a jedná se tedy o přístup na pomezí evolučního návrhu a evoluční optimalizaci.
+Nejedná se zde o 
 ``čisté'' Merkle-Damg\r{a}rdovo schéma, nýbrž o schéma upravené pro potřeby naší aplikace. Nejdůležitější změny provedené
 na schématu jsou odstranění inicializačního vektoru (první komponenta není tedy formálně vzato kompresní) a úplné 
 vynechání zarovnání. To předpokládejme, že není v našem případě nezbytné, protože my se nesnažíme navrhovat 
@@ -1989,9 +1991,7 @@ samozřejmě pro zarovnání vstupu na potřebnou délku).
 Dále je vhodné uvést, co zde rozumíme pod algoritmem náhodného prohledávání, s kterým budeme porovnávat námi navržený
 evoluční algoritmus (pro zjednodušení jej budeme označovat MDHash). Náhodné prohledávání budeme realizovat stejně jako
 algoritmus MDHash avšak s rozdílem, že nebudeme používat křížení ale pouze mutaci. Podstromovou mutaci budeme provádět
-se sto procentní pravděpodobností a to vždy pro kořenový uzel, čímž zaručíme znovuvygenerování celého stromu. Pojďmě se
-tedy podívat, jakých výsledků dosáhl navržený evoluční algoritmus nad jednotlivými datasety v porovnání s náhodným
-prohledáváním.  
+se sto procentní pravděpodobností a to vždy pro kořenový uzel, čímž zaručíme znovuvygenerování celého stromu. 
 
 %%%%%%%%%%%%% MD AVG Population SET #1 %%%%%%%%%%%%%%%
 \begin{figure*}[!ht]
@@ -2002,10 +2002,10 @@ prohledáváním.
 	, height=8cm
 	, width=0.50\textwidth
 	, grid=major
-	, xlabel=Generation
+	, xlabel=Generace
 	, ymin=5200
 	, ymax=5350
-	, ylabel=Successfully hashed
+	, ylabel=Nahašováno
 	, legend style=
 	{ at={(1.0, 0.3)}
 		, anchor=east
@@ -2026,7 +2026,7 @@ prohledáváním.
 	, height=8cm
 	, width=0.50\textwidth
 	, grid=major
-	, xlabel=Generation
+	, xlabel=Generace
 	%%	, ylabel=Successfully hashed
 	, yticklabels={,,}
 	%%	, legend pos=outer north east
@@ -2035,24 +2035,24 @@ prohledáváním.
 		, anchor=east
 	}
 	]
-	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set1/MDMedian.dat};
+	\addplot[color=green, dotted, mark=none] table {graph/MerkleDamgard/Set1/MDMedian.dat};
 	\addlegendentry{MDHash}
-	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set1/MDFstQ.dat};
-	\addlegendentry{MDHash fstq}
-	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set1/MDThrdQ.dat};
-	\addlegendentry{MDHash thrdq}
+	\addplot[color=green, dotted, mark=none] table {graph/MerkleDamgard/Set1/MDFstQ.dat};
+	%\addlegendentry{MDHash fstq}
+	\addplot[color=green, dotted, mark=none] table {graph/MerkleDamgard/Set1/MDThrdQ.dat};
+	\addlegendentry{Diverzita běhů}
 	\end{axis}
 	\end{tikzpicture}
-	\caption{MD a jejich fitnes hodnota nad data setem číslo 1.}
+	\caption{Evolvované hašovací funkce metodou MDHash a jejich fitness hodnota nad data setem číslo jedna.}
 	\label{fig:MDComparison1}
 \end{figure*}
 %%%%%%%%%%%%% MD AVG Population SET #1 %%%%%%%%%%%%%%%
 
 Z pohledu na graf na obrázku \ref{fig:MDComparison1} je vidět, že výsledky nejsou povzbudivé. S výjimkou několika desítek počátečních
 generací algoritmus náhodného prohledávání
-převyšuje algoritmus MDHash. I výsledná řešení jsou lepšív případě algoritmu náhodného prohledávání. Je potvrzen typický aspekt genetického
+převyšuje algoritmus MDHash. I výsledná řešení jsou lepší v případě algoritmu náhodného prohledávání. Je potvrzen typický aspekt genetického
 programování, že v několika počátečních generacích algoritmus rapidně konverguje a v pozdějších naopak stagnuje. Nejmíně povzbudivým aspektem
-algoritmu MDHash nad prvním datasetem je však fakt, že nenalezl signifikantně lepší řešení než algoritmus IPHash. Rozdíl v průmětrném nejlepším
+algoritmu MDHash nad prvním datasetem je však fakt, že nenalezl signifikantně lepší řešení než algoritmus IPHash. Rozdíl v průměrném nejlepším
 nalezeném řešení není tak signifikantní, jak bychom si přáli, jedná se pouze o jednotky IP adres. Rozptyl určený prvním a třetím kvartilem je menší,
 než v případě algoritmu IPHash nad stejným datasetem. Můžeme tedy algoritmus MDHash považovat za stabilnější napříč jednotlivými běhy než
 algoritmus IPHash.
@@ -2066,19 +2066,19 @@ algoritmus IPHash.
 	, height=8cm
 	, width=0.50\textwidth
 	, grid=major
-	, xlabel=Generation
+	, xlabel=Generace
 	, ymin=5200
 	, ymax=5350
-	, ylabel=Successfully hashed
+	, ylabel=Nahašováno
 	, legend style=
 	{ at={(1.0, 0.3)}
 		, anchor=east
 	}
 	]
 	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set2/MDMedian.dat};
-	\addlegendentry{MDHashHash}
+	\addlegendentry{MDHash}
 	\addplot[color=black,  dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set2/MDRSMedian.dat};
-	\addlegendentry{MDHash Random Search}
+	\addlegendentry{Náhodné prohledávání}
 	\end{axis}
 	
 	\begin{axis}[ %
@@ -2090,7 +2090,7 @@ algoritmus IPHash.
 	, height=8cm
 	, width=0.50\textwidth
 	, grid=major
-	, xlabel=Generation
+	, xlabel=Generace
 	%%	, ylabel=Successfully hashed
 	, yticklabels={,,}
 	%%	, legend pos=outer north east
@@ -2099,15 +2099,15 @@ algoritmus IPHash.
 		, anchor=east
 	}
 	]
-	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set2/MDMedian.dat};
+	\addplot[color=green, dotted, mark=none] table {graph/MerkleDamgard/Set2/MDMedian.dat};
 	\addlegendentry{MDHash}
-	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set2/MDFstQ.dat};
-	\addlegendentry{MDHash fstq}
+	\addplot[color=green, dotted, mark=none] table {graph/MerkleDamgard/Set2/MDFstQ.dat};
+	%\addlegendentry{MDHash fstq}
 	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set2/MDThrdQ.dat};
-	\addlegendentry{MDHash thrdq}
+	\addlegendentry{Diverzita běhů}
 	\end{axis}
 	\end{tikzpicture}
-	\caption{MD a jejich fitnes hodnota nad data setem číslo 2.}
+	\caption{Evolvované hašovací funkce metodou MDHash a jejich fitness hodnota nad data setem číslo dvě.}
 	\label{fig:MDComparison2}
 \end{figure*}
 %%%%%%%%%%%%% MD AVG Population SET #2 %%%%%%%%%%%%%%%
@@ -2129,19 +2129,19 @@ výrazně. To promlouvá jednoznačně ve prospěch stability algoritmu MDHash.
 	, height=8cm
 	, width=0.50\textwidth
 	, grid=major
-	, xlabel=Generation
+	, xlabel=Generace
 	, ymin=5200
 	, ymax=5350
-	, ylabel=Successfully hashed
+	, ylabel=Nahašováno
 	, legend style=
 	{ at={(1.0, 0.3)}
 		, anchor=east
 	}
 	]
 	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set3/MDMedian.dat};
-	\addlegendentry{MDHashHash}
+	\addlegendentry{MDHash}
 	\addplot[color=black,  dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set3/MDRSMedian.dat};
-	\addlegendentry{MDHash Random Search}
+	\addlegendentry{Náhodné prohledávání}
 	\end{axis}
 	
 	\begin{axis}[ %
@@ -2153,7 +2153,7 @@ výrazně. To promlouvá jednoznačně ve prospěch stability algoritmu MDHash.
 	, height=8cm
 	, width=0.50\textwidth
 	, grid=major
-	, xlabel=Generation
+	, xlabel=Generace
 	%%	, ylabel=Successfully hashed
 	, yticklabels={,,}
 	%%	, legend pos=outer north east
@@ -2164,18 +2164,18 @@ výrazně. To promlouvá jednoznačně ve prospěch stability algoritmu MDHash.
 	]
 	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set3/MDMedian.dat};
 	\addlegendentry{MDHash}
-	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set3/MDFstQ.dat};
-	\addlegendentry{MDHash fstq}
-	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set3/MDThrdQ.dat};
-	\addlegendentry{MDHash thrdq}
+	\addplot[color=green, dotted, mark=none] table {graph/MerkleDamgard/Set3/MDFstQ.dat};
+%	\addlegendentry{MDHash fstq}
+	\addplot[color=green, dotted, mark=none] table {graph/MerkleDamgard/Set3/MDThrdQ.dat};
+	\addlegendentry{Diverzita běhů}
 	\end{axis}
 	\end{tikzpicture}
-	\caption{MD a jejich fitnes hodnota nad data setem číslo 3.}
+	\caption{Evolvované hašovací funkce metodou MDHash a jejich fitness hodnota nad data setem číslo tři.}
 	\label{fig:MDComparison3}
 \end{figure*}
 %%%%%%%%%%%%% MD AVG Population SET #3 %%%%%%%%%%%%%%%
 
-V předchozí sekci [] jsme mohli pozorovat znatelný pokles u třetího v hodnotě fitness u algoritmu IPHash. Tento fenomén lze
+V předchozí podkapitole jsme mohli pozorovat znatelný pokles u třetího v hodnotě fitness u algoritmu IPHash. Tento fenomén lze
 pozorovat na obrázku \ref{fig:MDComparison3} i v případě průběhu algoritmu MDHash nad stejným datasetem, nikoli však již
 tak výrazně. Pokles je znatelný, ale už se jedná jen asi o deset adres. I nad třetím datasetem jasně dominuje algoritmus náhodného
 prohledávání, tentokrát ale výrazněji. Můžeme zde pozorovat rapidní konvergenci náhodného prohledávání v počátečních desítách
@@ -2193,19 +2193,19 @@ IPHash co se odolnosti vůči kolizím týká.
 	, height=8cm
 	, width=0.50\textwidth
 	, grid=major
-	, xlabel=Generation
+	, xlabel=Generace
 	, ymin=5200
 	, ymax=5350
-	, ylabel=Successfully hashed
+	, ylabel=Nahašováno
 	, legend style=
 	{ at={(1.0, 0.3)}
 		, anchor=east
 	}
 	]
 	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set4/MDMedian.dat};
-	\addlegendentry{MDHashHash}
+	\addlegendentry{MDHash}
 	\addplot[color=black,  dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set4/MDRSMedian.dat};
-	\addlegendentry{MDHash Random Search}
+	\addlegendentry{Náhodné prohledávání}
 	\end{axis}
 	
 	\begin{axis}[ %
@@ -2217,7 +2217,7 @@ IPHash co se odolnosti vůči kolizím týká.
 	, height=8cm
 	, width=0.50\textwidth
 	, grid=major
-	, xlabel=Generation
+	, xlabel=Generace
 	%%	, ylabel=Successfully hashed
 	, yticklabels={,,}
 	%%	, legend pos=outer north east
@@ -2228,22 +2228,22 @@ IPHash co se odolnosti vůči kolizím týká.
 	]
 	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set4/MDMedian.dat};
 	\addlegendentry{MDHash}
-	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set4/MDFstQ.dat};
-	\addlegendentry{MDHash fstq}
-	\addplot[color=green, dashdotted, thick, mark=none] table {graph/MerkleDamgard/Set4/MDThrdQ.dat};
-	\addlegendentry{MDHash thrdq}
+	\addplot[color=green, dotted, mark=none] table {graph/MerkleDamgard/Set4/MDFstQ.dat};
+%	\addlegendentry{MDHash fstq}
+	\addplot[color=green, dotted, mark=none] table {graph/MerkleDamgard/Set4/MDThrdQ.dat};
+	\addlegendentry{Diverzita běhů}
 	\end{axis}
 	\end{tikzpicture}
-	\caption{MD a jejich fitnes hodnota nad data setem číslo 4.}
+	\caption{Evolvované hašovací funkce metodou MDHash a jejich fitness hodnota nad data setem číslo čtyři.}
 	\label{fig:MDComparison4}
 \end{figure*}
 %%%%%%%%%%%%% MD AVG Population SET #4 %%%%%%%%%%%%%%%
 
-V předchozí sekci [] v případě datasetu tři můžeme pozorovat pokles v hodnotě fitnes i u datasetu ctyři. Překvapivě
-tento fenomén nelze pozorovat nad posledním datasetem (\ref{fig:MDComparison4}) v případě algoritmu MDHash. Naopak právě nad tímto datasetem
+Stejně jako v předchozí podkapitole můžeme pozorovat pokles v hodnotě fitnes i u datasetu ctyři. Překvapivě
+tento fenomén nelze pozorovat nad posledním datasetem (obrázek \ref{fig:MDComparison4}) v případě algoritmu MDHash. Naopak právě nad tímto datasetem
 nalezl algoritmus MDHash nejlepší řešení a pouze nad tímto datasetem se dokázal vyrovnat algoritmu náhodného prohledávání.
 Stejně jako v případě datasetu jedna a dvě můžeme pozorovat rapidnější kovergenci než u algoritmu náhodného prohledávání.
-Tentokrát jej však náhodné prohledávání již nepřevýší a oba algoritmy mají v pozdějších generacích podobný průběh. Průěrný 
+Tentokrát jej však náhodné prohledávání již nepřevýší a oba algoritmy mají v pozdějších generacích podobný průběh. Průměrný 
 nejlepší nalezený jedinec nad tímto datasetem je lepší než v případě algoritmu IPHash a to o téměř dvě desítky adres. Rozptyl
 určeny prvním a třetím kvartilem se stejně jako v případě datasetu tři zvětšil a je srovnatelný s rozptylem algoritmu IPHash.
 
@@ -2252,7 +2252,7 @@ upraveného Merkle-Damg\r{a}rdova schématu. Ačkoli lze považovat výsledky za
 zejména díky lepším výsledkům nad problematickými datasety tři a čtyři, nelze je považovat za uspokojivé. Algoritmu bylo
 umožněno provést dvojnásobný počet evaluací oproti algoritmu IPHash, avšak předčasná stagnace neumožnila dosáhnout lepších
 výsledků. Algoritmus MDHash nelze považovat za lepší v porovnání s náhodným prohledáváním, neboť jej ani nad jedním z datasetů
-nepřekonal. I přes to si lze z této série experimentů odnést některé pozotivní aspekty.
+nepřekonal. I přes to si lze z této série experimentů odnést některé pozitivní aspekty.
 
 \begin{itemize}
 	\item Rozptyl jednotlivých běhů tvořený prvním a třetím kvartilem nad jednotlivými datasety byl v případě prvních dvou datasetů menší, než
@@ -2269,15 +2269,14 @@ Zůstává tedy otázka jak si vysvětlit neuspokojivé výsledky algoritmu MDHa
 nedostatečný počet generací, neboť algoritmus na všech datasetech začal stagnovat příliš brzy a jeho hodnota fitnes se v pozdějších
 generacích měnila jen zřídka. Navýšením počtu evaluací bychom algoritmu tedy nepomohli. Algoritmus zdá se vždy uvázl v nějakém lokálním
 minimu. Nezbývá tedy, než konstatovat, že prostor kandidátních řešení tak jak byl modelován v této úloze není obecně vhodný genetické
-programování. Zajímavé by bylo porovnat výsledky v této sekci s výsledky optimalizace standartního Merkle-Damg\r{a}rdova schématu. Tota
+programování. Zajímavé by bylo porovnat výsledky v této sekci s výsledky optimalizace standartního Merkle-Damg\r{a}rdova schématu. Tato
 myšlenka nám otevírá prostor pro budoucí práci.
 
-\newpage
 \section{Kukaččí hašování}
 
-V této sekci se zaměříme na návrh hašovacích funkcí pro konkrétní schéma řešení kolizí a to kukaččí hašování. Použijeme základní schéma
+V této sekci se zaměříme na návrh a vyhodnocení hašovacích funkcí pro konkrétní schéma řešení kolizí a to kukaččí hašování. Použijeme základní schéma
 se dvěma hašovacími funkcemi a dvěma tabulkami tak, jak bylo popsáno v kapitole \ref{sec:hashing}. Tato metoda se nachází na pomezí
-evolučního designu a evoluční optimalizace. Navrhujeme hašovací funkce, ale při jejich ohodnocení fitnes funkcí uvažujeme již kukaččí
+evolučního návrhu a evoluční optimalizace. Navrhujeme hašovací funkce, ale při jejich ohodnocení fitnes funkcí uvažujeme již kukaččí
 hašování. Kukaččí hašování je vyjímečné dobré v časové složitosti, musíme však dbát rychlost celé konstrukce. V následující sérii 
 experimentů zvolíme relativně nízkou hodnotu konstanty $MaxLoop$ omezující počet vložení do hašovací tabulky, abychom zůstali dodrželi
 předpoklad inherentně rychlých hašovacích funkcí. Později v této sekci budeme konstantu $MaxLoop$ měnit a to proto, abychom prověřili
@@ -2311,7 +2310,7 @@ Jako v předešlých sekcích projdeme výsledky nad jednotlivými datasety zvl�
 	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set1/CuckooMedian.dat};
 	\addlegendentry{CuckooHash}
 	\addplot[color=black, dashdotted, thick, mark=none] table {graph/Cuckoo/Set1/CuckooRSMedian.dat};
-	\addlegendentry{Cuckoo Random Search}
+	\addlegendentry{Náhodné prohledávání}
 	\end{axis}
 	
 	\begin{axis}[ %
@@ -2334,13 +2333,13 @@ Jako v předešlých sekcích projdeme výsledky nad jednotlivými datasety zvl�
 	]
 	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set1/CuckooMedian.dat};
 	\addlegendentry{CuckooHash}
-	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set1/CuckooFstQ.dat};
-	\addlegendentry{CuckooHash fstq}
-	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set1/CuckooThrdQ.dat};
-	\addlegendentry{CuckooHash thrdq}
+	\addplot[color=blue, dotted, mark=none] table {graph/Cuckoo/Set1/CuckooFstQ.dat};
+%	\addlegendentry{CuckooHash fstq}
+	\addplot[color=blue, dotted, mark=none] table {graph/Cuckoo/Set1/CuckooThrdQ.dat};
+	\addlegendentry{Diverzita běhů}
 	\end{axis}
 	\end{tikzpicture}
-	\caption{Kukacka a jejich fitnes hodnota nad data setem číslo 1.}
+	\caption{Evolvované hašovací funkce metodou CuckooHash a jejich fitness hodnota nad data setem číslo jedna.}
 	\label{fig:cuckooComparison1}
 \end{figure*}
 %%%%%%%%%%%%% CUCKOO AVG Population SET #1 %%%%%%%%%%%%%%%
@@ -2351,7 +2350,7 @@ být rozdíl mezi algoritmy MDHash a IPHash zanedbatelný, neboť v tomto příp
 více a dousáhnout tak faktoru zatížení $\alpha = 0.83$. Výsledky jsou vskutku povzbudivé. Dokázali jsme překonat algoritmus
 náhodného prohledávání, který začal předčasně 
 pomalu stagnovat. Naproti tomu, algoritmus CuckoHash potvrtuje předpoklad o typickém průběhu genetického programování a 
-rapidně konverguje v prvních několika generacích a poté velmi rychle začína stagnovat. Povzbudivé jsou i vsledky na grafu
+rapidně konverguje v prvních několika generacích a poté velmi rychle začína stagnovat. Povzbudivé jsou i výsledky na grafu
 vpravo, který ukazuje na dobrou stabilitu algoritmu, která je srovnatelná s algoritmem MDHash.
 
 %%%%%%%%%%%%% CUCKOO AVG Population SET #2 %%%%%%%%%%%%%%%
@@ -2375,7 +2374,7 @@ vpravo, který ukazuje na dobrou stabilitu algoritmu, která je srovnatelná s a
 	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set2/CuckooMedian.dat};
 	\addlegendentry{CuckooHash}
 	\addplot[color=black, dashdotted, thick, mark=none] table {graph/Cuckoo/Set2/CuckooRSMedian.dat};
-	\addlegendentry{Cuckoo Random Search}
+	\addlegendentry{Náhodné prohledávání}
 	\end{axis}
 	
 	\begin{axis}[ %
@@ -2398,13 +2397,13 @@ vpravo, který ukazuje na dobrou stabilitu algoritmu, která je srovnatelná s a
 	]
 	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set2/CuckooMedian.dat};
 	\addlegendentry{CuckooHash}
-	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set2/CuckooFstQ.dat};
-	\addlegendentry{CuckooHash fstq}
-	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set2/CuckooThrdQ.dat};
-	\addlegendentry{CuckooHash thrdq}
+	\addplot[color=blue, dotted, mark=none] table {graph/Cuckoo/Set2/CuckooFstQ.dat};
+%	\addlegendentry{CuckooHash fstq}
+	\addplot[color=blue, dotted, mark=none] table {graph/Cuckoo/Set2/CuckooThrdQ.dat};
+	\addlegendentry{Diverzita běhů}
 	\end{axis}
 	\end{tikzpicture}
-	\caption{Kukacka a jejich fitnes hodnota nad data setem číslo 2.}
+	\caption{Evolvované hašovací funkce metodou CuckooHash a jejich fitness hodnota nad data setem číslo dvě.}
 	\label{fig:cuckooComparison2}
 \end{figure*}
 
@@ -2419,7 +2418,7 @@ je opět dobrá.
 \begin{figure*}[!ht]
 	\centering
 	\begin{tikzpicture}
-	\begin{axis}[ %
+	\begin{axis}[ 
 	, name=plot1
 	, height=8cm
 	, width=0.50\textwidth
@@ -2436,7 +2435,7 @@ je opět dobrá.
 	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set3/CuckooMedian.dat};
 	\addlegendentry{CuckooHash}
 	\addplot[color=black, dashdotted, thick, mark=none] table {graph/Cuckoo/Set3/CuckooRSMedian.dat};
-	\addlegendentry{Cuckoo Random Search}
+	\addlegendentry{Náhodné prohledávání}
 	\end{axis}
 	
 	\begin{axis}[ %
@@ -2460,12 +2459,12 @@ je opět dobrá.
 	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set3/CuckooMedian.dat};
 	\addlegendentry{CuckooHash}
 	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set3/CuckooFstQ.dat};
-	\addlegendentry{CuckooHash fstq}
+%	\addlegendentry{CuckooHash fstq}
 	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set3/CuckooThrdQ.dat};
-	\addlegendentry{CuckooHash thrdq}
+	\addlegendentry{Diverzita běhů}
 	\end{axis}
 	\end{tikzpicture}
-	\caption{Kukacka a jejich fitnes hodnota nad data setem číslo 3.}
+	\caption{Evolvované hašovací funkce metodou CuckooHash a jejich fitness hodnota nad data setem číslo tři.}
 	\label{fig:cuckooComparison3}
 \end{figure*}
 %%%%%%%%%%%%% CUCKOO AVG Population SET #3 %%%%%%%%%%%%%%%
@@ -2497,7 +2496,7 @@ dvěma datasety.
 	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set4/CuckooMedian.dat};
 	\addlegendentry{CuckooHash}
 	\addplot[color=black, dashdotted, thick, mark=none] table {graph/Cuckoo/Set4/CuckooRSMedian.dat};
-	\addlegendentry{Cuckoo Random Search}
+	\addlegendentry{Náhodné prohledávání}
 	\end{axis}
 	
 	\begin{axis}[ %
@@ -2520,18 +2519,18 @@ dvěma datasety.
 	]
 	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set4/CuckooMedian.dat};
 	\addlegendentry{CuckooHash}
-	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set4/CuckooFstQ.dat};
-	\addlegendentry{CuckooHash fstq}
-	\addplot[color=blue, dashdotted, thick, mark=none] table {graph/Cuckoo/Set4/CuckooThrdQ.dat};
-	\addlegendentry{CuckooHash thrdq}
+	\addplot[color=blue, dotted, mark=none] table {graph/Cuckoo/Set4/CuckooFstQ.dat};
+%	\addlegendentry{CuckooHash fstq}
+	\addplot[color=blue, dotted,  mark=none] table {graph/Cuckoo/Set4/CuckooThrdQ.dat};
+	\addlegendentry{Diverzita běhů}
 	\end{axis}
 	\end{tikzpicture}
-	\caption{Kukacka a jejich fitnes hodnota nad data setem číslo 4.}
+	\caption{Evolvované hašovací funkce metodou CuckooHash a jejich fitness hodnota nad data setem číslo čtyři.}
 	\label{fig:cuckooComparison4}
 \end{figure*}
 %%%%%%%%%%%%% CUCKOO AVG Population SET #4 %%%%%%%%%%%%%%%
 
-Stejně tak dobře si algoritmus CuckooHash vedl i nad posledním datasetem (\ref{fig:cuckooComparison4}). Znovu předčil algoritmus náhodného prohledávání,
+Stejně tak dobře si algoritmus CuckooHash vedl i nad posledním datasetem (obrázek \ref{fig:cuckooComparison4}). Znovu předčil algoritmus náhodného prohledávání,
 průběh odpovídá typickému průběhu algoritmu genetického programování. Není potvrzen negativní fenomén o propadu v hodnotě
 fitnes nad posledními dvěma datasety, protože algoritmus si vede znovu stejně dobře jako v předchozích případech. Přesto zde lze
 pozorovat některé zajímavé rysy, které nebyly doposud přítomny.
@@ -2545,7 +2544,8 @@ pozorovat některé zajímavé rysy, které nebyly doposud přítomny.
 		pravděpodobně také správným) je, že se jedná pouze o náhodu.
 \end{itemize}
 
-V následující části sekce se budeme zabývat vlivem, jaký má na evolvované hašovací funkce nastavení konstanty $MaxLoop$ u operace \Call{Insert}{} definované
+\subsection{Experimenty s různě nastaveným omezením při vkládání do tabulky}
+V následující části kapitoly se budeme zabývat vlivem, jaký má na evolvované hašovací funkce nastavení konstanty $MaxLoop$ u operace \Call{Insert}{} definované
 v kapitole \ref{sec:hashing}. Očekávané výsledky jsou, že s narástající hodnoutou konstanty, by měla růst i hodnota fitnes a zvětšovat se tak faktor zatížení
 hašovací tabulky $\alpha$. Provedeme sérii experimentů, kde budeme porovnávat výsledky s hodnotou konstanty $MaxLoop = 5$, tedy v podobě v jaké je metoda
 CuckooHash navržena s výsledky experimentů, kde bude konstanta $MaxLoop = 10$ a $MaxLoop = 15$. Experimenty provedeme nad všemi čtyřmi datasety.
@@ -2731,7 +2731,7 @@ CuckooHash navržena s výsledky experimentů, kde bude konstanta $MaxLoop = 10$
 	\end{axis}		
 	
 \end{tikzpicture}
-\caption{Výsledky alogirmtu CuckooHASH pro ruzně nastavené hodnoty konstanty \texttt{MaxLoop}. Zobrazeny výsledky pro dataset jedna (vlevo nahoře),
+\caption{Výsledky alogritmu CuckooHASH pro ruzně nastavené hodnoty konstanty \texttt{MaxLoop}. Zobrazeny výsledky pro dataset jedna (vlevo nahoře),
 	dvě (vpravo nahoře), tři (vlevo dole) a čtyři (vpravo dole).}
 \label{fig:cuckoo_maxloop}
 \end{figure}
@@ -2746,8 +2746,7 @@ adres. Stabilitu co se rozdílu mezi prvním a třetím kvartilem týče jsme uk
 
 \section{Shrnutí výsledků}
 
-V poslední sekci kapitoly se budeme věnujeme shrnutí dosažených výsledků všch tří metod (IPHash, MDHash, CuckooHash), pozitivním
-i negativním aspektům. Doplníme shrnující grafy a tabulky, porovnáme výsledky vůči state-of-the-art hašovacím funkcím navržnými člověkěm.
+Poslední část této kapitoly bude zaměřená na shrnutí výsledků. Výsledky všech tří přístupů (IPHash, MDHash, CuckooHash) zhodnotíme .
 
 %%%%%%%%%%%%% CONCLUSION BOXPLOT 1 %%%%%%%%%%%%%%%
 \begin{figure}[!ht]
@@ -2970,13 +2969,13 @@ i negativním aspektům. Doplníme shrnující grafy a tabulky, porovnáme výsl
 	] coordinates {}; % MDRS SET4
 	\end{axis}				
 	\end{tikzpicture}
-	\caption{Podovnání algoritmu IPHash a MDHas spolu s jejich náhodnými algernativami (IPRS resp. MDRS). Jednotlivé grafy ukazují výsledky napříč datasety
+	\caption{Podovnání algoritmu IPHash a MDHash spolu s jejich náhodnými algernativami (IPRS resp. MDRS). Jednotlivé grafy ukazují výsledky napříč datasety
 		jedna (vlevho nahoře), dvě (vpravo nahoře), tři (vlevo dole) a čtyři (vpravo dole).}
 	\label{fig:conclusion_boxplot_1}
 \end{figure}
 %%%%%%%%%%%%% CONCLUSION BOXPLOT 1 %%%%%%%%%%%%%%%
 
-Na grafech na obrázku \ref{fig:conclusion_boxplot_1} můžeme vidět srovnání algoritmů IPHash a MDHash spole s jejich alternativami náhodného prohledávání
+Na grafech na obrázku \ref{fig:conclusion_boxplot_1} můžeme vidět srovnání výsledků navrhnutých metodami IPHash a MDHash spolu s jejich alternativami náhodného prohledávání
 IPRS repspektive MDRS. Zde můžeme podrobně pozorovat závislosti, které byly patrné již v předchozích sekcích. Na prvních dvou datasetech si nejlépe vedl
 algoritmus IPHash následovaný algoritmem náhodného prohledávání ve variantě Merkle-Damg\r{a}rdova schématu. Na prvním datasetu je algoritmus MDHash
 nejstabilnější a to i co se nejlepšího a nejhoršího nalezeného řešení týká. Na druhém datasetu je stabilní pouze v mezích prvního a třetího kvartilu. Co se nejlepšího
