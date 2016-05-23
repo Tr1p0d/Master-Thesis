@@ -1,0 +1,262 @@
+# Threads and Seeds
+evalthreads = 1
+breedthreads = 1
+seed.0 = time
+#seed.1 = time
+#seed.2 = time
+#seed.3 = time
+# Checkpointing
+checkpoint = false
+checkpoint-modulo = 1
+checkpoint-prefix = ec
+# The basic setup
+init = ec.gp.GPInitializer
+state = ec.simple.SimpleEvolutionState
+finish = ec.simple.SimpleFinisher
+exch = ec.simple.SimpleExchanger
+breed = ec.simple.SimpleBreeder
+eval = ec.simple.SimpleEvaluator
+pop = ec.Population
+pop.subpops = 1
+pop.subpop.0 = ec.Subpopulation
+pop.subpop.0.duplicate-retries = 100
+quit-on-run-complete = true
+gp.problem.stack = ec.gp.ADFStack
+gp.adf-stack.context = ec.gp.ADFContext
+
+######################################################
+# Here we define our node constraints
+######################################################
+gp.nc.size = 3
+
+gp.nc.0 = ec.gp.GPNodeConstraints
+gp.nc.0.name = nc0
+gp.nc.0.returns = nil
+gp.nc.0.size = 0
+
+gp.nc.1 = ec.gp.GPNodeConstraints
+gp.nc.1.name = nc1
+gp.nc.1.returns = nil
+gp.nc.1.size = 1
+gp.nc.1.child.0 = nil
+
+gp.nc.2 = ec.gp.GPNodeConstraints
+gp.nc.2.name = nc2
+gp.nc.2.returns = nil
+gp.nc.2.size = 2
+gp.nc.2.child.0 = nil
+gp.nc.2.child.1 = nil
+
+######################################################
+# A single nil type will do
+######################################################
+gp.type.a.size = 1
+gp.type.a.0.name = nil
+gp.type.s.size = 0
+
+# EACH INDIVIDUAL CONSISTS OF 4 TREES
+# tc0 - tc3 defined below
+pop.subpop.0.species.ind.numtrees = 4
+pop.subpop.0.species.ind.tree.0 = ec.gp.GPTree
+pop.subpop.0.species.ind.tree.0.tc = tc0
+pop.subpop.0.species.ind.tree.1 = ec.gp.GPTree
+pop.subpop.0.species.ind.tree.1.tc = tc1
+pop.subpop.0.species.ind.tree.2 = ec.gp.GPTree
+pop.subpop.0.species.ind.tree.2.tc = tc2
+pop.subpop.0.species.ind.tree.3 = ec.gp.GPTree
+pop.subpop.0.species.ind.tree.3.tc = tc3
+
+gp.tc.size = 4
+
+# TREE CONSTRAINT 0
+gp.tc.0 = ec.gp.GPTreeConstraints
+gp.tc.0.name = tc0
+gp.tc.0.fset = f0
+gp.tc.0.returns = nil
+gp.tc.0.init = ec.gp.koza.HalfBuilder
+gp.tc.0.init.min-depth = 2
+gp.tc.0.init.max-depth = 6
+gp.koza.half.growp = 0.5
+
+# TREE CONSTRAINT 1
+gp.tc.1 = ec.gp.GPTreeConstraints
+gp.tc.1.name = tc1
+gp.tc.1.fset = f1
+gp.tc.1.returns = nil
+gp.tc.1.init = ec.gp.koza.HalfBuilder
+gp.tc.1.init.min-depth = 2
+gp.tc.1.init.max-depth = 6
+gp.koza.half.growp = 0.5
+
+# TREE CONSTRAINT 2
+gp.tc.2 = ec.gp.GPTreeConstraints
+gp.tc.2.name = tc2
+gp.tc.2.fset = f2
+gp.tc.2.returns = nil
+gp.tc.2.init = ec.gp.koza.HalfBuilder
+gp.tc.2.init.min-depth = 2
+gp.tc.2.init.max-depth = 6
+gp.koza.half.growp = 0.5
+
+# TREE CONSTRAINT 3
+gp.tc.3 = ec.gp.GPTreeConstraints
+gp.tc.3.name = tc3
+gp.tc.3.fset = f3
+gp.tc.3.returns = nil
+gp.tc.3.init = ec.gp.koza.HalfBuilder
+gp.tc.3.init.min-depth = 2
+gp.tc.3.init.max-depth = 6
+gp.koza.half.growp = 0.5
+
+
+# WE WILL HAVE TOTAL OF 4 FUNCTION SETS
+gp.fs.size=4
+
+# FUNCTION SET 3
+gp.fs.0 = ec.gp.GPFunctionSet
+gp.fs.0.name = f0
+
+# TERMINALS 0
+gp.fs.0.size = 6
+gp.fs.0.func.0 = ec.iphashing.problems.merkledamgard.terms.Octet0
+gp.fs.0.func.0.nc = nc0
+gp.fs.0.func.1 = ec.iphashing.problems.merkledamgard.terms.RandomPrime
+gp.fs.0.func.1.nc = nc0
+# NONTERMINALS 0
+gp.fs.0.func.2 = ec.iphashing.func.RotateRight
+gp.fs.0.func.2.nc = nc2
+gp.fs.0.func.3 = ec.iphashing.func.Mul
+gp.fs.0.func.3.nc = nc2
+gp.fs.0.func.4 = ec.iphashing.func.Add
+gp.fs.0.func.4.nc = nc2
+gp.fs.0.func.5 = ec.iphashing.func.Xor
+gp.fs.0.func.5.nc = nc2
+
+# FUNCTION SET 1
+gp.fs.1 = ec.gp.GPFunctionSet
+gp.fs.1.name = f1
+
+# TERMINALS 1
+gp.fs.1.size = 7
+gp.fs.1.func.0 = ec.iphashing.problems.merkledamgard.terms.Octet8
+gp.fs.1.func.0.nc = nc0
+gp.fs.1.func.1 = ec.iphashing.problems.merkledamgard.terms.RandomPrime
+gp.fs.1.func.1.nc = nc0
+gp.fs.1.func.2 = ec.iphashing.problems.merkledamgard.terms.Mix0
+gp.fs.1.func.2.nc = nc0
+# NONTERMINALS 1
+gp.fs.1.func.3 = ec.iphashing.func.RotateRight
+gp.fs.1.func.3.nc = nc2
+gp.fs.1.func.4 = ec.iphashing.func.Mul
+gp.fs.1.func.4.nc = nc2
+gp.fs.1.func.5 = ec.iphashing.func.Add
+gp.fs.1.func.5.nc = nc2
+gp.fs.1.func.6 = ec.iphashing.func.Xor
+gp.fs.1.func.6.nc = nc2
+
+# FUNCTION SET 2
+gp.fs.2 = ec.gp.GPFunctionSet
+gp.fs.2.name = f2
+
+# TERMINALS 2
+gp.fs.2.size = 7
+gp.fs.2.func.0 = ec.iphashing.problems.merkledamgard.terms.Octet16
+gp.fs.2.func.0.nc = nc0
+gp.fs.2.func.1 = ec.iphashing.problems.merkledamgard.terms.RandomPrime
+gp.fs.2.func.1.nc = nc0
+gp.fs.2.func.2 = ec.iphashing.problems.merkledamgard.terms.Mix1
+gp.fs.2.func.2.nc = nc0
+# NONTERMINALS 2
+gp.fs.2.func.3 = ec.iphashing.func.RotateRight
+gp.fs.2.func.3.nc = nc2
+gp.fs.2.func.4 = ec.iphashing.func.Mul
+gp.fs.2.func.4.nc = nc2
+gp.fs.2.func.5 = ec.iphashing.func.Add
+gp.fs.2.func.5.nc = nc2
+gp.fs.2.func.6 = ec.iphashing.func.Xor
+gp.fs.2.func.6.nc = nc2
+
+# FUNCTION SET 3
+gp.fs.3 = ec.gp.GPFunctionSet
+gp.fs.3.name = f3
+
+# TERMINALS 3
+gp.fs.3.size = 7
+gp.fs.3.func.0 = ec.iphashing.problems.merkledamgard.terms.Octet24
+gp.fs.3.func.0.nc = nc0
+gp.fs.3.func.1 = ec.iphashing.problems.merkledamgard.terms.RandomPrime
+gp.fs.3.func.1.nc = nc0
+gp.fs.3.func.2 = ec.iphashing.problems.merkledamgard.terms.Mix2
+gp.fs.3.func.2.nc = nc0
+# NONTERMINALS 3
+gp.fs.3.func.3 = ec.iphashing.func.RotateRight
+gp.fs.3.func.3.nc = nc2
+gp.fs.3.func.4 = ec.iphashing.func.Mul
+gp.fs.3.func.4.nc = nc2
+gp.fs.3.func.5 = ec.iphashing.func.Add
+gp.fs.3.func.5.nc = nc2
+gp.fs.3.func.6 = ec.iphashing.func.Xor
+gp.fs.3.func.6.nc = nc2
+
+# SOLVE MERKLE-DAMGARD IP HASHING
+eval.problem = ec.iphashing.problems.merkledamgard.MerkleDamgard
+eval.problem.data = ec.iphashing.IntData
+pop.subpop.0.species.fitness = ec.gp.koza.KozaFitness
+
+######################################################
+# Here we define our species and individuals
+######################################################
+pop.subpop.0.species = ec.gp.GPSpecies
+pop.subpop.0.species.ind = ec.gp.GPIndividual
+
+# MULTIBREEDING PIPELINE
+pop.subpop.0.species.pipe = ec.breed.MultiBreedingPipeline
+pop.subpop.0.species.pipe.generate-max = true
+pop.subpop.0.species.pipe.num-sources=2
+pop.subpop.0.species.pipe.source.0.prob = 0.95
+pop.subpop.0.species.pipe.source.1.prob = 0.05
+
+# XOVER
+pop.subpop.0.species.pipe.source.0 = ec.gp.koza.CrossoverPipeline
+pop.subpop.0.species.pipe.source.0.source.0 = ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.0.source.0.size = 7
+pop.subpop.0.species.pipe.source.0.source.1 = same
+pop.subpop.0.species.pipe.source.0.ns.0 = ec.gp.koza.KozaNodeSelector
+pop.subpop.0.species.pipe.source.0.ns.0.terminals = 0.1
+pop.subpop.0.species.pipe.source.0.ns.0.nonterminals = 0.9
+pop.subpop.0.species.pipe.source.0.ns.0.root = 0.0
+pop.subpop.0.species.pipe.source.0.ns.1 = same
+pop.subpop.0.species.pipe.source.0.maxdepth = 6
+pop.subpop.0.species.pipe.source.0.maxsize = 6
+pop.subpop.0.species.pipe.source.0.tries = 1
+
+# MUTATION
+pop.subpop.0.species.pipe.source.1 = ec.gp.koza.MutationPipeline
+pop.subpop.0.species.pipe.source.1.ns.0 = ec.gp.koza.KozaNodeSelector
+pop.subpop.0.species.pipe.source.1.ns.0.terminals = 0.1
+pop.subpop.0.species.pipe.source.1.ns.0.nonterminals = 0.9
+pop.subpop.0.species.pipe.source.1.ns.0.root = 0.0
+pop.subpop.0.species.pipe.source.1.maxdepth = 6
+pop.subpop.0.species.pipe.source.1.maxsize = 6
+pop.subpop.0.species.pipe.source.1.tries = 1
+pop.subpop.0.species.pipe.source.1.build.0 = ec.gp.koza.HalfBuilder
+pop.subpop.0.species.pipe.source.1.build.0.min-depth = 2
+pop.subpop.0.species.pipe.source.1.build.0.max-depth = 6
+pop.subpop.0.species.pipe.source.1.build.0.growp = 0.5
+pop.subpop.0.species.pipe.source.1.source.0 = ec.gp.koza.CrossoverPipeline
+pop.subpop.0.species.pipe.source.1.source.0.source.0 = ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.1.source.0.source.0.size = 7
+pop.subpop.0.species.pipe.source.1.source.0.source.1 = same
+pop.subpop.0.species.pipe.source.1.source.0.ns.0 = ec.gp.koza.KozaNodeSelector
+pop.subpop.0.species.pipe.source.1.source.0.ns.0.terminals = 0.1
+pop.subpop.0.species.pipe.source.1.source.0.ns.0.nonterminals = 0.9
+pop.subpop.0.species.pipe.source.1.source.0.ns.0.root = 0.0
+pop.subpop.0.species.pipe.source.1.source.0.ns.1 = same
+pop.subpop.0.species.pipe.source.1.source.0.maxdepth = 6
+pop.subpop.0.species.pipe.source.1.source.0.maxsize = 6
+pop.subpop.0.species.pipe.source.1.source.0.tries = 1
+
+# DEFINE STATISTICS
+stat = ec.simple.SimpleStatistics
+stat.file = $out.stat
+stat.do-generation = true

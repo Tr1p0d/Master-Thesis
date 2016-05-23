@@ -1,0 +1,40 @@
+parent.0 = merkledamgard.params
+
+# MULTIBREEDING PIPELINE
+pop.subpop.0.species.pipe = ec.breed.MultiBreedingPipeline
+pop.subpop.0.species.pipe.generate-max = true
+pop.subpop.0.species.pipe.num-sources=2
+# DONT CROSS JUST MUTATE
+pop.subpop.0.species.pipe.source.0.prob = 0
+pop.subpop.0.species.pipe.source.1.prob = 1
+
+# XOVER
+pop.subpop.0.species.pipe.source.0 = ec.gp.koza.CrossoverPipeline
+pop.subpop.0.species.pipe.source.0.source.0 = ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.0.source.0.size = 7
+pop.subpop.0.species.pipe.source.0.source.1 = same
+pop.subpop.0.species.pipe.source.0.ns.0 = ec.gp.koza.KozaNodeSelector
+pop.subpop.0.species.pipe.source.0.ns.0.terminals = 0.1
+pop.subpop.0.species.pipe.source.0.ns.0.nonterminals = 0.9
+pop.subpop.0.species.pipe.source.0.ns.0.root = 0.0
+pop.subpop.0.species.pipe.source.0.ns.1 = same
+pop.subpop.0.species.pipe.source.0.maxdepth = 6
+pop.subpop.0.species.pipe.source.0.maxsize = 6
+pop.subpop.0.species.pipe.source.0.tries = 1
+
+# MUTATION
+pop.subpop.0.species.pipe.source.1 = ec.gp.koza.MutationPipeline
+pop.subpop.0.species.pipe.source.1.ns.0 = ec.gp.koza.KozaNodeSelector
+pop.subpop.0.species.pipe.source.1.ns.0.terminals = 0
+pop.subpop.0.species.pipe.source.1.ns.0.nonterminals = 0
+pop.subpop.0.species.pipe.source.1.ns.0.root = 1
+pop.subpop.0.species.pipe.source.1.maxdepth = 6
+pop.subpop.0.species.pipe.source.1.maxsize = 6
+pop.subpop.0.species.pipe.source.1.tries = 1
+pop.subpop.0.species.pipe.source.1.build.0 = ec.gp.koza.HalfBuilder
+pop.subpop.0.species.pipe.source.1.build.0.min-depth = 2
+pop.subpop.0.species.pipe.source.1.build.0.max-depth = 6
+pop.subpop.0.species.pipe.source.1.build.0.growp = 0.5
+pop.subpop.0.species.pipe.source.1..source.0 = ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.1..source.0.size = 7
+pop.subpop.0.species.pipe.source.1..source.1 = same

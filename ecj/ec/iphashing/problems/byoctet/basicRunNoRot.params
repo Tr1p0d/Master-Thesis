@@ -1,0 +1,21 @@
+parent.0 = basicRun.params
+
+# TERMINALS
+gp.fs.0.size = 8
+gp.fs.0.func.0 = ec.iphashing.problems.byoctet.terms.Octet0
+gp.fs.0.func.0.nc = nc0
+gp.fs.0.func.1 = ec.iphashing.problems.byoctet.terms.Octet8
+gp.fs.0.func.1.nc = nc0
+gp.fs.0.func.2 = ec.iphashing.problems.byoctet.terms.Octet16
+gp.fs.0.func.2.nc = nc0
+gp.fs.0.func.3 = ec.iphashing.problems.byoctet.terms.Octet24
+gp.fs.0.func.3.nc = nc0
+gp.fs.0.func.4 = ec.iphashing.problems.byoctet.terms.RandomPrime
+gp.fs.0.func.4.nc = nc0
+# NONTERMINALS
+gp.fs.0.func.5 = ec.iphashing.func.Xor
+gp.fs.0.func.5.nc = nc2
+gp.fs.0.func.6 = ec.iphashing.func.Mul
+gp.fs.0.func.6.nc = nc2
+gp.fs.0.func.7 = ec.iphashing.func.Add
+gp.fs.0.func.7.nc = nc2

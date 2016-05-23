@@ -1,0 +1,1 @@
+Vzal jsem seznam všech adres, které patøí do sítì CESNET a které aktivnì komunikují. Z tohoto seznamu pak byly náhodnì vybírány rùznì velké vzorky.

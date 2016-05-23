@@ -1,0 +1,74 @@
+# The default settings
+parent.0 = ../../../gp/koza/koza.params
+
+pop.subpop.0.size = 1024
+generations = 50
+
+######################################################
+# Here we define the default values for Initialization
+######################################################
+gp.tc.0.init = ec.gp.koza.HalfBuilder
+gp.koza.half.min-depth = 3
+gp.koza.half.max-depth = 10
+gp.koza.half.growp = 0.5
+
+####################################################
+# Here we define the default values for Reproduction
+####################################################
+
+breed.reproduce.source.0 = ec.select.TournamentSelection
+select.tournament.size = 7
+gp.koza.ns.terminals = 0.1
+gp.koza.ns.nonterminals = 0.9
+gp.koza.ns.root = 0.0
+
+gp.koza.xover.source.0 = ec.select.TournamentSelection
+gp.koza.xover.source.1 = same
+gp.koza.xover.ns.0 = ec.gp.koza.KozaNodeSelector
+gp.koza.xover.ns.1 = same
+gp.koza.xover.maxdepth = 17
+gp.koza.xover.tries = 1
+
+gp.koza.grow.min-depth = 5
+gp.koza.grow.max-depth = 5
+
+breed.elite-fraction.0=0.05
+
+#####################################################
+# We have one function set, of class GPFunctionSet
+# ###################################################
+gp.fs.size = 1
+gp.fs.0 = ec.gp.GPFunctionSet
+gp.fs.0.name = f0
+
+# TERMINALS
+gp.fs.0.size = 10
+gp.fs.0.func.0 = ec.iphashing.problems.byoctet.terms.Octet0
+gp.fs.0.func.0.nc = nc0
+gp.fs.0.func.1 = ec.iphashing.problems.byoctet.terms.Octet8
+gp.fs.0.func.1.nc = nc0
+gp.fs.0.func.2 = ec.iphashing.problems.byoctet.terms.Octet16
+gp.fs.0.func.2.nc = nc0
+gp.fs.0.func.3 = ec.iphashing.problems.byoctet.terms.Octet24
+gp.fs.0.func.3.nc = nc0
+gp.fs.0.func.4 = ec.iphashing.problems.byoctet.terms.RandomPrime
+gp.fs.0.func.4.nc = nc0
+# NONTERMINALS
+gp.fs.0.func.5 = ec.iphashing.func.Xor
+gp.fs.0.func.5.nc = nc2
+gp.fs.0.func.6 = ec.iphashing.func.RotateRight
+gp.fs.0.func.6.nc = nc2
+gp.fs.0.func.7 = ec.iphashing.func.Mul
+gp.fs.0.func.7.nc = nc2
+gp.fs.0.func.8 = ec.iphashing.func.Add
+gp.fs.0.func.8.nc = nc2
+gp.fs.0.func.8 = ec.iphashing.func.And
+gp.fs.0.func.8.nc = nc2
+
+eval.problem = ec.iphashing.problems.byoctet.IPHashing
+eval.problem.data = ec.iphashing.IntData
+
+#lets define some statistics
+stat = ec.simple.SimpleStatistics
+stat.file = $out.stat
+stat.do-generation = true

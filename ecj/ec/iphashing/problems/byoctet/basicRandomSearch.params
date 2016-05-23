@@ -1,0 +1,7 @@
+# use default setup
+parent.0 = basicRun.params
+
+# ALWAYS generate random tree
+pop.subpop.0.species.pipe.source.0.ns.0.terminals = 0.0
+pop.subpop.0.species.pipe.source.0.ns.0.nonterminals = 0.0
+pop.subpop.0.species.pipe.source.0.ns.0.root = 1.0
