@@ -1,0 +1,151 @@
+# Marek Kidon, xkidon00@stud.fit.vutbr.cz, Master Thesis
+# This modulce contains the GP setup parameters for the 
+# direct design method.  
+
+# Threads and Seeds
+evalthreads = 1
+breedthreads = 1
+seed.0 = time
+#seed.1 = time
+#seed.2 = time
+#seed.3 = time
+# Checkpointing
+checkpoint = false
+checkpoint-modulo = 1
+checkpoint-prefix = ec
+# The basic setup
+init = ec.gp.GPInitializer
+state = ec.simple.SimpleEvolutionState
+finish = ec.simple.SimpleFinisher
+exch = ec.simple.SimpleExchanger
+breed = ec.simple.SimpleBreeder
+eval = ec.simple.SimpleEvaluator
+pop = ec.Population
+pop.subpops = 1
+pop.subpop.0 = ec.Subpopulation
+pop.subpop.0.duplicate-retries = 100
+quit-on-run-complete = true
+gp.problem.stack = ec.gp.ADFStack
+gp.adf-stack.context = ec.gp.ADFContext
+
+######################################################
+# A single nil type will do
+######################################################
+gp.type.a.size = 1
+gp.type.a.0.name = nil
+gp.type.s.size = 0
+
+######################################################
+# Here we define our species and individuals
+######################################################
+gp.tc.size = 1
+pop.subpop.0.species = ec.gp.GPSpecies
+pop.subpop.0.species.ind = ec.gp.GPIndividual
+pop.subpop.0.species.ind.numtrees = 1
+pop.subpop.0.species.ind.tree.0 = ec.gp.GPTree
+pop.subpop.0.species.ind.tree.0.tc = tc0
+
+######################################################
+# Here we define our node constraints
+######################################################
+gp.nc.size = 3
+
+gp.nc.0 = ec.gp.GPNodeConstraints
+gp.nc.0.name = nc0
+gp.nc.0.returns = nil
+gp.nc.0.size = 0
+
+gp.nc.1 = ec.gp.GPNodeConstraints
+gp.nc.1.name = nc1
+gp.nc.1.returns = nil
+gp.nc.1.size = 1
+gp.nc.1.child.0 = nil
+
+gp.nc.2 = ec.gp.GPNodeConstraints
+gp.nc.2.name = nc2
+gp.nc.2.returns = nil
+gp.nc.2.size = 2
+gp.nc.2.child.0 = nil
+gp.nc.2.child.1 = nil
+
+######################################################
+# Here we define our tree constraints
+######################################################
+gp.tc.0 = ec.gp.GPTreeConstraints
+gp.tc.0.name = tc0
+gp.tc.0.fset = f0
+gp.tc.0.returns = nil
+
+#####################################################
+# We have one function set, of class GPFunctionSet
+# ###################################################
+gp.fs.size = 1
+gp.fs.0 = ec.gp.GPFunctionSet
+gp.fs.0.name = f0
+
+#####################################################
+# We have one function set, of class GPFunctionSet
+#####################################################
+# TERMINALS
+gp.fs.0.size = 9
+gp.fs.0.func.0 = ec.iphashing.problems.byoctet.terms.Octet0
+gp.fs.0.func.0.nc = nc0
+gp.fs.0.func.1 = ec.iphashing.problems.byoctet.terms.Octet8
+gp.fs.0.func.1.nc = nc0
+gp.fs.0.func.2 = ec.iphashing.problems.byoctet.terms.Octet16
+gp.fs.0.func.2.nc = nc0
+gp.fs.0.func.3 = ec.iphashing.problems.byoctet.terms.Octet24
+gp.fs.0.func.3.nc = nc0
+gp.fs.0.func.4 = ec.iphashing.problems.byoctet.terms.RandomPrime
+gp.fs.0.func.4.nc = nc0
+# NONTERMINALS
+gp.fs.0.func.5 = ec.iphashing.func.Xor
+gp.fs.0.func.5.nc = nc2
+gp.fs.0.func.6 = ec.iphashing.func.RotateRight
+gp.fs.0.func.6.nc = nc2
+gp.fs.0.func.7 = ec.iphashing.func.Mul
+gp.fs.0.func.7.nc = nc2
+gp.fs.0.func.8 = ec.iphashing.func.Add
+gp.fs.0.func.8.nc = nc2
+
+######################################################
+# Here we define our initial population
+######################################################
+
+gp.tc.0.init = ec.gp.koza.HalfBuilder
+gp.tc.0.init.min-depth = 2
+#gp.tc.0.init.max-depth = 6
+gp.koza.half.growp = 0.5
+
+######################################################
+# Here we define our pipeline
+######################################################
+
+# REPRODUCTION PIPELINE
+pop.subpop.0.species.pipe = ec.gp.koza.CrossoverPipeline
+pop.subpop.0.species.pipe.source.0 = ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.0.size = 7
+pop.subpop.0.species.pipe.source.1 = same
+pop.subpop.0.species.pipe.ns.0 = ec.gp.koza.KozaNodeSelector
+pop.subpop.0.species.pipe.ns.0.terminals = 0.1
+pop.subpop.0.species.pipe.ns.0.nonterminals = 0.9
+pop.subpop.0.species.pipe.ns.0.root = 0.0
+pop.subpop.0.species.pipe.ns.1 = same
+pop.subpop.0.species.pipe.maxdepth = 6
+pop.subpop.0.species.pipe.maxsize = 6
+pop.subpop.0.species.pipe.tries = 1
+
+breed.elite-fraction.0=0.05
+
+######################################################
+# Here we define our problem
+######################################################
+
+eval.problem = ec.iphashing.problems.byoctet.IPHashing
+eval.problem.data = ec.iphashing.IntData
+pop.subpop.0.species.fitness = ec.gp.koza.KozaFitness
+
+#lets define some statistics
+stat = ec.simple.SimpleStatistics
+stat.file = $out.stat
+stat.do-generation = true

@@ -45,7 +45,7 @@ build-type:          Simple
 -- Constraint on the version of Cabal needed to build this package.
 cabal-version:       >=1.10
 
-executable avgBestMean
+executable avgBest
   -- .hs or .lhs file containing the Main module.
   main-is:             AvgBest.hs
   
@@ -70,7 +70,7 @@ executable avgBestMean
   -- Base language which the package is written in.
   default-language:    Haskell2010
 
-executable avgPopulationMean
+executable avgPopulation
   -- .hs or .lhs file containing the Main module.
   main-is:             AvgMean.hs
   

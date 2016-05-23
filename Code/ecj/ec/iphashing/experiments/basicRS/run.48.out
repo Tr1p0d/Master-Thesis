@@ -1,0 +1,87 @@
+
+Generation: 0
+Best Individual:
+Subpopulation 0:
+Evaluated: true
+Fitness: Standardized=0.365478515625 Adjusted=0.7323440014303594 Hits=5198
+Tree 0:
+ ((+) ((*) o3 o0) ((+) (rotateR o2 o1) o2))
+
+Generation: 1
+Best Individual:
+Subpopulation 0:
+Evaluated: true
+Fitness: Standardized=0.360107421875 Adjusted=0.7352360437982409 Hits=5242
+Tree 0:
+ ((+) ((*) (xor o3 o1) (xor o1 1621)) ((+)
+     ((*) o2 o1) (xor o1 o0)))
+
+Generation: 2
+Best Individual:
+Subpopulation 0:
+Evaluated: true
+Fitness: Standardized=0.360107421875 Adjusted=0.7352360437982409 Hits=5242
+Tree 0:
+ ((+) ((*) (xor o3 o1) (xor o1 1621)) ((+)
+     ((*) o2 o1) (xor o1 o0)))
+
+Generation: 3
+Best Individual:
+Subpopulation 0:
+Evaluated: true
+Fitness: Standardized=0.360107421875 Adjusted=0.7352360437982409 Hits=5242
+Tree 0:
+ ((+) ((*) (xor o3 o1) (xor o1 1621)) ((+)
+     ((*) o2 o1) (xor o1 o0)))
+
+Generation: 4
+Best Individual:
+Subpopulation 0:
+Evaluated: true
+Fitness: Standardized=0.359619140625 Adjusted=0.7355000897827259 Hits=5246
+Tree 0:
+ ((+) (xor (rotateR ((+) ((*) o1 o2) ((+)
+     2473 o3)) (xor o2 o1)) (xor ((+) (rotateR
+     o1 o1) ((+) o1 o3)) (rotateR ((+) o0 o1)
+     (xor o0 o2)))) ((+) ((*) o3 o0) (xor ((+)
+     ((*) 1451 1741) ((+) o2 o1)) (rotateR (xor
+     o0 o3) (rotateR o3 1297)))))
+
+Generation: 5
+Best Individual:
+Subpopulation 0:
+Evaluated: true
+Fitness: Standardized=0.359619140625 Adjusted=0.7355000897827259 Hits=5246
+Tree 0:
+ ((+) (xor (rotateR ((+) ((*) o1 o2) ((+)
+     2473 o3)) (xor o2 o1)) (xor ((+) (rotateR
+     o1 o1) ((+) o1 o3)) (rotateR ((+) o0 o1)
+     (xor o0 o2)))) ((+) ((*) o3 o0) (xor ((+)
+     ((*) 1451 1741) ((+) o2 o1)) (rotateR (xor
+     o0 o3) (rotateR o3 1297)))))
+
+Generation: 6
+Best Individual:
+Subpopulation 0:
+Evaluated: true
+Fitness: Standardized=0.3583984375 Adjusted=0.7361610352264558 Hits=5256
+Tree 0:
+ ((+) (xor (xor (rotateR (xor o2 o2) ((*)
+     o1 o1)) ((*) ((+) o3 o0) ((+) o3 o1))) (xor
+     ((+) (rotateR o1 o1) ((+) o1 o3)) ((+) ((*)
+     o2 o1) (xor o1 o0)))) ((+) ((*) o3 o0) (xor
+     ((+) ((*) 1451 1741) ((+) o2 o1)) (rotateR
+     (xor o0 o3) (rotateR o3 1297)))))
+
+Generation: 7
+Best Individual:
+Subpopulation 0:
+Evaluated: true
+Fitness: Standardized=0.3583984375 Adjusted=0.7361610352264558 Hits=5256
+Tree 0:
+ ((+) (xor (xor (rotateR (xor o2 o2) ((*)
+     o1 o1)) ((*) ((+) o3 o0) ((+) o3 o1))) (xor
+     ((+) (rotateR o1 o1) ((+) o1 o3)) ((+) ((*)
+     o2 o1) (xor o1 o0)))) ((+) ((*) o3 o0) (xor
+     ((+) ((*) 1451 1741) ((+) o2 o1)) (rotateR
+     (xor o0 o3) (rotateR o3 1297)))))
