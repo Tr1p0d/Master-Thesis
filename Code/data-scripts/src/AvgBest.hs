@@ -1,6 +1,16 @@
+{-|
+  Module      : W
+  Description : Marek Kidon Master Thesis 
+  Copyright   : (c) Marek Kidon, 2013
+  Stability   : experimental
+ 
+  This is the module for calculating average Population individual
+  in the experiments.
+-}
+
 {-# LANGUAGE RecordWildCards #-}
 
-import Control.Monad ((<=<), void)
+import Control.Monad ((<=<), void, when)
 import System.IO (stderr, hPutStrLn)
 import System.Exit (exitFailure)
 import System.Environment (getArgs)
@@ -24,7 +34,9 @@ import SimpleStatisticsParser
 
 main :: IO ()
 main = do
-    (targetDir:outpurFile:[]) <- getArgs
+    args <- getArgs
+    when (length args /= 1) $ error "<experiment directory>"
+    (targetDir:[]) <- getArgs
     (statFiles) <- listDirectory targetDir
     bests <- V.fromList <$> mapM (onlyBest <=< parseSimpleStatistics . (targetDir </>)) statFiles
     printBox $ toHits $ computeQuantiles bests

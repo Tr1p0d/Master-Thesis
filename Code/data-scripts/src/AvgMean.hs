@@ -1,6 +1,15 @@
+{-|
+  Module      : W
+  Description : Marek Kidon Master Thesis 
+  Copyright   : (c) Marek Kidon, 2013
+  Stability   : experimental
+ 
+  This is the module for calculating average Best individual
+  in the experiments.
+-}
 {-# LANGUAGE RecordWildCards #-}
 
-import Control.Monad ((<=<), void, zipWithM)
+import Control.Monad ((<=<), void, zipWithM, when)
 import System.IO (stderr, hPutStrLn)
 import System.Exit (exitFailure)
 
@@ -26,7 +35,9 @@ import SimpleStatisticsParser
 
 main :: IO ()
 main = do
-    (targetDir:qCountS:qS:[]) <- getArgs
+    args <- getArgs
+    when (length args /= 3) $ error "<experiment directory> <quantil count> <quantil>"
+    (targetDir: qCountS: qS:[]) <- getArgs
     let qCount = read qCountS :: Int
         q = read qS :: Int
     (statFiles) <- listDirectory targetDir
